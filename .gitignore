@@ -35,3 +35,7 @@ desktop.ini
 
 # Vercel (not used for hosting, but just in case)
 .vercel/
+
+# Generated document exports (source of truth is the .md files)
+docs/*.docx
+~$*.docx
