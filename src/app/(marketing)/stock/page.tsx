@@ -3,7 +3,10 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { PageHero } from "@/components/sections/page-hero";
 import { StockCatalog } from "@/components/sections/stock-catalog";
 import { Container } from "@/components/ui/container";
+import { getPublishedStockItems } from "@/db/queries/stock";
 import { buildMetadata } from "@/lib/seo";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = buildMetadata({
   title: "Stock de plástico reciclado disponible",
@@ -13,7 +16,9 @@ export const metadata: Metadata = buildMetadata({
   keywords: ["venta de plástico reciclado", "stock de resinas recicladas", "plástico molido en venta"],
 });
 
-export default function StockPage() {
+export default async function StockPage() {
+  const items = await getPublishedStockItems();
+
   return (
     <>
       <PageHero
@@ -28,7 +33,7 @@ export default function StockPage() {
 
       <section className="py-16 md:py-24">
         <Container>
-          <StockCatalog />
+          <StockCatalog items={items} />
           <p className="text-ink-muted mt-10 max-w-[68ch] text-sm">
             * Disponibilidad y precios sujetos a existencias. Solicita ficha técnica y muestra del
             lote actual antes de tu compra.

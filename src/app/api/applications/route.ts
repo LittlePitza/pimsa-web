@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createApplication } from "@/db/queries/applications";
 import { getOpenVacancyBySlug } from "@/db/queries/vacancies";
 import { rateLimit } from "@/lib/rate-limit";
+import { getEmailRecipients } from "@/lib/settings";
 
 export const runtime = "nodejs";
 
@@ -122,9 +123,10 @@ async function notifyHr(
   fields: { name: string; email: string; phone: string; message: string },
   cv: { fileName: string; content: Buffer },
 ) {
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_EMAIL_TO, CONTACT_EMAIL_FROM } =
-    process.env;
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !CONTACT_EMAIL_TO) return;
+  // Recipients: configurable from /admin/configuracion, env as fallback.
+  const recipients = await getEmailRecipients("applications");
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_EMAIL_FROM } = process.env;
+  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !recipients) return;
 
   const transporter = nodemailer.createTransport({
     host: SMTP_HOST,
@@ -135,7 +137,7 @@ async function notifyHr(
 
   await transporter.sendMail({
     from: CONTACT_EMAIL_FROM ?? SMTP_USER,
-    to: CONTACT_EMAIL_TO,
+    to: recipients,
     replyTo: fields.email,
     subject: `Nueva postulación — ${vacancyTitle} — ${fields.name}`,
     text: [

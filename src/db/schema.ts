@@ -1,4 +1,5 @@
 import {
+  boolean,
   customType,
   int,
   mysqlEnum,
@@ -108,6 +109,33 @@ export const leads = mysqlTable("leads", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const STOCK_FORMS = ["Molido", "Pellet", "Original"] as const;
+export type StockForm = (typeof STOCK_FORMS)[number];
+
+export const STOCK_AVAILABILITY = ["Disponible", "Bajo pedido", "Consultar"] as const;
+export type StockAvailability = (typeof STOCK_AVAILABILITY)[number];
+
+/** Plastic stock catalog — managed from the admin panel, shown on /stock. */
+export const stockItems = mysqlTable("stock_items", {
+  id: int("id").autoincrement().primaryKey(),
+  material: varchar("material", { length: 120 }).notNull(),
+  form: mysqlEnum("form", STOCK_FORMS).notNull(),
+  color: varchar("color", { length: 60 }).notNull().default(""),
+  availability: mysqlEnum("availability", STOCK_AVAILABILITY).notNull().default("Consultar"),
+  notes: varchar("notes", { length: 300 }).notNull().default(""),
+  /** Unpublished items stay visible only in the admin panel. */
+  published: boolean("published").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+});
+
+/** Simple key-value settings editable from the admin panel. */
+export const settings = mysqlTable("settings", {
+  key: varchar("key", { length: 100 }).primaryKey(),
+  value: text("value").notNull(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+});
+
 export const adminUsers = mysqlTable("admin_users", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 190 }).notNull().unique(),
@@ -124,3 +152,5 @@ export type NewApplication = typeof applications.$inferInsert;
 export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;
 export type AdminUser = typeof adminUsers.$inferSelect;
+export type StockItem = typeof stockItems.$inferSelect;
+export type NewStockItem = typeof stockItems.$inferInsert;

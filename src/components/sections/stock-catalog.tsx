@@ -3,22 +3,34 @@
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { stockFilters, stockItems } from "@/content/stock";
+import type { StockItem } from "@/db/schema";
 import { cn } from "@/lib/utils";
 
 /**
- * Filterable stock catalog (DESIGN.md §7): static data today, and Phase 3
- * only swaps src/content/stock.ts for a database query.
+ * Filterable stock catalog. Items come from the database (managed in
+ * /admin/stock); this component only renders and filters them.
  */
-export function StockCatalog() {
+export function StockCatalog({ items }: { items: StockItem[] }) {
   const [form, setForm] = useState<string>("Todos");
 
-  const items = useMemo(
-    () => (form === "Todos" ? stockItems : stockItems.filter((item) => item.form === form)),
-    [form],
+  const filterOptions = useMemo(
+    () => ["Todos", ...new Set(items.map((item) => item.form))],
+    [items],
   );
 
-  const filterOptions = ["Todos", ...stockFilters.forms];
+  const visible = useMemo(
+    () => (form === "Todos" ? items : items.filter((item) => item.form === form)),
+    [form, items],
+  );
+
+  if (items.length === 0) {
+    return (
+      <p className="text-ink-muted">
+        El inventario se está actualizando. Contáctanos para consultar disponibilidad de
+        materiales.
+      </p>
+    );
+  }
 
   return (
     <div>
@@ -43,7 +55,7 @@ export function StockCatalog() {
       </div>
 
       <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((item) => (
+        {visible.map((item) => (
           <li key={item.id}>
             <Card lift className="h-full">
               <div className="flex items-start justify-between gap-3">
@@ -53,7 +65,7 @@ export function StockCatalog() {
               <dl className="mt-4 space-y-2 text-sm">
                 <div className="flex justify-between gap-4">
                   <dt className="text-ink-muted font-mono text-xs tracking-wider uppercase">Color</dt>
-                  <dd className="text-ink">{item.color}</dd>
+                  <dd className="text-ink">{item.color || "—"}</dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt className="text-ink-muted font-mono text-xs tracking-wider uppercase">
@@ -68,7 +80,7 @@ export function StockCatalog() {
         ))}
       </ul>
 
-      {items.length === 0 ? (
+      {visible.length === 0 ? (
         <p className="text-ink-muted mt-8">No hay materiales con ese filtro por el momento.</p>
       ) : null}
     </div>

@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import { z } from "zod";
 import { insertLeadSafe } from "@/db/queries/leads";
 import { rateLimit } from "@/lib/rate-limit";
+import { getEmailRecipients } from "@/lib/settings";
 
 export const runtime = "nodejs";
 
@@ -65,9 +66,10 @@ export async function POST(request: NextRequest) {
     ip,
   });
 
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_EMAIL_TO, CONTACT_EMAIL_FROM } =
-    process.env;
-  const smtpConfigured = SMTP_HOST && SMTP_USER && SMTP_PASS && CONTACT_EMAIL_TO;
+  // Recipients: configurable from /admin/configuracion, env as fallback.
+  const recipients = await getEmailRecipients("leads");
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_EMAIL_FROM } = process.env;
+  const smtpConfigured = SMTP_HOST && SMTP_USER && SMTP_PASS && recipients;
 
   const utmLines = Object.entries(lead.utm).map(([key, value]) => `${key}: ${value}`);
   const emailText = [
@@ -113,7 +115,7 @@ export async function POST(request: NextRequest) {
 
     await transporter.sendMail({
       from: CONTACT_EMAIL_FROM ?? SMTP_USER,
-      to: CONTACT_EMAIL_TO,
+      to: recipients,
       replyTo: lead.email,
       subject: `Nuevo lead del sitio web — ${lead.name}${lead.service ? ` · ${lead.service}` : ""}`,
       text: emailText,

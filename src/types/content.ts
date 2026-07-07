@@ -70,17 +70,6 @@ export interface Faq {
   answer: string;
 }
 
-export type StockForm = "Molido" | "Pellet" | "Original";
-
-export interface StockItem {
-  id: string;
-  material: string;
-  form: StockForm;
-  color: string;
-  availability: "Disponible" | "Bajo pedido" | "Consultar";
-  notes?: string;
-}
-
 export interface Stat {
   value: number;
   prefix?: string;

@@ -14,6 +14,8 @@ const adminNav = [
   { label: "Vacantes", href: "/admin/vacantes" },
   { label: "Postulaciones", href: "/admin/postulaciones" },
   { label: "Leads", href: "/admin/leads" },
+  { label: "Stock", href: "/admin/stock" },
+  { label: "Configuración", href: "/admin/configuracion" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
