@@ -54,6 +54,57 @@ export const services: Service[] = [
       "Calidad respaldada por certificación ISO 9001:2015",
       "Apoyo a tus metas de economía circular y sustentabilidad",
     ],
+    figure: {
+      src: "/media/servicios/polimeros-pellets.jpg",
+      alt: "Pellets de polímero reciclado color natural sobre fondo negro",
+      caption: "Fig. 01 — Pellet reciclado",
+      tag: "Producto terminado",
+    },
+    gallery: [],
+    materialShots: [
+      {
+        code: "POM",
+        name: "Acetal",
+        form: "Pellet",
+        src: "/media/servicios/material-pom.jpg",
+        alt: "Pellets negros de acetal POM reciclado",
+      },
+      {
+        code: "PC",
+        name: "Policarbonato",
+        form: "Molido",
+        src: "/media/servicios/material-pc.jpg",
+        alt: "Molido cristal de policarbonato reciclado",
+      },
+      {
+        code: "ABS",
+        name: "Acrilonitrilo butadieno estireno",
+        form: "Molido",
+        src: "/media/servicios/material-abs.jpg",
+        alt: "Molido gris de ABS reciclado",
+      },
+      {
+        code: "PA6",
+        name: "Poliamida (nylon)",
+        form: "Molido",
+        src: "/media/servicios/material-pa.jpg",
+        alt: "Molido natural de poliamida reciclada",
+      },
+      {
+        code: "PMMA",
+        name: "Acrílico",
+        form: "Molido",
+        src: "/media/servicios/material-pmma.jpg",
+        alt: "Molido rojo de acrílico PMMA reciclado",
+      },
+      {
+        code: "PBT",
+        name: "Poliéster",
+        form: "Pellet",
+        src: "/media/servicios/material-pbt.jpg",
+        alt: "Pellets negros de PBT reciclado",
+      },
+    ],
     metaTitle: "Polímeros de ingeniería reciclados",
     metaDescription:
       "Venta de polímeros de ingeniería reciclados: ABS, PC, PA, POM, HDPE y más, en molido o pellet, con calidad certificada ISO 9001:2015. Cobertura nacional.",
@@ -111,6 +162,26 @@ export const services: Service[] = [
       "Sin inversión en equipo de molienda propio",
       "Control de contaminación cruzada certificado",
       "Trazabilidad completa de tu material",
+    ],
+    figure: {
+      src: "/media/servicios/molienda-molino.jpg",
+      alt: "Scrap plástico negro frente al molino en la planta de PIMSA",
+      caption: "Fig. 01 — Área de molienda",
+      tag: "Planta La Estancia",
+    },
+    gallery: [
+      {
+        src: "/media/servicios/molienda-alimentacion.jpg",
+        alt: "Operador alimentando el molino con scrap plástico",
+        caption: "Fig. 02 — Alimentación del molino",
+        tag: "Molienda",
+      },
+      {
+        src: "/media/servicios/molienda-cribado.jpg",
+        alt: "Operador cribando pellet reciclado sobre malla",
+        caption: "Fig. 03 — Cribado de pellet",
+        tag: "Control de calidad",
+      },
     ],
     metaTitle: "Molienda y peletizado de plástico (maquila)",
     metaDescription:
@@ -170,6 +241,26 @@ export const services: Service[] = [
       "Documentación completa para auditorías",
       "Logística confiable que no interrumpe tu operación",
     ],
+    figure: {
+      src: "/media/servicios/recoleccion-camion.jpg",
+      alt: "Camión de recolección de PIMSA con su operador en planta",
+      caption: "Fig. 01 — Unidad de recolección",
+      tag: "Flota propia",
+    },
+    gallery: [
+      {
+        src: "/media/servicios/recoleccion-scrap.jpg",
+        alt: "Contenedor industrial lleno de scrap plástico recolectado",
+        caption: "Fig. 02 — Scrap post-industrial",
+        tag: "Colada · Piezas",
+      },
+      {
+        src: "/media/servicios/recoleccion-patio.jpg",
+        alt: "Patio de PIMSA con súper sacos de material recuperado",
+        caption: "Fig. 03 — Patio de recepción",
+        tag: "Súper sacos",
+      },
+    ],
     metaTitle: "Recolección y compra de scrap plástico",
     metaDescription:
       "Recolección y compra de scrap plástico industrial con permisos ambientales oficiales y documentación para auditorías. Cobertura en el Bajío y centro de México.",
@@ -188,16 +279,16 @@ export const services: Service[] = [
     navLabel: "Contenedores",
     tagline: "Contenedores HD plegables para logística industrial",
     summary:
-      "Contenedores colapsables de alta densidad para almacenaje y transporte industrial: resistentes, apilables y plegables para optimizar tus retornos.",
+      "Venta, renta y reparación de contenedores colapsables de alta densidad para almacenaje y transporte industrial: resistentes, apilables y plegables.",
     description: [
-      "Comercializamos contenedores colapsables de polietileno de alta densidad, la solución estándar de la industria automotriz y manufacturera para mover componentes entre plantas.",
+      "Comercializamos contenedores colapsables de polietileno de alta densidad, la solución estándar de la industria automotriz y manufacturera para mover componentes entre plantas. Contamos con amplio inventario en siete medidas y esquemas de venta, renta y reparación.",
       "Al plegarse reducen su volumen en el viaje de retorno, bajando tus costos de flete y almacenaje. Son durables, higiénicos y compatibles con montacargas y racks estándar.",
     ],
     specs: [
       { label: "Material", value: "Polietileno de alta densidad (HDPE)" },
       { label: "Tipo", value: "Colapsable · Apilable · Grado industrial" },
-      { label: "Uso", value: "Autopartes, línea blanca, agroindustria y más" },
-      { label: "Venta", value: "Por unidad o volumen, según disponibilidad" },
+      { label: "Esquemas", value: "Venta · Renta · Reparación" },
+      { label: "Medidas", value: "7 modelos, de 30×32×25 a 48×65×34 in" },
     ],
     materials: ["HDPE"],
     process: [
@@ -213,6 +304,11 @@ export const services: Service[] = [
         title: "Entrega",
         description: "Coordinamos la logística de entrega en tu planta o centro de distribución.",
       },
+      {
+        title: "Renta y reparación",
+        description:
+          "Esquemas de renta por proyecto y reparación de tus contenedores para alargar su vida útil.",
+      },
     ],
     benefits: [
       "Hasta 70% menos volumen en viajes de retorno",
@@ -220,13 +316,43 @@ export const services: Service[] = [
       "Compatible con logística estándar (montacargas, racks)",
       "Higiénico y 100% reciclable al final de su vida",
     ],
+    figure: {
+      src: "/media/servicios/contenedores-frontal.jpg",
+      alt: "Contenedor colapsable negro de HDPE en el patio de PIMSA",
+      caption: "Fig. 01 — Contenedor armado",
+      tag: "HDPE · Grado industrial",
+    },
+    gallery: [
+      {
+        src: "/media/servicios/contenedores-colapsado.jpg",
+        alt: "Contenedor colapsable plegado mostrando la reducción de volumen",
+        caption: "Fig. 02 — Contenedor plegado",
+        tag: "−70% volumen",
+      },
+      {
+        src: "/media/servicios/contenedores-stack.jpg",
+        alt: "Torres de contenedores colapsables apilados en inventario",
+        caption: "Fig. 03 — Inventario en patio",
+        tag: "Apilables",
+      },
+    ],
+    containerModels: [
+      { code: "2CONNEG30X32X25", size: "30 × 32 × 25" },
+      { code: "2CONNEG30X32X34", size: "30 × 32 × 34" },
+      { code: "2CONNEG48X45X25", size: "48 × 45 × 25" },
+      { code: "2CONNEG48X45X34", size: "48 × 45 × 34" },
+      { code: "2CONNEG48X45X50", size: "48 × 45 × 50" },
+      { code: "2CONNEG48X64X34", size: "48 × 64 × 34" },
+      { code: "2CONNEG48X65X34", size: "48 × 65 × 34" },
+    ],
     metaTitle: "Contenedores colapsables industriales",
     metaDescription:
-      "Venta de contenedores colapsables de HDPE para logística industrial: resistentes, apilables y plegables. Ideales para automotriz y manufactura.",
+      "Venta, renta y reparación de contenedores colapsables de HDPE para logística industrial: 7 medidas, resistentes, apilables y plegables. Ideales para automotriz y manufactura.",
     keywords: [
       "contenedores colapsables",
       "contenedores plegables industriales",
       "contenedores HDPE",
+      "renta de contenedores industriales",
       "empaque retornable",
     ],
     relatedSlugs: ["polimeros", "recoleccion-scrap"],

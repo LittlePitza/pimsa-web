@@ -45,6 +45,35 @@ export interface ProcessStep {
   description: string;
 }
 
+/** Editorially annotated photo (DESIGN.md §4.5): mono caption + optional tag. */
+export interface ServiceImage {
+  /** Path under /public, e.g. "/media/servicios/molienda-molino.jpg". */
+  src: string;
+  alt: string;
+  /** Mono caption, e.g. "Fig. 02 — Alimentación del molino". */
+  caption: string;
+  /** Right-aligned mono tag, e.g. "HDPE · PP". */
+  tag?: string;
+}
+
+/** Studio close-up of a resin, for the polymers material gallery. */
+export interface MaterialShot {
+  /** Resin code, e.g. "POM". */
+  code: string;
+  name: string;
+  /** Presentation: "Pellet" | "Molido". */
+  form: string;
+  src: string;
+  alt: string;
+}
+
+/** Collapsible container model (source: CATÁLOGO CONTENEDORES PIMSA). */
+export interface ContainerModel {
+  code: string;
+  /** External dimensions in inches, e.g. "48 × 45 × 25". */
+  size: string;
+}
+
 export interface Service {
   slug: string;
   /** Two-digit editorial index, e.g. "01". */
@@ -58,6 +87,14 @@ export interface Service {
   materials: string[];
   process: ProcessStep[];
   benefits: string[];
+  /** Lead annotated figure — detail page + hub row thumbnail. */
+  figure: ServiceImage;
+  /** Supporting annotated photos on the detail page. */
+  gallery: ServiceImage[];
+  /** Resin close-ups (polymers page only). */
+  materialShots?: MaterialShot[];
+  /** Container models table (containers page only). */
+  containerModels?: ContainerModel[];
   /** SEO */
   metaTitle: string;
   metaDescription: string;

@@ -27,13 +27,12 @@ export function Hero() {
               {company.address.municipality}, {company.address.state} · ISO 9001:2015 · IMMEX
             </Eyebrow>
             <h1 className="font-display text-display text-paper mt-6 font-bold">
-              Ingeniería en reciclaje{" "}
-              <span className="text-green-300">de plásticos</span>
+              Ingeniería en polímeros <span className="text-green-300">reciclados</span>
             </h1>
             <p className="text-lead text-paper/80 mt-7 max-w-xl">
-              Transformamos el scrap plástico de la industria en polímeros de ingeniería
-              certificados: recolección con permisos ambientales, molienda, peletizado y retorno
-              del material a tu cadena productiva.
+              Transformamos scrap post-industrial en polímeros de ingeniería: ABS, PC, PA, POM y
+              más — clasificados, molidos y peletizados bajo ISO 9001:2015, listos para tu línea
+              de inyección o extrusión.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <ButtonLink href="/contacto" variant="accent" size="lg">
@@ -70,8 +69,8 @@ export function Hero() {
               />
             </div>
             <figcaption className="text-blue-400 mx-auto mt-4 flex max-w-sm items-center justify-between font-mono text-xs tracking-[0.18em] uppercase xl:max-w-md">
-              <span>Fig. 01 — Molido reciclado</span>
-              <span className="text-green-300">PEBD · PP · ABS</span>
+              <span>Fig. 01 — Molido</span>
+              <span className="text-green-300">ABS · PC · POM</span>
             </figcaption>
           </figure>
         </div>
@@ -79,7 +78,7 @@ export function Hero() {
         {/* Hairline rule with mono annotation — datasheet detail */}
         <div className="border-blue-400/30 mt-24 flex items-center justify-between border-t pt-4">
           <p className="text-blue-400 font-mono text-xs tracking-[0.18em] uppercase">
-            Economía circular industrial
+            Ingeniería en polímeros · Economía circular
           </p>
           <p className="text-blue-400 hidden font-mono text-xs tracking-[0.18em] uppercase sm:block">
             Desde {company.foundedYear}

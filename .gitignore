@@ -10,6 +10,7 @@ build/
 .env
 .env.local
 .env.*.local
+.env.hostinger
 
 # Logs
 npm-debug.log*
@@ -37,6 +38,9 @@ desktop.ini
 
 # Vercel (not used for hosting, but just in case)
 .vercel/
+
+# Claude Code local config (machine-specific)
+.claude/
 
 # Generated document exports (source of truth is the .md files)
 docs/*.docx

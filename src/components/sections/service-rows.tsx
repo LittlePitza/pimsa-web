@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
@@ -5,7 +6,8 @@ import { services } from "@/content/services";
 
 /**
  * Services hub as an index/table-of-contents (DESIGN.md §7): each service
- * a full-width row with a big index number, name, one-liner and arrow.
+ * a full-width row with a big index number, name, one-liner, photo and arrow.
+ * The photo sits desaturated and shifts to full color on hover.
  */
 export function ServiceRows() {
   return (
@@ -16,7 +18,7 @@ export function ServiceRows() {
             <li key={service.slug} className="border-line border-b">
               <Link
                 href={`/servicios/${service.slug}`}
-                className="group grid items-center gap-x-8 gap-y-2 py-8 transition-colors md:grid-cols-[auto_1fr_auto] md:py-10"
+                className="group grid items-center gap-x-8 gap-y-4 py-8 md:grid-cols-[auto_1fr_11rem_auto] md:py-10"
               >
                 <span
                   aria-hidden
@@ -29,6 +31,15 @@ export function ServiceRows() {
                     {service.name}
                   </span>
                   <span className="text-ink-muted mt-1 block max-w-[60ch]">{service.tagline}</span>
+                </span>
+                <span className="border-line relative hidden aspect-4/3 overflow-hidden border md:block">
+                  <Image
+                    src={service.figure.src}
+                    alt={service.figure.alt}
+                    fill
+                    sizes="11rem"
+                    className="object-cover grayscale-[0.85] transition-[filter,scale] duration-300 group-hover:scale-[1.03] group-hover:grayscale-0"
+                  />
                 </span>
                 <ArrowRight
                   aria-hidden

@@ -1,13 +1,10 @@
 import { ImageResponse } from "next/og";
+import { isotypePaths, LOGO_GREEN, wordmarkPaths } from "@/components/layout/logo-paths";
 import { company } from "@/content/company";
 
-/**
- * Default Open Graph image, generated at build time.
- * TODO(marketing): replace with branded per-page OG art once photography
- * and the official logo are delivered.
- */
+/** Default Open Graph image, generated at build time, with the official lockup. */
 
-export const alt = "Plásticos PIMSA — Ingeniería en reciclaje de plásticos";
+export const alt = "Plásticos PIMSA — Ingeniería en polímeros reciclados";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -41,7 +38,7 @@ export default function OpengraphImage() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           <div style={{ display: "flex", fontSize: 84, fontWeight: 700, lineHeight: 1.05 }}>
-            Ingeniería en reciclaje de plásticos
+            Ingeniería en polímeros reciclados
           </div>
           <div style={{ display: "flex", fontSize: 34, color: "#517aad" }}>
             plasticospimsa.com
@@ -57,7 +54,26 @@ export default function OpengraphImage() {
             fontSize: 28,
           }}
         >
-          <div style={{ display: "flex", fontWeight: 700 }}>PIMSA</div>
+          <svg viewBox="0 0 1461 311" width={216} height={46}>
+            <g transform="translate(-305.59 -145.16) scale(1.3462)">
+              {isotypePaths.map((path) => (
+                <path
+                  key={path.d.slice(0, 24)}
+                  d={path.d}
+                  fill={path.green ? LOGO_GREEN : "#f7f8f5"}
+                />
+              ))}
+            </g>
+            <g transform="translate(598.06 -373)">
+              {wordmarkPaths.map((path) => (
+                <path
+                  key={path.d.slice(0, 24)}
+                  d={path.d}
+                  fill={path.green ? LOGO_GREEN : "#f7f8f5"}
+                />
+              ))}
+            </g>
+          </svg>
           <div style={{ display: "flex", color: "#7f9d41" }}>Economía circular industrial</div>
         </div>
       </div>

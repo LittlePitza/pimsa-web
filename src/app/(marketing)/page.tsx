@@ -14,15 +14,16 @@ import { localBusinessSchema, organizationSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Reciclaje de plásticos de ingeniería en México",
+  title: "Ingeniería en polímeros reciclados en México",
   description:
-    "Recolección de scrap, molienda, peletizado y venta de polímeros de ingeniería reciclados con certificación ISO 9001:2015. Economía circular para la industria automotriz, línea blanca y electrónica.",
+    "Ingeniería en polímeros: recolección de scrap industrial, molienda, peletizado y venta de polímeros de ingeniería reciclados con certificación ISO 9001:2015 para automotriz, línea blanca y electrónica.",
   path: "/",
   keywords: [
+    "ingeniería en polímeros",
+    "polímeros de ingeniería reciclados",
     "reciclaje de plásticos de ingeniería",
     "economía circular México",
     "recolección de scrap plástico",
-    "polímeros reciclados",
   ],
 });
 

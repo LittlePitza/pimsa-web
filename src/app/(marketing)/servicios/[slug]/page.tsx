@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
@@ -6,6 +7,7 @@ import { StickyMobileCta } from "@/components/layout/sticky-mobile-cta";
 import { JsonLd } from "@/components/seo/json-ld";
 import { CtaBand } from "@/components/sections/cta-band";
 import { PageHero } from "@/components/sections/page-hero";
+import { AnnotatedFigure } from "@/components/ui/annotated-figure";
 import { Badge } from "@/components/ui/badge";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
@@ -16,7 +18,8 @@ import { buildMetadata } from "@/lib/seo";
 
 /**
  * Service detail template ×4 — "datasheet energy" (DESIGN.md §7):
- * specs block in mono, process steps, benefits, related services, quote CTA.
+ * annotated figure, mono specs strip, process steps, material/model data,
+ * photo gallery, benefits, related services and quote CTA.
  */
 
 interface Props {
@@ -67,12 +70,15 @@ export default async function ServicePage({ params }: Props) {
         ]}
       />
 
-      {/* Description + specs datasheet */}
+      {/* Description + annotated lead figure */}
       <section className="py-20 md:py-28">
-        <Container className="grid gap-14 lg:grid-cols-[7fr_5fr]">
+        <Container className="grid items-start gap-14 lg:grid-cols-[7fr_5fr]">
           <div>
             {service.description.map((paragraph) => (
-              <p key={paragraph.slice(0, 32)} className="text-ink text-lead mt-6 max-w-[68ch] first:mt-0">
+              <p
+                key={paragraph.slice(0, 32)}
+                className="text-ink text-lead mt-6 max-w-[68ch] first:mt-0"
+              >
                 {paragraph}
               </p>
             ))}
@@ -83,27 +89,28 @@ export default async function ServicePage({ params }: Props) {
             </div>
           </div>
 
-          {/* Especificaciones — mono datasheet block */}
-          <aside aria-label="Especificaciones" className="lg:pl-4">
-            <div className="border-line bg-surface shadow-card rounded-md border">
-              <p className="border-line text-green-600 border-b p-5 font-mono text-xs font-medium tracking-[0.18em] uppercase">
-                Especificaciones
-              </p>
-              <dl>
-                {service.specs.map((spec) => (
-                  <div
-                    key={spec.label}
-                    className="border-line grid grid-cols-[1fr_2fr] gap-4 border-b p-5 last:border-0"
-                  >
-                    <dt className="text-ink-muted font-mono text-xs tracking-wider uppercase">
-                      {spec.label}
-                    </dt>
-                    <dd className="text-ink text-sm font-medium">{spec.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </aside>
+          <AnnotatedFigure
+            image={service.figure}
+            priority
+            sizes="(min-width: 1024px) 36rem, calc(100vw - 2.5rem)"
+            className="lg:pl-4"
+          />
+        </Container>
+      </section>
+
+      {/* Especificaciones — full-width mono datasheet strip */}
+      <section aria-label="Especificaciones" className="border-line border-y">
+        <Container className="px-0 md:px-0">
+          <dl className="bg-line grid gap-px sm:grid-cols-2 lg:grid-cols-4">
+            {service.specs.map((spec) => (
+              <div key={spec.label} className="bg-paper px-5 py-6 md:px-8 lg:py-8">
+                <dt className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                  {spec.label}
+                </dt>
+                <dd className="text-navy-500 mt-2 text-sm font-medium">{spec.value}</dd>
+              </div>
+            ))}
+          </dl>
         </Container>
       </section>
 
@@ -127,8 +134,109 @@ export default async function ServicePage({ params }: Props) {
         </Container>
       </section>
 
+      {/* Material close-ups (polymers) */}
+      {service.materialShots?.length ? (
+        <section className="py-20 md:py-28">
+          <Container>
+            <SectionHeading
+              eyebrow="Materiales"
+              title="El material, de cerca"
+              intro="Fotografía real de nuestros lotes: molidos y pellets por familia de resina."
+            />
+            <ul className="mt-12 grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 xl:grid-cols-6">
+              {service.materialShots.map((shot, i) => (
+                <li key={shot.src}>
+                  <Reveal delay={i * 50}>
+                    <div className="border-line relative aspect-square overflow-hidden border">
+                      <Image
+                        src={shot.src}
+                        alt={shot.alt}
+                        fill
+                        sizes="(min-width: 1280px) 12rem, (min-width: 768px) 30vw, 45vw"
+                        className="object-cover"
+                      />
+                    </div>
+                    <p className="text-navy-500 mt-3 font-mono text-sm font-medium tracking-wider">
+                      {shot.code}
+                    </p>
+                    <p className="text-ink-muted mt-0.5 truncate text-xs" title={shot.name}>
+                      {shot.name} · {shot.form}
+                    </p>
+                  </Reveal>
+                </li>
+              ))}
+            </ul>
+          </Container>
+        </section>
+      ) : null}
+
+      {/* Container models table */}
+      {service.containerModels?.length ? (
+        <section className="py-20 md:py-28">
+          <Container>
+            <SectionHeading
+              eyebrow="Modelos"
+              title="Medidas disponibles"
+              intro="Siete modelos en inventario. Medidas externas en pulgadas (frente × fondo × alto)."
+            />
+            <div className="border-line mt-12 overflow-x-auto border-t">
+              <table className="w-full min-w-[36rem] text-left">
+                <thead>
+                  <tr className="border-line border-b">
+                    <th className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                      Clave
+                    </th>
+                    <th className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                      Medidas externas (in)
+                    </th>
+                    <th className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                      Material
+                    </th>
+                    <th className="text-ink-muted py-4 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                      Color
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {service.containerModels.map((model) => (
+                    <tr key={model.code} className="border-line border-b">
+                      <td className="text-green-600 py-4 pr-6 font-mono text-sm">{model.code}</td>
+                      <td className="text-navy-500 py-4 pr-6 text-sm font-medium">{model.size}</td>
+                      <td className="text-ink py-4 pr-6 text-sm">HDPE</td>
+                      <td className="text-ink py-4 text-sm">Negro</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-ink-muted mt-4 text-sm">
+              Disponibilidad sujeta a inventario. También ofrecemos renta por proyecto y
+              reparación de contenedores.
+            </p>
+          </Container>
+        </section>
+      ) : null}
+
+      {/* Photo gallery */}
+      {service.gallery.length > 0 ? (
+        <section className="pb-20 md:pb-28">
+          <Container>
+            <div className="grid gap-10 md:grid-cols-2">
+              {service.gallery.map((image, i) => (
+                <Reveal key={image.src} delay={i * 60}>
+                  <AnnotatedFigure
+                    image={image}
+                    sizes="(min-width: 768px) 50vw, calc(100vw - 2.5rem)"
+                  />
+                </Reveal>
+              ))}
+            </div>
+          </Container>
+        </section>
+      ) : null}
+
       {/* Benefits */}
-      <section className="py-20 md:py-28">
+      <section className="border-line border-t py-20 md:py-28">
         <Container>
           <SectionHeading eyebrow="Beneficios" title="Por qué con PIMSA" />
           <ul className="mt-12 grid max-w-4xl gap-5 sm:grid-cols-2">

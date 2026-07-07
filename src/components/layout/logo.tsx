@@ -1,46 +1,65 @@
 import { cn } from "@/lib/utils";
+import {
+  isotypePaths,
+  LOGO_GREEN,
+  LOGO_NAVY,
+  type LogoPath,
+  wordmarkPaths,
+} from "@/components/layout/logo-paths";
+
+/** Paper tone for the negative (dark-background) variant. */
+const PAPER = "#f7f8f5";
+
+function LogoPaths({ paths, tone }: { paths: LogoPath[]; tone: "light" | "dark" }) {
+  const base = tone === "dark" ? PAPER : LOGO_NAVY;
+  return (
+    <>
+      {paths.map((path) => (
+        <path key={path.d.slice(0, 24)} d={path.d} fill={path.green ? LOGO_GREEN : base} />
+      ))}
+    </>
+  );
+}
 
 /**
- * Typographic logo placeholder with the loop motif.
- * TODO(marketing): replace with the official vector logo once delivered
- * (docs/marketing-material-request.md §1).
+ * Official PIMSA horizontal lockup: infinity-loop isotype + “pimsa” wordmark.
+ * `tone="dark"` renders the negative version for navy backgrounds.
  */
 export function Logo({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <svg
-        viewBox="0 0 32 32"
-        aria-hidden
-        className="size-8"
-        fill="none"
-        strokeWidth={2.5}
-        strokeLinecap="round"
-      >
-        {/* Open loop — the circularity motif (DESIGN.md §4.4) */}
-        <path
-          d="M28 16a12 12 0 1 1-6.5-10.68"
-          className={tone === "dark" ? "stroke-paper" : "stroke-navy-500"}
-        />
-        <circle cx="25" cy="7" r="3.2" className="fill-green-500" stroke="none" />
-      </svg>
-      <span className="flex flex-col leading-none">
-        <span
-          className={cn(
-            "font-display text-xl font-bold tracking-tight",
-            tone === "dark" ? "text-paper" : "text-navy-500",
-          )}
-        >
-          PIMSA
-        </span>
-        <span
-          className={cn(
-            "font-mono text-[0.55rem] tracking-[0.22em] uppercase",
-            tone === "dark" ? "text-blue-400" : "text-ink-muted",
-          )}
-        >
-          Plásticos de Ingeniería
-        </span>
-      </span>
-    </span>
+    <svg
+      viewBox="0 0 1461 311"
+      role="img"
+      aria-label="Plásticos PIMSA"
+      className={cn("h-9 w-auto", className)}
+    >
+      {/* Isotype scaled from the 909×792 artboard onto the lockup grid */}
+      <g transform="translate(-305.59 -145.16) scale(1.3462)">
+        <LogoPaths paths={isotypePaths} tone={tone} />
+      </g>
+      <g transform="translate(598.06 -373)">
+        <LogoPaths paths={wordmarkPaths} tone={tone} />
+      </g>
+    </svg>
+  );
+}
+
+/** Isotype alone — compact brand moments (404, dividers, avatars). */
+export function LogoMark({
+  tone = "light",
+  className,
+}: {
+  tone?: "light" | "dark";
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="227 116 419 208"
+      role="img"
+      aria-label="PIMSA"
+      className={cn("h-8 w-auto", className)}
+    >
+      <LogoPaths paths={isotypePaths} tone={tone} />
+    </svg>
   );
 }

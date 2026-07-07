@@ -11,7 +11,7 @@ export const company: Company = {
   foundedYear: 2008,
   incorporatedYear: 2011,
   description:
-    "Empresa mexicana especializada en el reciclaje de plásticos de ingeniería: recolección de scrap industrial, molienda, peletizado y comercialización de polímeros reciclados certificados.",
+    "Empresa mexicana de ingeniería en polímeros: recolección de scrap industrial, molienda, peletizado y comercialización de polímeros de ingeniería reciclados con calidad certificada.",
   address: {
     street: "Calle Ingenieros #104",
     neighborhood: "Distrito Industrial Oriente",
