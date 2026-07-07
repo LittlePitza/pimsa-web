@@ -59,7 +59,7 @@ export function StockCatalog({ items }: { items: StockItem[] }) {
           <li key={item.id}>
             <Card lift className="h-full">
               <div className="flex items-start justify-between gap-3">
-                <h3 className="font-display text-navy-500 text-lg font-semibold">{item.material}</h3>
+                <h2 className="font-display text-navy-500 text-lg font-semibold">{item.material}</h2>
                 <Badge>{item.form}</Badge>
               </div>
               <dl className="mt-4 space-y-2 text-sm">

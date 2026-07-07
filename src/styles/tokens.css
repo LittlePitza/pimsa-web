@@ -13,7 +13,7 @@
   --color-navy-700: #1d3552; /* deep surfaces, cards on dark */
   --color-navy-500: #294466; /* brand primary (logo navy) */
   --color-blue-600: #064d79; /* links, hover states */
-  --color-blue-400: #517aad; /* secondary UI, icons, borders on dark */
+  --color-blue-400: #5d86b9; /* secondary UI, icons, borders on dark (AA 4.59:1 on navy-900) */
   --color-green-600: #5f7a2c; /* AA-safe green text on light backgrounds */
   --color-green-500: #7f9d41; /* brand accent (logo green) — CTAs on dark only */
   --color-green-300: #b0cd75; /* accents on navy, data viz, tags */

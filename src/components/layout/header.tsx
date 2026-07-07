@@ -72,7 +72,7 @@ export function Header() {
       )}
     >
       <div className="mx-auto flex h-18 max-w-[1240px] items-center justify-between gap-6 px-5 md:px-8">
-        <Link href="/" aria-label="Plásticos PIMSA — Inicio" className="shrink-0">
+        <Link href="/" className="shrink-0">
           <Logo tone={overHero ? "dark" : "light"} />
         </Link>
 
