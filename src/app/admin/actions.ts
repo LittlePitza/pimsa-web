@@ -12,7 +12,17 @@ import {
   STOCK_FORMS,
   VACANCY_STATUSES,
 } from "@/db/schema";
-import { getAdminByEmail, touchLastLogin } from "@/db/queries/admins";
+import {
+  countAdmins,
+  createAdmin,
+  deleteAdmin,
+  getAdminByEmail,
+  getAdminById,
+  isEmailTaken,
+  touchLastLogin,
+  updateAdminPassword,
+  updateAdminProfile,
+} from "@/db/queries/admins";
 import { setApplicationStatus } from "@/db/queries/applications";
 import { setLeadStatus } from "@/db/queries/leads";
 import {
@@ -28,7 +38,7 @@ import {
   setVacancyStatus,
   updateVacancy,
 } from "@/db/queries/vacancies";
-import { requireAdmin, sessionCookieOptions } from "@/lib/auth";
+import { isSuperAdmin, requireAdmin, requireSuperAdmin, sessionCookieOptions } from "@/lib/auth";
 import { createMailTransport, mailFrom } from "@/lib/mailer";
 import { rateLimit } from "@/lib/rate-limit";
 import { createSessionToken, SESSION_COOKIE } from "@/lib/session";
@@ -365,4 +375,111 @@ export async function setLeadStatusAction(id: number, formData: FormData): Promi
   const status = z.enum(LEAD_STATUSES).parse(formData.get("status"));
   await setLeadStatus(id, status);
   revalidatePath("/admin/leads");
+}
+
+// ── Accounts (super-admin) ─────────────────────────────────────────────────
+
+const PASSWORD_MIN = 10;
+const passwordSchema = z
+  .string()
+  .min(PASSWORD_MIN, `La contraseña debe tener al menos ${PASSWORD_MIN} caracteres.`)
+  .max(200);
+const nameSchema = z.string().trim().min(2, "Escribe un nombre.").max(120);
+const accountEmailSchema = z.email("Escribe un correo válido.").max(190);
+
+export async function createAccountAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  await requireSuperAdmin();
+
+  const parsed = z
+    .object({ name: nameSchema, email: accountEmailSchema, password: passwordSchema })
+    .safeParse({
+      name: formData.get("name"),
+      email: String(formData.get("email") ?? "").trim(),
+      password: formData.get("password"),
+    });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Revisa los datos de la cuenta." };
+  }
+
+  if (await isEmailTaken(parsed.data.email)) {
+    return { error: "Ese correo ya está registrado en otra cuenta." };
+  }
+
+  const passwordHash = await bcrypt.hash(parsed.data.password, 12);
+  await createAdmin({ email: parsed.data.email, name: parsed.data.name, passwordHash });
+
+  revalidatePath("/admin/cuentas");
+  return { success: `Cuenta creada para ${parsed.data.email.toLowerCase()}.` };
+}
+
+export async function updateAccountAction(
+  id: number,
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  await requireSuperAdmin();
+
+  const parsed = z
+    .object({ name: nameSchema, email: accountEmailSchema })
+    .safeParse({ name: formData.get("name"), email: String(formData.get("email") ?? "").trim() });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Revisa los datos de la cuenta." };
+  }
+
+  const account = await getAdminById(id);
+  if (!account) return { error: "La cuenta ya no existe." };
+
+  // Guard against locking the central panel out of a super-admin.
+  if (isSuperAdmin(account.email) && !isSuperAdmin(parsed.data.email)) {
+    return {
+      error: "No puedes quitar el correo de super-administrador; perdería el acceso central.",
+    };
+  }
+
+  if (await isEmailTaken(parsed.data.email, id)) {
+    return { error: "Ese correo ya está registrado en otra cuenta." };
+  }
+
+  await updateAdminProfile(id, parsed.data);
+  revalidatePath("/admin/cuentas");
+  return { success: "Cuenta actualizada." };
+}
+
+export async function resetAccountPasswordAction(
+  id: number,
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  await requireSuperAdmin();
+
+  const parsed = passwordSchema.safeParse(formData.get("password"));
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Revisa la contraseña." };
+  }
+
+  const account = await getAdminById(id);
+  if (!account) return { error: "La cuenta ya no existe." };
+
+  const passwordHash = await bcrypt.hash(parsed.data, 12);
+  await updateAdminPassword(id, passwordHash);
+
+  revalidatePath("/admin/cuentas");
+  return { success: `Contraseña actualizada para ${account.email}.` };
+}
+
+export async function deleteAccountAction(id: number): Promise<void> {
+  const session = await requireSuperAdmin();
+
+  // Never delete yourself, the last account, or a protected super-admin.
+  if (session.userId === id) return;
+  if ((await countAdmins()) <= 1) return;
+
+  const account = await getAdminById(id);
+  if (!account || isSuperAdmin(account.email)) return;
+
+  await deleteAdmin(id);
+  revalidatePath("/admin/cuentas");
 }

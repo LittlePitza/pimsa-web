@@ -3,7 +3,7 @@ import Link from "next/link";
 import { signOutAction } from "@/app/admin/actions";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { Logo } from "@/components/layout/logo";
-import { requireAdmin } from "@/lib/auth";
+import { isSuperAdmin, requireAdmin } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Panel de administración",
@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await requireAdmin();
+  const canManageAccounts = isSuperAdmin(session.email);
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -22,7 +23,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <Logo />
             </Link>
             <nav aria-label="Navegación del panel" className="hidden md:block">
-              <AdminNav variant="desktop" />
+              <AdminNav variant="desktop" canManageAccounts={canManageAccounts} />
             </nav>
           </div>
           <div className="flex items-center gap-4">
@@ -41,7 +42,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
         {/* Mobile nav */}
         <nav aria-label="Navegación del panel (móvil)" className="border-line border-t md:hidden">
-          <AdminNav variant="mobile" />
+          <AdminNav variant="mobile" canManageAccounts={canManageAccounts} />
         </nav>
       </header>
 
