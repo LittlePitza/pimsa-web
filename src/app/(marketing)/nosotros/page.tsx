@@ -1,0 +1,79 @@
+import type { Metadata } from "next";
+import { CertGrid } from "@/components/sections/cert-grid";
+import { CtaBand } from "@/components/sections/cta-band";
+import { PageHero } from "@/components/sections/page-hero";
+import { Timeline } from "@/components/sections/timeline";
+import { Card } from "@/components/ui/card";
+import { Container } from "@/components/ui/container";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { missionVision } from "@/content/about";
+import { company } from "@/content/company";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Nosotros — Empresa recicladora de plásticos en Guanajuato",
+  description: `${company.legalName} recicla plásticos de ingeniería desde ${company.foundedYear} en Apaseo el Grande, Guanajuato. Certificados ISO 9001:2015, IMMEX y DUNS.`,
+  path: "/nosotros",
+  keywords: [
+    "empresa recicladora de plásticos Guanajuato",
+    "recicladora de plásticos de ingeniería",
+    "Plásticos PIMSA",
+  ],
+});
+
+export default function AboutPage() {
+  return (
+    <>
+      <PageHero
+        index="01"
+        eyebrow="Nosotros"
+        title="Ingeniería mexicana en economía circular"
+        intro={`Desde ${company.foundedYear}, en ${company.address.municipality}, ${company.address.state}, transformamos el scrap plástico de la industria en materia prima certificada.`}
+        breadcrumbs={[
+          { name: "Inicio", path: "/" },
+          { name: "Nosotros", path: "/nosotros" },
+        ]}
+      />
+
+      {/* Mission / vision / values */}
+      <section className="py-24 md:py-32">
+        <Container>
+          <SectionHeading
+            index="01"
+            eyebrow="Identidad"
+            title="Lo que nos mueve"
+            intro="No somos una recicladora genérica: somos una empresa de ingeniería que devuelve el material a la cadena productiva con calidad certificada."
+          />
+          <div className="mt-14 grid gap-5 md:grid-cols-3">
+            <Card className="h-full">
+              <p className="text-green-600 font-mono text-xs tracking-[0.18em] uppercase">Misión</p>
+              <p className="text-ink mt-4">{missionVision.mission}</p>
+            </Card>
+            <Card className="h-full">
+              <p className="text-green-600 font-mono text-xs tracking-[0.18em] uppercase">Visión</p>
+              <p className="text-ink mt-4">{missionVision.vision}</p>
+            </Card>
+            <Card className="h-full">
+              <p className="text-green-600 font-mono text-xs tracking-[0.18em] uppercase">Valores</p>
+              <ul className="text-ink mt-4 space-y-2">
+                {missionVision.values.map((value) => (
+                  <li key={value} className="flex items-baseline gap-3">
+                    <span aria-hidden className="bg-green-500 size-1.5 shrink-0 rounded-full" />
+                    {value}
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </div>
+        </Container>
+      </section>
+
+      <Timeline />
+      <CertGrid index="03" />
+      <CtaBand
+        title="Conoce cómo trabajamos"
+        intro="Agenda una visita o cuéntanos qué necesita tu operación; te respondemos el mismo día hábil."
+      />
+    </>
+  );
+}

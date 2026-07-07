@@ -1,0 +1,134 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { InputField, TextareaField } from "@/components/ui/field";
+import { trackEvent } from "@/lib/analytics";
+
+type Status = "idle" | "submitting" | "success" | "error";
+
+const MAX_CV_BYTES = 5 * 1024 * 1024;
+
+/** Job application form: fields + CV upload (PDF/Word ≤ 5 MB). */
+export function ApplicationForm({
+  vacancySlug,
+  vacancyTitle,
+}: {
+  vacancySlug: string;
+  vacancyTitle: string;
+}) {
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setErrorMessage("");
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    formData.set("vacancySlug", vacancySlug);
+
+    const cv = formData.get("cv");
+    if (cv instanceof File && cv.size > MAX_CV_BYTES) {
+      setStatus("error");
+      setErrorMessage("El CV supera el tamaño máximo de 5 MB.");
+      return;
+    }
+
+    setStatus("submitting");
+    try {
+      const response = await fetch("/api/applications", { method: "POST", body: formData });
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(body?.error ?? "No pudimos enviar tu postulación.");
+      }
+      setStatus("success");
+      trackEvent("job_application_submit", { vacancy: vacancySlug });
+    } catch (error) {
+      setStatus("error");
+      setErrorMessage(
+        error instanceof Error ? error.message : "No pudimos enviar tu postulación.",
+      );
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <div role="status" className="border-green-600 bg-surface shadow-card rounded-md border-l-4 p-8">
+        <h3 className="font-display text-navy-500 text-xl font-semibold">
+          ¡Postulación recibida!
+        </h3>
+        <p className="text-ink-muted mt-3">
+          Gracias por tu interés en la vacante de {vacancyTitle}. Recursos Humanos revisará tu
+          perfil y te contactará si avanzas en el proceso.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="grid gap-6">
+      <div className="grid gap-6 sm:grid-cols-2">
+        <InputField id="name" label="Nombre completo" autoComplete="name" required maxLength={120} />
+        <InputField id="phone" label="Teléfono" type="tel" autoComplete="tel" required maxLength={30} />
+      </div>
+      <InputField
+        id="email"
+        label="Correo electrónico"
+        type="email"
+        autoComplete="email"
+        required
+        maxLength={200}
+      />
+      <TextareaField
+        id="message"
+        label="Cuéntanos de ti"
+        required
+        maxLength={3000}
+        placeholder="Experiencia relevante, disponibilidad y por qué te interesa esta vacante."
+      />
+
+      <div className="flex flex-col gap-2">
+        <label
+          htmlFor="cv"
+          className="text-ink font-mono text-xs font-medium tracking-wider uppercase"
+        >
+          CV (PDF o Word, máx. 5 MB) <span className="text-green-600">*</span>
+        </label>
+        <input
+          id="cv"
+          name="cv"
+          type="file"
+          required
+          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          className="border-line bg-surface text-ink file:bg-navy-500 file:text-white w-full cursor-pointer rounded-sm border px-4 py-2.5 text-sm file:mr-4 file:cursor-pointer file:rounded-sm file:border-0 file:px-4 file:py-2 file:text-sm file:font-medium"
+        />
+      </div>
+
+      {/* Honeypot */}
+      <div aria-hidden className="absolute -left-[9999px]" tabIndex={-1}>
+        <label htmlFor="website">Sitio web</label>
+        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
+
+      {status === "error" ? (
+        <p role="alert" className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+          {errorMessage}
+        </p>
+      ) : null}
+
+      <div>
+        <Button type="submit" size="lg" disabled={status === "submitting"}>
+          {status === "submitting" ? "Enviando…" : "Enviar postulación"}
+        </Button>
+        <p className="text-ink-muted mt-4 text-xs">
+          Tus datos se usan únicamente para este proceso de reclutamiento conforme a nuestro{" "}
+          <a href="/aviso-de-privacidad" className="text-blue-600 underline">
+            aviso de privacidad
+          </a>
+          .
+        </p>
+      </div>
+    </form>
+  );
+}

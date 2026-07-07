@@ -1,0 +1,72 @@
+/**
+ * Design tokens — single source of truth (DESIGN.md §2, §3, §9).
+ * Consumed by Tailwind v4 via @theme: every token becomes a utility
+ * (e.g. --color-navy-900 → bg-navy-900, text-navy-900).
+ */
+
+@theme {
+  /* ── Reset default palette we do not use ─────────────────────────────── */
+  --color-*: initial;
+
+  /* ── Brand palette ───────────────────────────────────────────────────── */
+  --color-navy-900: #0e1b2e; /* dark section backgrounds, footer */
+  --color-navy-700: #1d3552; /* deep surfaces, cards on dark */
+  --color-navy-500: #294466; /* brand primary (logo navy) */
+  --color-blue-600: #064d79; /* links, hover states */
+  --color-blue-400: #517aad; /* secondary UI, icons, borders on dark */
+  --color-green-600: #5f7a2c; /* AA-safe green text on light backgrounds */
+  --color-green-500: #7f9d41; /* brand accent (logo green) — CTAs on dark only */
+  --color-green-300: #b0cd75; /* accents on navy, data viz, tags */
+  --color-forest-800: #003f2e; /* deep accent for sustainability blocks */
+  --color-paper: #f7f8f5; /* default page background */
+  --color-surface: #ffffff; /* cards, elevated surfaces */
+  --color-ink: #16202c; /* body text */
+  --color-ink-muted: #5a6878; /* secondary text, captions */
+  --color-line: #d8dee4; /* hairline rules, dividers, grid lines */
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+
+  /* Feedback (form errors) */
+  --color-red-50: #fef2f2;
+  --color-red-200: #fecaca;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+
+  /* ── Typography ──────────────────────────────────────────────────────── */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "Cascadia Mono", monospace;
+
+  /* Fluid type scale (DESIGN.md §3) */
+  --text-display: clamp(2.5rem, 6vw, 5.5rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.02em;
+  --text-h1: clamp(2.25rem, 5vw, 4rem);
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: clamp(1.9rem, 3.5vw, 3rem);
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.01em;
+  --text-h3: clamp(1.35rem, 2vw, 1.75rem);
+  --text-h3--line-height: 1.25;
+  --text-lead: clamp(1.075rem, 1.5vw, 1.25rem);
+  --text-lead--line-height: 1.6;
+
+  /* ── Radii (sm 4 / md 8 / lg 16) ─────────────────────────────────────── */
+  --radius-*: initial;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* ── Shadows (navy-tinted, 2 levels) ─────────────────────────────────── */
+  --shadow-*: initial;
+  --shadow-card: 0 1px 2px rgb(14 27 46 / 0.05), 0 2px 8px rgb(14 27 46 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(14 27 46 / 0.06), 0 8px 24px rgb(14 27 46 / 0.1);
+
+  /* ── Motion ──────────────────────────────────────────────────────────── */
+  --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+}
