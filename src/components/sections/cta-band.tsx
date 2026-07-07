@@ -5,8 +5,8 @@ import { whatsappUrl } from "@/content/company";
 
 /** Closing call-to-action band, reused across pages. */
 export function CtaBand({
-  title = "Convierte tu scrap en valor",
-  intro = "Cuéntanos qué material generas o qué polímero necesitas y te respondemos el mismo día hábil.",
+  title = "El polímero que tu producción necesita",
+  intro = "Cuéntanos qué material buscas — o qué scrap genera tu planta — y te respondemos el mismo día hábil.",
 }: {
   title?: string;
   intro?: string;

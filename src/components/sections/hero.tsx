@@ -23,23 +23,21 @@ export function Hero() {
       <Container className="relative flex min-h-[92svh] flex-col justify-center pt-28 pb-20">
         <div className="flex items-center gap-14 xl:gap-20">
           <div className="max-w-3xl">
-            <Eyebrow tone="dark">
-              {company.address.municipality}, {company.address.state} · ISO 9001:2015 · IMMEX
-            </Eyebrow>
+            <Eyebrow tone="dark">Cobertura nacional · ISO 9001:2015 · IMMEX</Eyebrow>
             <h1 className="font-display text-display text-paper mt-6 font-bold">
-              Ingeniería en polímeros <span className="text-green-300">reciclados</span>
+              Polímeros de <span className="text-green-300">ingeniería</span>
             </h1>
             <p className="text-lead text-paper/80 mt-7 max-w-xl">
-              Transformamos scrap post-industrial en polímeros de ingeniería: ABS, PC, PA, POM y
-              más — clasificados, molidos y peletizados bajo ISO 9001:2015, listos para tu línea
-              de inyección o extrusión.
+              La materia prima que tu producto necesita: ABS, PC, PA, POM y más resinas
+              recicladas — trituradas, molidas y peletizadas en nuestra planta bajo
+              ISO 9001:2015, listas para tu línea de inyección o extrusión.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <ButtonLink href="/contacto" variant="accent" size="lg">
                 Solicitar cotización
               </ButtonLink>
-              <ButtonLink href="/servicios" variant="outline-light" size="lg">
-                Conocer servicios
+              <ButtonLink href="/servicios/polimeros" variant="outline-light" size="lg">
+                Ver materiales
               </ButtonLink>
             </div>
           </div>
@@ -78,7 +76,7 @@ export function Hero() {
         {/* Hairline rule with mono annotation — datasheet detail */}
         <div className="border-blue-400/30 mt-24 flex items-center justify-between border-t pt-4">
           <p className="text-blue-400 font-mono text-xs tracking-[0.18em] uppercase">
-            Ingeniería en polímeros · Economía circular
+            Polímeros de ingeniería · Economía circular
           </p>
           <p className="text-blue-400 hidden font-mono text-xs tracking-[0.18em] uppercase sm:block">
             Desde {company.foundedYear}

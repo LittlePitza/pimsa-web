@@ -42,7 +42,7 @@ export const milestones: Milestone[] = [
     year: "Hoy",
     title: "Economía circular en serio",
     description:
-      "Operamos un ciclo completo: recolección con permisos ambientales, molienda, peletizado y retorno del material a la cadena productiva.",
+      "Operamos un ciclo completo: recolección con permisos ambientales, molienda, peletizado y venta de polímeros de ingeniería con entrega a todo México.",
   },
 ];
 

@@ -11,7 +11,7 @@ export const company: Company = {
   foundedYear: 2008,
   incorporatedYear: 2011,
   description:
-    "Empresa mexicana de ingeniería en polímeros: recolección de scrap industrial, molienda, peletizado y comercialización de polímeros de ingeniería reciclados con calidad certificada.",
+    "Empresa mexicana dedicada a la venta de polímeros de ingeniería reciclados —ABS, PC, PA, POM y más— producidos en planta propia mediante recolección de scrap industrial, triturado, molienda y peletizado con calidad certificada ISO 9001:2015.",
   address: {
     street: "Calle Ingenieros #104",
     neighborhood: "Distrito Industrial Oriente",

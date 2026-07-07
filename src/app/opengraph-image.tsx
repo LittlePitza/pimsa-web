@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
 import { isotypePaths, LOGO_GREEN, wordmarkPaths } from "@/components/layout/logo-paths";
-import { company } from "@/content/company";
 
 /** Default Open Graph image, generated at build time, with the official lockup. */
 
@@ -33,12 +32,12 @@ export default function OpengraphImage() {
             color: "#b0cd75",
           }}
         >
-          {`${company.address.municipality}, ${company.address.state} · ISO 9001:2015`}
+          {"Cobertura nacional · ISO 9001:2015"}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           <div style={{ display: "flex", fontSize: 84, fontWeight: 700, lineHeight: 1.05 }}>
-            Ingeniería en polímeros reciclados
+            Polímeros de ingeniería
           </div>
           <div style={{ display: "flex", fontSize: 34, color: "#517aad" }}>
             plasticospimsa.com

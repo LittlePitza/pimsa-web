@@ -14,15 +14,17 @@ import { localBusinessSchema, organizationSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Ingeniería en polímeros reciclados en México",
+  title: "Venta de polímeros de ingeniería reciclados en México",
   description:
-    "Ingeniería en polímeros: recolección de scrap industrial, molienda, peletizado y venta de polímeros de ingeniería reciclados con certificación ISO 9001:2015 para automotriz, línea blanca y electrónica.",
+    "Compra polímeros de ingeniería reciclados —ABS, PC, PA, POM— triturados, molidos y peletizados bajo ISO 9001:2015. También recolección de scrap y maquila de molienda.",
   path: "/",
   keywords: [
-    "ingeniería en polímeros",
+    "venta de polímeros de ingeniería",
+    "comprar polímeros reciclados",
     "polímeros de ingeniería reciclados",
-    "reciclaje de plásticos de ingeniería",
-    "economía circular México",
+    "ABS PC PA POM reciclado México",
+    "polímeros para inyección y extrusión",
+    "molienda y peletizado de plásticos",
     "recolección de scrap plástico",
   ],
 });

@@ -14,8 +14,8 @@ export function ServicesBento() {
         <SectionHeading
           index="03"
           eyebrow="Servicios"
-          title="Un solo aliado para todo el ciclo"
-          intro="Cuatro servicios que cierran el círculo del plástico industrial: del residuo a la materia prima."
+          title="Materia prima primero, servicios que cierran el ciclo"
+          intro="Polímeros de ingeniería listos para producción — respaldados por los servicios que los hacen posibles: recolección de scrap, molienda y peletizado."
         />
 
         <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">

@@ -13,8 +13,8 @@ export function JobsBand() {
             ¿Quieres formar parte del equipo?
           </h2>
           <p className="text-paper/75 mt-2 max-w-[52ch]">
-            Somos una empresa en crecimiento en Apaseo el Grande. Conoce nuestras vacantes
-            abiertas y postúlate en línea.
+            Somos una empresa en crecimiento. Conoce nuestras vacantes abiertas y postúlate en
+            línea.
           </p>
         </div>
         <ButtonLink href="/vacantes" variant="accent" size="lg" className="shrink-0">

@@ -36,9 +36,9 @@ const stages = [
   },
   {
     index: "05",
-    title: "Retorno a producción",
+    title: "Control de calidad",
     description:
-      "El material vuelve a la cadena productiva como polímero de ingeniería con calidad certificada.",
+      "Verificamos y documentamos cada lote bajo ISO 9001:2015 antes de liberarlo como materia prima certificada.",
   },
 ];
 
@@ -50,7 +50,7 @@ export function ProcessLoop() {
           index="02"
           eyebrow="Proceso"
           title="El ciclo del material"
-          intro="Del scrap industrial al polímero de ingeniería: un ciclo completo, documentado y certificado bajo ISO 9001:2015."
+          intro="Así producimos los polímeros que vendemos: un ciclo completo — del scrap industrial al pellet — documentado y certificado bajo ISO 9001:2015."
         />
 
         <div className="mt-16 grid gap-16 lg:grid-cols-[5fr_7fr]">

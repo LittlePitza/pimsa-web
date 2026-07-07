@@ -11,12 +11,14 @@ import { company } from "@/content/company";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Nosotros — Empresa recicladora de plásticos en Guanajuato",
-  description: `${company.legalName} recicla plásticos de ingeniería desde ${company.foundedYear} en Apaseo el Grande, Guanajuato. Certificados ISO 9001:2015, IMMEX y DUNS.`,
+  title: "Nosotros — Empresa mexicana de polímeros de ingeniería reciclados",
+  description: `${company.legalName} produce polímeros de ingeniería reciclados desde ${company.foundedYear} en el Bajío industrial, con entrega a todo México. Certificados ISO 9001:2015, IMMEX y DUNS.`,
   path: "/nosotros",
   keywords: [
+    "empresa recicladora de plásticos Querétaro",
     "empresa recicladora de plásticos Guanajuato",
     "recicladora de plásticos de ingeniería",
+    "polímeros de ingeniería reciclados México",
     "Plásticos PIMSA",
   ],
 });
@@ -28,7 +30,7 @@ export default function AboutPage() {
         index="01"
         eyebrow="Nosotros"
         title="Ingeniería mexicana en economía circular"
-        intro={`Desde ${company.foundedYear}, en ${company.address.municipality}, ${company.address.state}, transformamos el scrap plástico de la industria en materia prima certificada.`}
+        intro={`Desde ${company.foundedYear}, desde el corazón del Bajío industrial, transformamos el scrap plástico de la industria en materia prima certificada para todo México.`}
         breadcrumbs={[
           { name: "Inicio", path: "/" },
           { name: "Nosotros", path: "/nosotros" },
@@ -42,7 +44,7 @@ export default function AboutPage() {
             index="01"
             eyebrow="Identidad"
             title="Lo que nos mueve"
-            intro="No somos una recicladora genérica: somos una empresa de ingeniería que devuelve el material a la cadena productiva con calidad certificada."
+            intro="No somos una recicladora genérica: somos una empresa de ingeniería que convierte el scrap en materia prima certificada para nuevas aplicaciones."
           />
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             <Card className="h-full">

@@ -210,7 +210,7 @@ export const services: Service[] = [
       { label: "Materiales", value: "Scrap termoplástico post-industrial" },
       { label: "Permisos", value: "Autorizaciones ambientales vigentes" },
       { label: "Documentación", value: "Manifiestos y evidencia por recolección" },
-      { label: "Cobertura", value: "Bajío y centro del país" },
+      { label: "Cobertura", value: "Centro del país · otras regiones según volumen" },
     ],
     materials: ["ABS", "PC", "PA", "POM", "PP", "PE", "PET", "HIPS"],
     process: [
@@ -232,7 +232,7 @@ export const services: Service[] = [
       {
         title: "Valorización",
         description:
-          "Tu scrap se integra a nuestro proceso de reciclaje y vuelve a la cadena productiva.",
+          "Tu scrap se procesa en nuestra planta y se convierte en materia prima certificada para nuevas aplicaciones.",
       },
     ],
     benefits: [
@@ -263,7 +263,7 @@ export const services: Service[] = [
     ],
     metaTitle: "Recolección y compra de scrap plástico",
     metaDescription:
-      "Recolección y compra de scrap plástico industrial con permisos ambientales oficiales y documentación para auditorías. Cobertura en el Bajío y centro de México.",
+      "Recolección y compra de scrap plástico industrial con permisos ambientales oficiales y documentación para auditorías. Cobertura en el centro de México y más regiones según volumen.",
     keywords: [
       "recolección de scrap plástico",
       "compra de scrap plástico",

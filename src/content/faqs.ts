@@ -19,7 +19,7 @@ export const faqs: Faq[] = [
   {
     question: "¿En qué zonas ofrecen recolección de scrap?",
     answer:
-      "Operamos desde Apaseo el Grande, Guanajuato, con cobertura principal en el Bajío y el centro del país. Para volúmenes importantes podemos evaluar recolecciones en otras regiones.",
+      "La venta de polímeros tiene cobertura nacional. Para recolección de scrap operamos principalmente en el centro del país, y para volúmenes importantes evaluamos recolecciones en cualquier región.",
   },
   {
     question: "¿Qué certificaciones y permisos tienen?",
