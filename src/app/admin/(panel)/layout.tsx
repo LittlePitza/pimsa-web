@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { signOutAction } from "@/app/admin/actions";
+import { AdminNav } from "@/components/admin/admin-nav";
 import { Logo } from "@/components/layout/logo";
 import { requireAdmin } from "@/lib/auth";
 
@@ -8,15 +9,6 @@ export const metadata: Metadata = {
   title: "Panel de administración",
   robots: { index: false, follow: false },
 };
-
-const adminNav = [
-  { label: "Resumen", href: "/admin" },
-  { label: "Vacantes", href: "/admin/vacantes" },
-  { label: "Postulaciones", href: "/admin/postulaciones" },
-  { label: "Leads", href: "/admin/leads" },
-  { label: "Stock", href: "/admin/stock" },
-  { label: "Configuración", href: "/admin/configuracion" },
-];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await requireAdmin();
@@ -30,18 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <Logo />
             </Link>
             <nav aria-label="Navegación del panel" className="hidden md:block">
-              <ul className="flex gap-6">
-                {adminNav.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="text-ink hover:text-blue-600 text-sm font-medium transition-colors"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <AdminNav variant="desktop" />
             </nav>
           </div>
           <div className="flex items-center gap-4">
@@ -60,15 +41,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
         {/* Mobile nav */}
         <nav aria-label="Navegación del panel (móvil)" className="border-line border-t md:hidden">
-          <ul className="flex justify-around px-2 py-2">
-            {adminNav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="text-ink px-2 py-1 text-sm font-medium">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <AdminNav variant="mobile" />
         </nav>
       </header>
 

@@ -1,4 +1,5 @@
 import { EmailSettingsForm } from "@/components/admin/email-settings-form";
+import { TestEmailForm } from "@/components/admin/test-email-form";
 import { getSettingSafe, SETTING_KEYS } from "@/lib/settings";
 
 export default async function AdminSettingsPage() {
@@ -53,6 +54,7 @@ export default async function AdminSettingsPage() {
             </>
           )}
         </p>
+        <TestEmailForm />
       </section>
     </>
   );

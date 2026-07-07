@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
@@ -29,8 +29,10 @@ import {
   updateVacancy,
 } from "@/db/queries/vacancies";
 import { requireAdmin, sessionCookieOptions } from "@/lib/auth";
+import { createMailTransport, mailFrom } from "@/lib/mailer";
+import { rateLimit } from "@/lib/rate-limit";
 import { createSessionToken, SESSION_COOKIE } from "@/lib/session";
-import { SETTING_KEYS, setSetting } from "@/lib/settings";
+import { getEmailRecipients, SETTING_KEYS, setSetting } from "@/lib/settings";
 import { slugify } from "@/lib/utils";
 
 /** Server actions for the admin panel. Every mutation re-checks the session. */
@@ -53,6 +55,12 @@ export async function signInAction(
 
   if (!email || !password) {
     return { error: "Ingresa tu correo y contraseña." };
+  }
+
+  // Brute-force guard: 5 attempts / 15 min per IP.
+  const ip = ((await headers()).get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+  if (!rateLimit(`admin-login:${ip}`, { limit: 5, windowMs: 15 * 60_000 })) {
+    return { error: "Demasiados intentos. Espera 15 minutos e inténtalo de nuevo." };
   }
 
   let admin;
@@ -309,6 +317,45 @@ export async function saveEmailSettingsAction(
 
   revalidatePath("/admin/configuracion");
   return { success: "Configuración guardada." };
+}
+
+export async function sendTestEmailAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  await requireAdmin();
+
+  const kind = formData.get("kind") === "applications" ? "applications" : "leads";
+  const recipients = await getEmailRecipients(kind);
+  if (!recipients) {
+    return { error: "No hay destinatarios: captura correos arriba o configura CONTACT_EMAIL_TO." };
+  }
+
+  const transporter = createMailTransport();
+  if (!transporter) {
+    return { error: "SMTP sin configurar en el servidor (SMTP_HOST, SMTP_USER, SMTP_PASS)." };
+  }
+
+  const label = kind === "leads" ? "leads de contacto" : "postulaciones (RH)";
+  try {
+    await transporter.sendMail({
+      from: mailFrom(),
+      to: recipients,
+      subject: `Correo de prueba — ${label} — Plásticos PIMSA`,
+      text: [
+        `Este es un correo de prueba enviado desde el panel de administración.`,
+        "",
+        `Flujo:          ${label}`,
+        `Destinatarios:  ${recipients}`,
+        "",
+        "Si lo recibiste, la configuración de correo funciona correctamente.",
+      ].join("\n"),
+    });
+    return { success: `Correo de prueba enviado a: ${recipients}` };
+  } catch (error) {
+    console.error("[settings] Test email failed:", error);
+    return { error: "El envío falló. Revisa las credenciales SMTP del servidor." };
+  }
 }
 
 // ── Leads ────────────────────────────────────────────────────────────────

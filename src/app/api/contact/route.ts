@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
-import nodemailer from "nodemailer";
 import { z } from "zod";
 import { insertLeadSafe } from "@/db/queries/leads";
+import { createMailTransport, mailFrom } from "@/lib/mailer";
 import { rateLimit } from "@/lib/rate-limit";
 import { getEmailRecipients } from "@/lib/settings";
 
@@ -68,8 +68,7 @@ export async function POST(request: NextRequest) {
 
   // Recipients: configurable from /admin/configuracion, env as fallback.
   const recipients = await getEmailRecipients("leads");
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_EMAIL_FROM } = process.env;
-  const smtpConfigured = SMTP_HOST && SMTP_USER && SMTP_PASS && recipients;
+  const transporter = createMailTransport();
 
   const utmLines = Object.entries(lead.utm).map(([key, value]) => `${key}: ${value}`);
   const emailText = [
@@ -87,7 +86,7 @@ export async function POST(request: NextRequest) {
     `IP: ${ip}`,
   ].join("\n");
 
-  if (!smtpConfigured) {
+  if (!transporter || !recipients) {
     if (process.env.NODE_ENV !== "production") {
       // Local development without SMTP: log the lead and succeed.
       console.info("[contact] SMTP not configured — lead logged:\n" + emailText);
@@ -106,15 +105,8 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: Number(SMTP_PORT ?? 465),
-      secure: Number(SMTP_PORT ?? 465) === 465,
-      auth: { user: SMTP_USER, pass: SMTP_PASS },
-    });
-
     await transporter.sendMail({
-      from: CONTACT_EMAIL_FROM ?? SMTP_USER,
+      from: mailFrom(),
       to: recipients,
       replyTo: lead.email,
       subject: `Nuevo lead del sitio web — ${lead.name}${lead.service ? ` · ${lead.service}` : ""}`,

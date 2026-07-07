@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import nodemailer from "nodemailer";
 import { z } from "zod";
 import { createApplication } from "@/db/queries/applications";
 import { getOpenVacancyBySlug } from "@/db/queries/vacancies";
+import { createMailTransport, mailFrom } from "@/lib/mailer";
 import { rateLimit } from "@/lib/rate-limit";
 import { getEmailRecipients } from "@/lib/settings";
 
@@ -125,18 +125,11 @@ async function notifyHr(
 ) {
   // Recipients: configurable from /admin/configuracion, env as fallback.
   const recipients = await getEmailRecipients("applications");
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_EMAIL_FROM } = process.env;
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !recipients) return;
-
-  const transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: Number(SMTP_PORT ?? 465),
-    secure: Number(SMTP_PORT ?? 465) === 465,
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
-  });
+  const transporter = createMailTransport();
+  if (!transporter || !recipients) return;
 
   await transporter.sendMail({
-    from: CONTACT_EMAIL_FROM ?? SMTP_USER,
+    from: mailFrom(),
     to: recipients,
     replyTo: fields.email,
     subject: `Nueva postulación — ${vacancyTitle} — ${fields.name}`,
