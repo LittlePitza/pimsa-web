@@ -9,7 +9,7 @@ export const faqs: Faq[] = [
   {
     question: "¿Qué tipos de plástico compran y reciclan?",
     answer:
-      "Nos especializamos en termoplásticos de ingeniería y commodities de origen post-industrial: ABS, policarbonato (PC), PC/ABS, nylon (PA6 y PA66), POM, polipropileno (PP), polietileno (PE/HDPE), HIPS y PET, entre otros. Si tu material no está en la lista, contáctanos: lo evaluamos sin compromiso.",
+      "Nuestro portafolio incluye policarbonato (PC), ABS/PC, poliamida 66 (PA66), polipropileno (PP), PVC, PBT, POM, acrílico (PMMA) y TPO. También evaluamos otros termoplásticos post-industriales; si tu material no está en la lista, contáctanos para revisarlo.",
   },
   {
     question: "¿Compran scrap plástico? ¿Cómo funciona?",

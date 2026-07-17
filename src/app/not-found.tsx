@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { Analytics } from "@/components/marketing/analytics";
+import { ConsentBanner } from "@/components/marketing/consent-banner";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/eyebrow";
+
+export const metadata: Metadata = {
+  title: "Página no encontrada",
+};
 
 /** 404 — the loop motif, broken (DESIGN.md §7). */
 export default function NotFound() {
@@ -39,6 +46,8 @@ export default function NotFound() {
         </section>
       </main>
       <Footer />
+      <ConsentBanner />
+      <Analytics />
     </>
   );
 }

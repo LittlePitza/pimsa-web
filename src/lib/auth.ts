@@ -1,16 +1,39 @@
 import "server-only";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { SESSION_COOKIE, SESSION_HOURS, verifySessionToken, type AdminSession } from "@/lib/session";
+import { getAdminById } from "@/db/queries/admins";
+import {
+  passwordVersion,
+  SESSION_COOKIE,
+  SESSION_HOURS,
+  verifySessionToken,
+  type AdminSession,
+} from "@/lib/session";
 
 /** Server-side session helpers for the admin panel. */
 
-export async function getAdminSession(): Promise<AdminSession | null> {
+/**
+ * Verifies the session cookie AND that the account still exists with the
+ * same password (the token's `pwv` claim). Deleting an account or resetting
+ * its password therefore revokes its outstanding sessions. Memoized per
+ * request with React cache so layout + page + actions share one DB lookup.
+ */
+export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
   const store = await cookies();
   const token = store.get(SESSION_COOKIE)?.value;
   if (!token) return null;
-  return verifySessionToken(token);
-}
+
+  const session = await verifySessionToken(token);
+  if (!session) return null;
+
+  const admin = await getAdminById(session.userId);
+  if (!admin) return null;
+  if (session.pwv !== (await passwordVersion(admin.passwordHash))) return null;
+
+  // Fresh values from the DB, so renames/email changes reflect immediately.
+  return { userId: admin.id, email: admin.email, name: admin.name };
+});
 
 /** Guard for admin pages/actions — redirects to login when unauthenticated. */
 export async function requireAdmin(): Promise<AdminSession> {

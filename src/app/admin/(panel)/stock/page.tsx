@@ -4,9 +4,11 @@ import { ConfirmButton } from "@/components/admin/confirm-button";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { listStockItems } from "@/db/queries/stock";
+import { requireAdmin } from "@/lib/auth";
 import { cn, formatDate } from "@/lib/utils";
 
 export default async function AdminStockPage() {
+  await requireAdmin();
   const items = await listStockItems();
 
   return (

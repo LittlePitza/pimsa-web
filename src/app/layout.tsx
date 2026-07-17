@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { Analytics } from "@/components/marketing/analytics";
-import { ConsentBanner } from "@/components/marketing/consent-banner";
-import { UtmCapture } from "@/components/marketing/utm-capture";
 import { company } from "@/content/company";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -49,9 +46,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Saltar al contenido principal
         </a>
         {children}
-        <UtmCapture />
-        <ConsentBanner />
-        <Analytics />
       </body>
     </html>
   );

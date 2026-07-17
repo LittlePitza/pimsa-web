@@ -1,4 +1,4 @@
-import { company, fullAddress } from "@/content/company";
+import { company } from "@/content/company";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
 import type { Vacancy } from "@/db/schema";
 import type { Faq, Service } from "@/types/content";
@@ -6,21 +6,36 @@ import type { Faq, Service } from "@/types/content";
 /**
  * schema.org JSON-LD builders (PLAN.md §6).
  * Rendered through <JsonLd /> so structured data ships as static HTML.
+ *
+ * Naming note: this module is app-level structured data; the database schema
+ * lives in src/db/schema.ts.
  */
 
 type JsonLdObject = Record<string, unknown>;
 
 const organizationId = `${SITE_URL}/#organization`;
 
-export function organizationSchema(): JsonLdObject {
+/**
+ * Compact Organization node embedded wherever the org is referenced.
+ * Google resolves `@id` references only within the same page, so pages that
+ * don't render the full Organization (services, vacancies) still need
+ * name/url/logo inline for rich-result eligibility.
+ */
+function organizationNode(): JsonLdObject {
   return {
-    "@context": "https://schema.org",
     "@type": "Organization",
     "@id": organizationId,
     name: company.name,
-    legalName: company.legalName,
     url: SITE_URL,
     logo: absoluteUrl("/media/brand/pimsa-logo.png"),
+  };
+}
+
+export function organizationSchema(): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    ...organizationNode(),
+    legalName: company.legalName,
     foundingDate: String(company.foundedYear),
     description: company.description,
     address: postalAddress(),
@@ -42,6 +57,7 @@ export function localBusinessSchema(): JsonLdObject {
     "@id": `${SITE_URL}/#localbusiness`,
     name: company.name,
     url: SITE_URL,
+    image: [absoluteUrl("/media/corporate/planta-la-estancia.jpg")],
     telephone: company.phone,
     email: company.email,
     address: postalAddress(),
@@ -52,7 +68,7 @@ export function localBusinessSchema(): JsonLdObject {
       opens: "08:00",
       closes: "18:00",
     },
-    parentOrganization: { "@id": organizationId },
+    parentOrganization: organizationNode(),
   };
 }
 
@@ -66,7 +82,7 @@ export function serviceSchema(service: Service): JsonLdObject {
     image: absoluteUrl(service.figure.src),
     serviceType: service.name,
     areaServed: { "@type": "Country", name: "México" },
-    provider: { "@id": organizationId },
+    provider: organizationNode(),
   };
 }
 
@@ -82,16 +98,25 @@ export function faqPageSchema(faqs: Faq[]): JsonLdObject {
   };
 }
 
+/** Days a posting stays valid for Google Jobs when no explicit close date exists. */
+const JOB_POSTING_VALID_DAYS = 60;
+
 /** Google Jobs eligibility for vacancy pages (JobPosting structured data). */
 export function jobPostingSchema(vacancy: Vacancy): JsonLdObject {
+  const datePosted = vacancy.publishedAt ?? vacancy.createdAt;
+  const validThrough = new Date(
+    datePosted.getTime() + JOB_POSTING_VALID_DAYS * 24 * 60 * 60 * 1000,
+  );
+
   return {
     "@context": "https://schema.org",
     "@type": "JobPosting",
     title: vacancy.title,
     description: vacancy.description.replace(/\n/g, "<br>"),
-    datePosted: (vacancy.publishedAt ?? vacancy.createdAt).toISOString(),
+    datePosted: datePosted.toISOString(),
+    validThrough: validThrough.toISOString(),
     employmentType: vacancy.employmentType === "Tiempo completo" ? "FULL_TIME" : "OTHER",
-    hiringOrganization: { "@id": organizationId },
+    hiringOrganization: organizationNode(),
     jobLocation: {
       "@type": "Place",
       address: postalAddress(),
@@ -125,5 +150,3 @@ function postalAddress(): JsonLdObject {
     addressCountry: a.country,
   };
 }
-
-export { fullAddress };

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/json-ld";
-import { breadcrumbSchema } from "@/lib/schema";
+import { breadcrumbSchema } from "@/lib/structured-data";
 
 export interface Crumb {
   name: string;

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { InputField, SelectField, TextareaField } from "@/components/ui/field";
-import { serviceNames } from "@/content/services";
 import { trackEvent } from "@/lib/analytics";
 import { getStoredUtm } from "@/lib/utm";
 
@@ -13,9 +13,16 @@ type Status = "idle" | "submitting" | "success" | "error";
  * Lead capture form (PLAN.md §7): source tracking via persisted UTM params,
  * honeypot anti-spam field, delivery through /api/contact.
  */
-export function ContactForm() {
+export function ContactForm({ serviceNames }: { serviceNames: readonly string[] }) {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const successRef = useRef<HTMLDivElement>(null);
+
+  // The form is replaced by the confirmation — move focus there so keyboard
+  // and screen-reader users don't land in a void.
+  useEffect(() => {
+    if (status === "success") successRef.current?.focus();
+  }, [status]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,13 +57,15 @@ export function ContactForm() {
   if (status === "success") {
     return (
       <div
+        ref={successRef}
+        tabIndex={-1}
         role="status"
-        className="border-green-600 bg-surface rounded-md border-l-4 p-8 shadow-card"
+        className="bg-surface shadow-card rounded-md border-l-4 border-green-600 p-8 focus:outline-none"
       >
         <h3 className="font-display text-navy-500 text-xl font-semibold">¡Mensaje enviado!</h3>
         <p className="text-ink-muted mt-3">
-          Gracias por contactarnos. Te responderemos en horario hábil, normalmente el mismo día.
-          Si es urgente, escríbenos por WhatsApp.
+          Gracias por contactarnos. Te responderemos en horario hábil, normalmente el mismo día. Si
+          es urgente, escríbenos por WhatsApp.
         </p>
       </div>
     );
@@ -103,7 +112,10 @@ export function ContactForm() {
       </div>
 
       {status === "error" ? (
-        <p role="alert" className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <p
+          role="alert"
+          className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+        >
           {errorMessage}
         </p>
       ) : null}
@@ -114,9 +126,13 @@ export function ContactForm() {
         </Button>
         <p className="text-ink-muted mt-4 text-xs">
           Al enviar aceptas nuestro{" "}
-          <a href="/aviso-de-privacidad" className="text-blue-600 underline">
+          <Link
+            href="/aviso-de-privacidad"
+            target="_blank"
+            className="text-blue-600 underline"
+          >
             aviso de privacidad
-          </a>
+          </Link>
           .
         </p>
       </div>

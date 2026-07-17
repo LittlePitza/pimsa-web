@@ -1,22 +1,18 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { createApplication } from "@/db/queries/applications";
 import { getOpenVacancyBySlug } from "@/db/queries/vacancies";
 import { createMailTransport, mailFrom } from "@/lib/mailer";
 import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/request";
 import { getEmailRecipients } from "@/lib/settings";
+import { ALLOWED_CV_EXTENSIONS, ALLOWED_CV_MIME_TYPES, MAX_CV_BYTES } from "@/lib/uploads";
 
 export const runtime = "nodejs";
 
 /** Job application endpoint: fields + CV file (multipart form data). */
 
-const MAX_CV_BYTES = 5 * 1024 * 1024;
-const ALLOWED_CV_TYPES = new Set([
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-]);
-const ALLOWED_CV_EXTENSIONS = /\.(pdf|doc|docx)$/i;
+const ALLOWED_CV_TYPES = new Set<string>(ALLOWED_CV_MIME_TYPES);
 
 const fieldsSchema = z.object({
   vacancySlug: z.string().trim().min(1).max(160),
@@ -28,7 +24,7 @@ const fieldsSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const ip = (request.headers.get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+  const ip = clientIp(request.headers);
   if (!rateLimit(`applications:${ip}`, { limit: 3, windowMs: 10 * 60_000 })) {
     return NextResponse.json(
       { error: "Demasiados intentos. Espera unos minutos e inténtalo de nuevo." },
@@ -77,7 +73,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const vacancy = await getOpenVacancyBySlug(fields.vacancySlug);
+  let vacancy;
+  try {
+    vacancy = await getOpenVacancyBySlug(fields.vacancySlug);
+  } catch (error) {
+    // DB outage ≠ closed vacancy — tell the candidate to retry, not to leave.
+    console.error("[applications] Vacancy lookup failed:", error);
+    return NextResponse.json(
+      { error: "No pudimos procesar tu postulación. Inténtalo de nuevo en unos minutos." },
+      { status: 503 },
+    );
+  }
   if (!vacancy) {
     return NextResponse.json(
       { error: "Esta vacante ya no está disponible." },
@@ -111,8 +117,12 @@ export async function POST(request: NextRequest) {
   }
 
   // Best-effort email notification to HR (application is already stored).
-  notifyHr(vacancy.title, fields, { fileName: cv.name, content: cvBuffer }).catch((error) =>
-    console.error("[applications] HR notification failed:", error),
+  // after() runs once the response is sent and keeps the work alive on any
+  // host, without delaying the candidate's confirmation.
+  after(() =>
+    notifyHr(vacancy.title, fields, { fileName: cv.name, content: cvBuffer }).catch((error) =>
+      console.error("[applications] HR notification failed:", error),
+    ),
   );
 
   return NextResponse.json({ ok: true });

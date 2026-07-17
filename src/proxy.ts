@@ -3,8 +3,9 @@ import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 
 /**
  * Route protection for the admin panel (Next.js 16 proxy).
- * Session validity is re-checked server-side in the admin layout too;
- * this is the first, optimistic gate.
+ * Optimistic first gate (signature + expiry only — no DB access here);
+ * getAdminSession re-validates against the database in the admin layout,
+ * pages, server actions and API routes.
  */
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -12,7 +13,12 @@ export async function proxy(request: NextRequest) {
   const token = request.cookies.get(SESSION_COOKIE)?.value;
   const session = token ? await verifySessionToken(token) : null;
 
+  const isApiRoute = pathname.startsWith("/api/");
   const isLoginPage = pathname === "/admin/login";
+
+  if (!session && isApiRoute) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
 
   if (!session && !isLoginPage) {
     const loginUrl = new URL("/admin/login", request.url);
@@ -27,5 +33,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/api/admin/:path*"],
 };

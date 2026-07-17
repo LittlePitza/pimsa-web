@@ -5,14 +5,23 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { ApplicationForm } from "@/components/sections/application-form";
 import { PageHero } from "@/components/sections/page-hero";
 import { Container } from "@/components/ui/container";
-import { getOpenVacancyBySlug } from "@/db/queries/vacancies";
-import { jobPostingSchema } from "@/lib/schema";
+import { getOpenVacancies, getOpenVacancyBySlug } from "@/db/queries/vacancies";
+import { jobPostingSchema } from "@/lib/structured-data";
 import { buildMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
+}
+
+/**
+ * Prerender open vacancies at build; dynamicParams stays true (default) so
+ * vacancies published after the deploy still resolve on demand.
+ */
+export async function generateStaticParams() {
+  const vacancies = await getOpenVacancies();
+  return vacancies.map((vacancy) => ({ slug: vacancy.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

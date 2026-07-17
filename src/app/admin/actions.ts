@@ -35,12 +35,14 @@ import {
   createVacancy,
   deleteVacancy,
   ensureUniqueSlug,
+  getVacancyById,
   setVacancyStatus,
   updateVacancy,
 } from "@/db/queries/vacancies";
 import { isSuperAdmin, requireAdmin, requireSuperAdmin, sessionCookieOptions } from "@/lib/auth";
 import { createMailTransport, mailFrom } from "@/lib/mailer";
 import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/request";
 import { createSessionToken, SESSION_COOKIE } from "@/lib/session";
 import { getEmailRecipients, SETTING_KEYS, setSetting } from "@/lib/settings";
 import { slugify } from "@/lib/utils";
@@ -50,6 +52,16 @@ import { slugify } from "@/lib/utils";
 export interface ActionState {
   error?: string;
   success?: string;
+  /**
+   * Submitted values echoed back on validation errors, so client forms can
+   * re-populate fields (React 19 resets uncontrolled forms after actions).
+   */
+  values?: Record<string, string>;
+}
+
+/** Raw string snapshot of the given FormData fields (for ActionState.values). */
+function formValues(formData: FormData, keys: readonly string[]): Record<string, string> {
+  return Object.fromEntries(keys.map((key) => [key, String(formData.get(key) ?? "")]));
 }
 
 // ── Auth ─────────────────────────────────────────────────────────────────
@@ -68,7 +80,7 @@ export async function signInAction(
   }
 
   // Brute-force guard: 5 attempts / 15 min per IP.
-  const ip = ((await headers()).get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+  const ip = clientIp(await headers());
   if (!rateLimit(`admin-login:${ip}`, { limit: 5, windowMs: 15 * 60_000 })) {
     return { error: "Demasiados intentos. Espera 15 minutos e inténtalo de nuevo." };
   }
@@ -90,11 +102,10 @@ export async function signInAction(
     return { error: "Correo o contraseña incorrectos." };
   }
 
-  const token = await createSessionToken({
-    userId: admin.id,
-    email: admin.email,
-    name: admin.name,
-  });
+  const token = await createSessionToken(
+    { userId: admin.id, email: admin.email, name: admin.name },
+    admin.passwordHash,
+  );
   (await cookies()).set(SESSION_COOKIE, token, sessionCookieOptions());
   touchLastLogin(admin.id).catch(() => undefined);
 
@@ -121,6 +132,20 @@ const vacancySchema = z.object({
   benefits: z.string().trim().max(5000).default(""),
   status: z.enum(VACANCY_STATUSES),
 });
+
+const VACANCY_FIELDS = [
+  "title",
+  "slug",
+  "department",
+  "location",
+  "employmentType",
+  "salaryRange",
+  "summary",
+  "description",
+  "requirements",
+  "benefits",
+  "status",
+] as const;
 
 function parseVacancyForm(formData: FormData) {
   const parsed = vacancySchema.safeParse({
@@ -152,6 +177,13 @@ function parseVacancyForm(formData: FormData) {
   };
 }
 
+function invalidVacancyForm(formData: FormData): ActionState {
+  return {
+    error: "Revisa los campos del formulario.",
+    values: formValues(formData, VACANCY_FIELDS),
+  };
+}
+
 function revalidateJobBoard() {
   revalidatePath("/vacantes");
   revalidatePath("/vacantes/[slug]", "page");
@@ -165,7 +197,7 @@ export async function createVacancyAction(
   await requireAdmin();
 
   const data = parseVacancyForm(formData);
-  if (!data) return { error: "Revisa los campos del formulario." };
+  if (!data) return invalidVacancyForm(formData);
 
   const slug = await ensureUniqueSlug(slugify(data.slug || data.title));
   await createVacancy({
@@ -186,10 +218,17 @@ export async function updateVacancyAction(
   await requireAdmin();
 
   const data = parseVacancyForm(formData);
-  if (!data) return { error: "Revisa los campos del formulario." };
+  if (!data) return invalidVacancyForm(formData);
+
+  const current = await getVacancyById(id);
+  if (!current) return { error: "La vacante ya no existe." };
 
   const slug = await ensureUniqueSlug(slugify(data.slug || data.title), id);
-  await updateVacancy(id, { ...data, slug });
+  // Publishing from the edit form must stamp publishedAt (JSON-LD datePosted,
+  // sitemap lastModified and the job-board ordering depend on it).
+  const publishedAt =
+    data.status === "open" && !current.publishedAt ? new Date() : current.publishedAt;
+  await updateVacancy(id, { ...data, slug, publishedAt });
 
   revalidateJobBoard();
   redirect("/admin/vacantes");
@@ -197,8 +236,9 @@ export async function updateVacancyAction(
 
 export async function setVacancyStatusAction(id: number, formData: FormData): Promise<void> {
   await requireAdmin();
-  const status = z.enum(VACANCY_STATUSES).parse(formData.get("status"));
-  await setVacancyStatus(id, status);
+  const status = z.enum(VACANCY_STATUSES).safeParse(formData.get("status"));
+  if (!status.success) return; // manipulated input — ignore instead of throwing
+  await setVacancyStatus(id, status.data);
   revalidateJobBoard();
   revalidatePath("/admin/vacantes");
 }
@@ -214,8 +254,9 @@ export async function deleteVacancyAction(id: number): Promise<void> {
 
 export async function setApplicationStatusAction(id: number, formData: FormData): Promise<void> {
   await requireAdmin();
-  const status = z.enum(APPLICATION_STATUSES).parse(formData.get("status"));
-  await setApplicationStatus(id, status);
+  const status = z.enum(APPLICATION_STATUSES).safeParse(formData.get("status"));
+  if (!status.success) return;
+  await setApplicationStatus(id, status.data);
   revalidatePath("/admin/postulaciones");
 }
 
@@ -230,6 +271,8 @@ const stockSchema = z.object({
   published: z.coerce.boolean().default(false),
 });
 
+const STOCK_FIELDS = ["material", "form", "color", "availability", "notes", "published"] as const;
+
 function parseStockForm(formData: FormData) {
   const parsed = stockSchema.safeParse({
     material: formData.get("material"),
@@ -240,6 +283,13 @@ function parseStockForm(formData: FormData) {
     published: formData.get("published") === "on",
   });
   return parsed.success ? parsed.data : null;
+}
+
+function invalidStockForm(formData: FormData): ActionState {
+  return {
+    error: "Revisa los campos del formulario.",
+    values: formValues(formData, STOCK_FIELDS),
+  };
 }
 
 function revalidateStock() {
@@ -253,7 +303,7 @@ export async function createStockItemAction(
 ): Promise<ActionState> {
   await requireAdmin();
   const data = parseStockForm(formData);
-  if (!data) return { error: "Revisa los campos del formulario." };
+  if (!data) return invalidStockForm(formData);
 
   await createStockItem(data);
   revalidateStock();
@@ -267,7 +317,7 @@ export async function updateStockItemAction(
 ): Promise<ActionState> {
   await requireAdmin();
   const data = parseStockForm(formData);
-  if (!data) return { error: "Revisa los campos del formulario." };
+  if (!data) return invalidStockForm(formData);
 
   await updateStockItem(id, data);
   revalidateStock();
@@ -372,8 +422,9 @@ export async function sendTestEmailAction(
 
 export async function setLeadStatusAction(id: number, formData: FormData): Promise<void> {
   await requireAdmin();
-  const status = z.enum(LEAD_STATUSES).parse(formData.get("status"));
-  await setLeadStatus(id, status);
+  const status = z.enum(LEAD_STATUSES).safeParse(formData.get("status"));
+  if (!status.success) return;
+  await setLeadStatus(id, status.data);
   revalidatePath("/admin/leads");
 }
 

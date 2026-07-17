@@ -11,26 +11,33 @@ interface Options {
   windowMs: number;
 }
 
-const buckets = new Map<string, number[]>();
+interface Bucket {
+  /** Window size this bucket was created with — cleanup must honor it. */
+  windowMs: number;
+  timestamps: number[];
+}
+
+const buckets = new Map<string, Bucket>();
 
 export function rateLimit(key: string, { limit, windowMs }: Options): boolean {
   const now = Date.now();
   const windowStart = now - windowMs;
 
-  const timestamps = (buckets.get(key) ?? []).filter((t) => t > windowStart);
+  const timestamps = (buckets.get(key)?.timestamps ?? []).filter((t) => t > windowStart);
 
   if (timestamps.length >= limit) {
-    buckets.set(key, timestamps);
+    buckets.set(key, { windowMs, timestamps });
     return false;
   }
 
   timestamps.push(now);
-  buckets.set(key, timestamps);
+  buckets.set(key, { windowMs, timestamps });
 
-  // Opportunistic cleanup so the map never grows unbounded.
+  // Opportunistic cleanup so the map never grows unbounded. Each bucket is
+  // judged against its own window (endpoints use different window sizes).
   if (buckets.size > 1000) {
-    for (const [k, v] of buckets) {
-      if (v.every((t) => t <= windowStart)) buckets.delete(k);
+    for (const [k, bucket] of buckets) {
+      if (bucket.timestamps.every((t) => t <= now - bucket.windowMs)) buckets.delete(k);
     }
   }
 

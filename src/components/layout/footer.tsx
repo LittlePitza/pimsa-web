@@ -1,8 +1,16 @@
 import Link from "next/link";
+import { CurrentYear } from "@/components/layout/current-year";
 import { Logo } from "@/components/layout/logo";
 import { Badge } from "@/components/ui/badge";
 import { Container } from "@/components/ui/container";
-import { certifications, company, fullAddress, legalNav, mainNav, whatsappUrl } from "@/content/company";
+import {
+  certifications,
+  company,
+  fullAddress,
+  legalNav,
+  mainNav,
+  whatsappUrl,
+} from "@/content/company";
 import { services } from "@/content/services";
 
 /** Site footer on navy-900: sitemap, NAP, certifications, social (DESIGN.md §8). */
@@ -16,7 +24,10 @@ export function Footer() {
             <Link href="/">
               <Logo tone="dark" />
             </Link>
-            <p className="text-paper/70 mt-5 max-w-xs text-sm">{company.description}</p>
+            <p className="mt-4 font-mono text-xs tracking-[0.18em] text-green-300 uppercase">
+              {company.tagline}
+            </p>
+            <p className="text-paper/70 mt-4 max-w-xs text-sm">{company.description}</p>
             <div className="mt-6 flex flex-wrap gap-2">
               {certifications.map((cert) => (
                 <Badge key={cert.code} tone="dark">
@@ -28,28 +39,26 @@ export function Footer() {
 
           {/* Sitemap */}
           <nav aria-label="Mapa del sitio">
-            <h2 className="text-blue-400 font-mono text-xs tracking-[0.18em] uppercase">
+            <h2 className="font-mono text-xs tracking-[0.18em] text-blue-400 uppercase">
               Navegación
             </h2>
             <ul className="mt-5 space-y-3">
-              {mainNav
-                .filter((item) => !item.children)
-                .map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="text-paper/80 hover:text-green-300 text-sm transition-colors"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
+              {mainNav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-paper/80 text-sm transition-colors hover:text-green-300"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
 
           {/* Services */}
           <nav aria-label="Servicios">
-            <h2 className="text-blue-400 font-mono text-xs tracking-[0.18em] uppercase">
+            <h2 className="font-mono text-xs tracking-[0.18em] text-blue-400 uppercase">
               Servicios
             </h2>
             <ul className="mt-5 space-y-3">
@@ -57,7 +66,7 @@ export function Footer() {
                 <li key={service.slug}>
                   <Link
                     href={`/servicios/${service.slug}`}
-                    className="text-paper/80 hover:text-green-300 text-sm transition-colors"
+                    className="text-paper/80 text-sm transition-colors hover:text-green-300"
                   >
                     {service.name}
                   </Link>
@@ -68,13 +77,16 @@ export function Footer() {
 
           {/* Contact / NAP — consistent with Google Business Profile (PLAN.md §6) */}
           <div>
-            <h2 className="text-blue-400 font-mono text-xs tracking-[0.18em] uppercase">
+            <h2 className="font-mono text-xs tracking-[0.18em] text-blue-400 uppercase">
               Contacto
             </h2>
             <address className="text-paper/80 mt-5 space-y-3 text-sm not-italic">
               <p>{fullAddress()}</p>
               <p>
-                <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="hover:text-green-300">
+                <a
+                  href={`tel:${company.phone.replace(/\s/g, "")}`}
+                  className="hover:text-green-300"
+                >
                   {company.phone}
                 </a>
               </p>
@@ -102,7 +114,7 @@ export function Footer() {
                     href={social.url}
                     rel="noopener noreferrer"
                     target="_blank"
-                    className="text-blue-400 hover:text-green-300 font-mono text-xs tracking-wider uppercase transition-colors"
+                    className="font-mono text-xs tracking-wider text-blue-400 uppercase transition-colors hover:text-green-300"
                   >
                     {social.name}
                   </a>
@@ -116,7 +128,8 @@ export function Footer() {
       <div className="border-navy-700 border-t">
         <Container className="flex flex-col items-start justify-between gap-3 py-6 text-xs md:flex-row md:items-center">
           <p className="text-paper/50">
-            © {new Date().getFullYear()} {company.legalName} Todos los derechos reservados.
+            © <CurrentYear serverYear={new Date().getFullYear()} /> {company.legalName} Todos los
+            derechos reservados.
           </p>
           <ul className="flex gap-6">
             {legalNav.map((item) => (

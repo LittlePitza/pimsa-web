@@ -17,10 +17,15 @@ export function slugify(value: string): string {
     .slice(0, 160);
 }
 
-/** Formats a date for the admin UI (es-MX, short). */
+/**
+ * Formats a date for the admin UI (es-MX, short). The time zone is pinned so
+ * the output is Mexico City time regardless of the server's TZ (UTC in prod).
+ */
 export function formatDate(date: Date | null): string {
   if (!date) return "—";
-  return new Intl.DateTimeFormat("es-MX", { dateStyle: "medium", timeStyle: "short" }).format(
-    date,
-  );
+  return new Intl.DateTimeFormat("es-MX", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "America/Mexico_City",
+  }).format(date);
 }

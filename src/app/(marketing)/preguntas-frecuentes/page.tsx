@@ -4,7 +4,7 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { FaqSection } from "@/components/sections/faq-section";
 import { PageHero } from "@/components/sections/page-hero";
 import { faqs } from "@/content/faqs";
-import { faqPageSchema } from "@/lib/schema";
+import { faqPageSchema } from "@/lib/structured-data";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({

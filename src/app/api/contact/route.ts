@@ -3,7 +3,9 @@ import { z } from "zod";
 import { insertLeadSafe } from "@/db/queries/leads";
 import { createMailTransport, mailFrom } from "@/lib/mailer";
 import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/request";
 import { getEmailRecipients } from "@/lib/settings";
+import { UTM_KEYS } from "@/lib/utm";
 
 export const runtime = "nodejs";
 
@@ -21,12 +23,20 @@ const contactSchema = z.object({
   service: z.string().trim().max(120).optional().default(""),
   message: z.string().trim().min(10, "Cuéntanos un poco más en tu mensaje").max(3000),
   website: z.string().max(200).optional().default(""), // honeypot
-  utm: z.record(z.string(), z.string().max(200)).optional().default({}),
+  utm: z
+    .record(z.string(), z.string().max(200))
+    .optional()
+    .default({})
+    // Only the known attribution keys reach the DB and the email — anything
+    // else in the payload is dropped so bots can't inject bulk content.
+    .transform((utm) =>
+      Object.fromEntries(Object.entries(utm).filter(([key]) => UTM_KEYS.includes(key))),
+    ),
 });
 
 export async function POST(request: NextRequest) {
   // Rate limit per IP: 5 submissions / 10 minutes.
-  const ip = (request.headers.get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+  const ip = clientIp(request.headers);
   if (!rateLimit(`contact:${ip}`, { limit: 5, windowMs: 10 * 60_000 })) {
     return NextResponse.json(
       { error: "Demasiados intentos. Espera unos minutos e inténtalo de nuevo." },

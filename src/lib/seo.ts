@@ -10,6 +10,18 @@ interface PageSeo {
 }
 
 /**
+ * Branded OG card served by src/app/opengraph-image.tsx. Referenced
+ * explicitly because a page-level `openGraph` replaces the inherited one
+ * wholesale — without this, pages ship no og:image at all.
+ */
+const OG_IMAGE = {
+  url: "/opengraph-image",
+  width: 1200,
+  height: 630,
+  alt: `${SITE_NAME} — Ingeniería en polímeros reciclados`,
+};
+
+/**
  * Shared metadata builder — every page owns its metadata through this
  * helper so canonical URLs, Open Graph and Twitter cards stay consistent.
  */
@@ -28,11 +40,13 @@ export function buildMetadata({ title, description, path, keywords }: PageSeo): 
       siteName: SITE_NAME,
       locale: "es_MX",
       type: "website",
+      images: [OG_IMAGE],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [OG_IMAGE.url],
     },
   };
 }

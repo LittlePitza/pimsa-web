@@ -1,9 +1,13 @@
+import { cache } from "react";
 import { asc, count, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { stockItems, type NewStockItem, type StockItem } from "@/db/schema";
 
-/** Public reader — resilient: /stock renders an empty catalog on DB outage. */
-export async function getPublishedStockItems(): Promise<StockItem[]> {
+/**
+ * Public reader — empty catalog only while `next build` runs without a DB;
+ * at runtime errors re-throw so ISR keeps the last good /stock page.
+ */
+export const getPublishedStockItems = cache(async (): Promise<StockItem[]> => {
   try {
     return await db
       .select()
@@ -12,9 +16,10 @@ export async function getPublishedStockItems(): Promise<StockItem[]> {
       .orderBy(asc(stockItems.material), asc(stockItems.form));
   } catch (error) {
     console.error("[db] getPublishedStockItems failed:", error);
+    if (process.env.NEXT_PHASE !== "phase-production-build") throw error;
     return [];
   }
-}
+});
 
 // ── Admin ────────────────────────────────────────────────────────────────
 

@@ -26,12 +26,13 @@ export function ServiceRows() {
                 >
                   {service.index}
                 </span>
-                <span>
-                  <span className="font-display text-h3 text-navy-500 group-hover:text-blue-600 block font-semibold transition-colors">
+                <div>
+                  {/* Real headings: the hub's service names are its document outline. */}
+                  <h2 className="font-display text-h3 text-navy-500 group-hover:text-blue-600 font-semibold transition-colors">
                     {service.name}
-                  </span>
-                  <span className="text-ink-muted mt-1 block max-w-[60ch]">{service.tagline}</span>
-                </span>
+                  </h2>
+                  <p className="text-ink-muted mt-1 max-w-[60ch]">{service.tagline}</p>
+                </div>
                 <span className="border-line relative hidden aspect-4/3 overflow-hidden border md:block">
                   <Image
                     src={service.figure.src}

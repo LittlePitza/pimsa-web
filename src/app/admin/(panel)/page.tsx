@@ -5,18 +5,23 @@ import { listApplications } from "@/db/queries/applications";
 import { listLeads } from "@/db/queries/leads";
 import { listStockItems } from "@/db/queries/stock";
 import { listVacancies } from "@/db/queries/vacancies";
-import type { Application, Lead, StockItem, Vacancy } from "@/db/schema";
+import { requireAdmin } from "@/lib/auth";
 import { applicationStatusLabels, leadStatusLabels } from "@/lib/labels";
 import { percent } from "@/lib/metrics";
 import { formatDate } from "@/lib/utils";
 
-/** Whole-site overview: headline counts + a door into each area. */
+/**
+ * Whole-site overview: headline counts + a door into each area.
+ * DB errors surface to the admin error boundary — honest failure beats
+ * silently rendering zeros.
+ */
 export default async function AdminDashboardPage() {
+  await requireAdmin();
   const [leads, applications, vacancies, stock] = await Promise.all([
-    listLeads().catch(() => [] as Lead[]),
-    listApplications().catch(() => [] as Application[]),
-    listVacancies().catch(() => [] as Vacancy[]),
-    listStockItems().catch(() => [] as StockItem[]),
+    listLeads(),
+    listApplications(),
+    listVacancies(),
+    listStockItems(),
   ]);
 
   const newLeads = leads.filter((lead) => lead.status === "new").length;

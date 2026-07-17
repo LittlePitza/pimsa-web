@@ -6,7 +6,8 @@ import { PageHero } from "@/components/sections/page-hero";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { company, fullAddress, whatsappUrl } from "@/content/company";
-import { localBusinessSchema } from "@/lib/schema";
+import { serviceNames } from "@/content/services";
+import { localBusinessSchema } from "@/lib/structured-data";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
@@ -43,45 +44,61 @@ export default function ContactPage() {
               Solicita tu cotización
             </h2>
             <div className="mt-8">
-              <ContactForm />
+              <ContactForm serviceNames={serviceNames} />
             </div>
           </div>
 
           {/* NAP + channels (DESIGN.md §7 — split layout) */}
           <aside className="lg:pl-4">
             <div className="border-line bg-surface shadow-card rounded-md border">
-              <p className="border-line text-green-600 border-b p-5 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+              <p className="border-line border-b p-5 font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
                 Datos de contacto
               </p>
               <div className="space-y-6 p-6">
                 <div className="flex gap-4">
-                  <MapPin aria-hidden strokeWidth={1.5} className="text-blue-600 mt-1 size-5 shrink-0" />
+                  <MapPin
+                    aria-hidden
+                    strokeWidth={1.5}
+                    className="mt-1 size-5 shrink-0 text-blue-600"
+                  />
                   <div>
                     <p className="text-ink text-sm">{fullAddress()}</p>
                     <a
                       href={mapsUrl}
                       rel="noopener noreferrer"
                       target="_blank"
-                      className="text-blue-600 mt-1 inline-block text-sm underline"
+                      className="mt-1 inline-block text-sm text-blue-600 underline"
                     >
                       Ver en Google Maps
                     </a>
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <Phone aria-hidden strokeWidth={1.5} className="text-blue-600 mt-1 size-5 shrink-0" />
+                  <Phone
+                    aria-hidden
+                    strokeWidth={1.5}
+                    className="mt-1 size-5 shrink-0 text-blue-600"
+                  />
                   <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="text-ink text-sm">
                     {company.phone}
                   </a>
                 </div>
                 <div className="flex gap-4">
-                  <Mail aria-hidden strokeWidth={1.5} className="text-blue-600 mt-1 size-5 shrink-0" />
+                  <Mail
+                    aria-hidden
+                    strokeWidth={1.5}
+                    className="mt-1 size-5 shrink-0 text-blue-600"
+                  />
                   <a href={`mailto:${company.email}`} className="text-ink text-sm">
                     {company.email}
                   </a>
                 </div>
                 <div className="flex gap-4">
-                  <Clock aria-hidden strokeWidth={1.5} className="text-blue-600 mt-1 size-5 shrink-0" />
+                  <Clock
+                    aria-hidden
+                    strokeWidth={1.5}
+                    className="mt-1 size-5 shrink-0 text-blue-600"
+                  />
                   <p className="text-ink text-sm">{company.hours}</p>
                 </div>
               </div>

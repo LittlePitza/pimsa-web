@@ -14,6 +14,8 @@ export interface SocialLink {
 export interface Company {
   name: string;
   legalName: string;
+  /** Brand tagline, e.g. "Más que reciclaje, una visión a futuro". */
+  tagline: string;
   foundedYear: number;
   incorporatedYear: number;
   description: string;
@@ -67,7 +69,7 @@ export interface MaterialShot {
   alt: string;
 }
 
-/** Collapsible container model (source: CATÁLOGO CONTENEDORES PIMSA). */
+/** Collapsible container model (dimensions from the PIMSA corporate deck). */
 export interface ContainerModel {
   code: string;
   /** External dimensions in inches, e.g. "48 × 45 × 25". */
@@ -79,7 +81,6 @@ export interface Service {
   /** Two-digit editorial index, e.g. "01". */
   index: string;
   name: string;
-  navLabel: string;
   tagline: string;
   summary: string;
   description: string[];

@@ -1,10 +1,13 @@
 import { setLeadStatusAction } from "@/app/admin/actions";
+import { StatusForm } from "@/components/admin/status-form";
 import { LEAD_STATUSES } from "@/db/schema";
 import { listLeads } from "@/db/queries/leads";
+import { requireAdmin } from "@/lib/auth";
 import { leadStatusLabels } from "@/lib/labels";
 import { formatDate } from "@/lib/utils";
 
 export default async function AdminLeadsPage() {
+  await requireAdmin();
   const leads = await listLeads();
 
   return (
@@ -40,32 +43,15 @@ export default async function AdminLeadsPage() {
                 </p>
               </div>
 
-              <form
+              <StatusForm
                 action={setLeadStatusAction.bind(null, lead.id)}
-                className="flex items-center gap-2"
-              >
-                <label htmlFor={`status-${lead.id}`} className="sr-only">
-                  Estado del lead
-                </label>
-                <select
-                  id={`status-${lead.id}`}
-                  name="status"
-                  defaultValue={lead.status}
-                  className="border-line bg-surface text-ink rounded-sm border px-2 py-1.5 text-sm"
-                >
-                  {LEAD_STATUSES.map((status) => (
-                    <option key={status} value={status}>
-                      {leadStatusLabels[status]}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="submit"
-                  className="text-navy-500 hover:bg-navy-500/10 rounded-sm px-3 py-1.5 text-sm font-medium"
-                >
-                  Guardar
-                </button>
-              </form>
+                id={`status-${lead.id}`}
+                label="Estado del lead"
+                context={lead.name}
+                statuses={LEAD_STATUSES}
+                statusLabels={leadStatusLabels}
+                defaultValue={lead.status}
+              />
             </div>
 
             <details className="mt-4">

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { BarList, ChartCard, StatCard, TrendChart } from "@/components/admin/charts";
-import { LEAD_STATUSES, type Lead, type StockItem } from "@/db/schema";
+import { LEAD_STATUSES } from "@/db/schema";
 import { listLeads } from "@/db/queries/leads";
 import { listStockItems } from "@/db/queries/stock";
+import { requireAdmin } from "@/lib/auth";
 import { leadStatusLabels } from "@/lib/labels";
 import { countBy, percent, tallyStatus, trendByMonth } from "@/lib/metrics";
 import { formatDate } from "@/lib/utils";
@@ -11,10 +12,8 @@ export const metadata = { title: "Marketing — Panel" };
 
 /** Marketing dashboard: demand from the contact form + catalog health. */
 export default async function MarketingDashboardPage() {
-  const [leads, stock] = await Promise.all([
-    listLeads().catch(() => [] as Lead[]),
-    listStockItems().catch(() => [] as StockItem[]),
-  ]);
+  await requireAdmin();
+  const [leads, stock] = await Promise.all([listLeads(), listStockItems()]);
 
   const total = leads.length;
   const newLeads = leads.filter((lead) => lead.status === "new").length;

@@ -54,6 +54,11 @@ export function StockCatalog({ items }: { items: StockItem[] }) {
         ))}
       </div>
 
+      {/* Announce filter results to screen readers without visual noise. */}
+      <p aria-live="polite" className="sr-only">
+        {visible.length === 1 ? "1 material" : `${visible.length} materiales`} en el catálogo
+      </p>
+
       <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {visible.map((item) => (
           <li key={item.id}>

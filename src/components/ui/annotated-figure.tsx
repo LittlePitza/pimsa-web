@@ -10,7 +10,7 @@ export function AnnotatedFigure({
   image,
   aspect = "aspect-4/3",
   sizes,
-  priority = false,
+  preload = false,
   className,
 }: {
   image: ServiceImage;
@@ -18,7 +18,8 @@ export function AnnotatedFigure({
   aspect?: string;
   /** next/image responsive sizes attribute. */
   sizes: string;
-  priority?: boolean;
+  /** Preload as the LCP candidate (next/image `preload`). */
+  preload?: boolean;
   className?: string;
 }) {
   return (
@@ -28,7 +29,7 @@ export function AnnotatedFigure({
           src={image.src}
           alt={image.alt}
           fill
-          priority={priority}
+          preload={preload}
           sizes={sizes}
           className="object-cover"
         />

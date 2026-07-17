@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { BarList, ChartCard, StatCard, TrendChart } from "@/components/admin/charts";
-import { APPLICATION_STATUSES, type Application, type Vacancy } from "@/db/schema";
+import { APPLICATION_STATUSES } from "@/db/schema";
 import { listApplications } from "@/db/queries/applications";
 import { listVacancies } from "@/db/queries/vacancies";
+import { requireAdmin } from "@/lib/auth";
 import { applicationStatusLabels } from "@/lib/labels";
 import { countBy, percent, tallyStatus, trendByMonth } from "@/lib/metrics";
 import { formatDate } from "@/lib/utils";
@@ -11,10 +12,8 @@ export const metadata = { title: "Recursos Humanos — Panel" };
 
 /** HR dashboard: hiring funnel across vacancies and applications. */
 export default async function HrDashboardPage() {
-  const [applications, vacancies] = await Promise.all([
-    listApplications().catch(() => [] as Application[]),
-    listVacancies().catch(() => [] as Vacancy[]),
-  ]);
+  await requireAdmin();
+  const [applications, vacancies] = await Promise.all([listApplications(), listVacancies()]);
 
   const total = applications.length;
   const newApplications = applications.filter((a) => a.status === "new").length;

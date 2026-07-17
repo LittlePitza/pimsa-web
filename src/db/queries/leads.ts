@@ -15,9 +15,8 @@ export async function insertLeadSafe(data: NewLead): Promise<boolean> {
 
 // ── Admin ────────────────────────────────────────────────────────────────
 
-export async function listLeads(status?: LeadStatus): Promise<Lead[]> {
-  const base = db.select().from(leads).orderBy(desc(leads.createdAt));
-  return status ? base.where(eq(leads.status, status)) : base;
+export async function listLeads(): Promise<Lead[]> {
+  return db.select().from(leads).orderBy(desc(leads.createdAt));
 }
 
 export async function setLeadStatus(id: number, status: LeadStatus): Promise<void> {

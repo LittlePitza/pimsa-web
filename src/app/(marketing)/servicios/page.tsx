@@ -22,7 +22,7 @@ export default function ServicesPage() {
       <PageHero
         eyebrow="Servicios"
         title="Cerramos el círculo del plástico industrial"
-        intro="Cuatro servicios integrados: recolectamos tu scrap, lo transformamos y lo devolvemos a la cadena productiva como materia prima certificada."
+        intro="Cuatro servicios integrados: recolectamos tu scrap, lo transformamos y lo devolvemos a la cadena productiva como materia prima recuperada con calidad documentada."
         breadcrumbs={[
           { name: "Inicio", path: "/" },
           { name: "Servicios", path: "/servicios" },

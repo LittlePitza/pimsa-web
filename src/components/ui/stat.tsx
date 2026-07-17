@@ -63,10 +63,8 @@ export function Stat({
         )}
       >
         {stat.prefix}
-        {display}
-        <span className={tone === "dark" ? "text-green-300" : "text-green-600"}>
-          {stat.suffix}
-        </span>
+        {display.toLocaleString("es-MX")}
+        <span className={tone === "dark" ? "text-green-300" : "text-green-600"}>{stat.suffix}</span>
       </span>
       <span
         className={cn(

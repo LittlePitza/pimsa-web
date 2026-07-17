@@ -13,7 +13,7 @@ import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getService, services } from "@/content/services";
-import { serviceSchema } from "@/lib/schema";
+import { serviceSchema } from "@/lib/structured-data";
 import { buildMetadata } from "@/lib/seo";
 
 /**
@@ -91,7 +91,7 @@ export default async function ServicePage({ params }: Props) {
 
           <AnnotatedFigure
             image={service.figure}
-            priority
+            preload
             sizes="(min-width: 1024px) 36rem, calc(100vw - 2.5rem)"
             className="lg:pl-4"
           />
@@ -104,7 +104,7 @@ export default async function ServicePage({ params }: Props) {
           <dl className="bg-line grid gap-px sm:grid-cols-2 lg:grid-cols-4">
             {service.specs.map((spec) => (
               <div key={spec.label} className="bg-paper px-5 py-6 md:px-8 lg:py-8">
-                <dt className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                <dt className="font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
                   {spec.label}
                 </dt>
                 <dd className="text-navy-500 mt-2 text-sm font-medium">{spec.value}</dd>
@@ -117,15 +117,22 @@ export default async function ServicePage({ params }: Props) {
       {/* Process */}
       <section data-band="dark" className="bg-navy-900 py-20 md:py-28">
         <Container>
-          <SectionHeading index={service.index} eyebrow="Proceso" title="Cómo trabajamos" tone="dark" />
+          <SectionHeading
+            index={service.index}
+            eyebrow="Proceso"
+            title="Cómo trabajamos"
+            tone="dark"
+          />
           <ol className="mt-14 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
             {service.process.map((step, i) => (
-              <li key={step.title} className="border-blue-400/30 border-t pt-5">
+              <li key={step.title} className="border-t border-blue-400/30 pt-5">
                 <Reveal delay={i * 60}>
-                  <p className="text-green-300 font-mono text-xs font-medium tracking-[0.18em]">
+                  <p className="font-mono text-xs font-medium tracking-[0.18em] text-green-300">
                     {String(i + 1).padStart(2, "0")}
                   </p>
-                  <h3 className="font-display text-paper mt-3 text-lg font-semibold">{step.title}</h3>
+                  <h3 className="font-display text-paper mt-3 text-lg font-semibold">
+                    {step.title}
+                  </h3>
                   <p className="text-paper/70 mt-2 text-sm">{step.description}</p>
                 </Reveal>
               </li>
@@ -177,22 +184,27 @@ export default async function ServicePage({ params }: Props) {
             <SectionHeading
               eyebrow="Modelos"
               title="Medidas disponibles"
-              intro="Siete modelos en inventario. Medidas externas en pulgadas (frente × fondo × alto)."
+              intro={`${service.containerModels.length} modelos en inventario. Medidas externas en pulgadas (frente × fondo × alto).`}
             />
-            <div className="border-line mt-12 overflow-x-auto border-t">
+            <div
+              tabIndex={0}
+              role="region"
+              aria-label="Tabla de modelos de contenedores"
+              className="border-line focus-visible:outline-blue-600 mt-12 overflow-x-auto border-t focus-visible:outline-2"
+            >
               <table className="w-full min-w-[36rem] text-left">
                 <thead>
                   <tr className="border-line border-b">
-                    <th className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th scope="col" className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
                       Clave
                     </th>
-                    <th className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th scope="col" className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
                       Medidas externas (in)
                     </th>
-                    <th className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th scope="col" className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
                       Material
                     </th>
-                    <th className="text-ink-muted py-4 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th scope="col" className="text-ink-muted py-4 font-mono text-xs font-medium tracking-[0.18em] uppercase">
                       Color
                     </th>
                   </tr>
@@ -200,7 +212,7 @@ export default async function ServicePage({ params }: Props) {
                 <tbody>
                   {service.containerModels.map((model) => (
                     <tr key={model.code} className="border-line border-b">
-                      <td className="text-green-600 py-4 pr-6 font-mono text-sm">{model.code}</td>
+                      <td className="py-4 pr-6 font-mono text-sm text-green-600">{model.code}</td>
                       <td className="text-navy-500 py-4 pr-6 text-sm font-medium">{model.size}</td>
                       <td className="text-ink py-4 pr-6 text-sm">HDPE</td>
                       <td className="text-ink py-4 text-sm">Negro</td>
@@ -210,8 +222,8 @@ export default async function ServicePage({ params }: Props) {
               </table>
             </div>
             <p className="text-ink-muted mt-4 text-sm">
-              Disponibilidad sujeta a inventario. También ofrecemos renta por proyecto y
-              reparación de contenedores.
+              Disponibilidad sujeta a inventario. También ofrecemos renta por proyecto y reparación
+              de contenedores.
             </p>
           </Container>
         </section>
@@ -242,7 +254,11 @@ export default async function ServicePage({ params }: Props) {
           <ul className="mt-12 grid max-w-4xl gap-5 sm:grid-cols-2">
             {service.benefits.map((benefit) => (
               <li key={benefit} className="flex items-start gap-3">
-                <Check aria-hidden strokeWidth={2} className="text-green-600 mt-1 size-5 shrink-0" />
+                <Check
+                  aria-hidden
+                  strokeWidth={2}
+                  className="mt-1 size-5 shrink-0 text-green-600"
+                />
                 <span className="text-ink">{benefit}</span>
               </li>
             ))}
@@ -265,7 +281,7 @@ export default async function ServicePage({ params }: Props) {
                   className="group border-line bg-surface shadow-card hover:shadow-lift flex items-center justify-between gap-4 rounded-md border p-6 transition-[translate,box-shadow] duration-150 hover:-translate-y-0.5"
                 >
                   <span>
-                    <span className="text-green-600 font-mono text-xs">{relatedService.index}</span>
+                    <span className="font-mono text-xs text-green-600">{relatedService.index}</span>
                     <span className="font-display text-navy-500 mt-1 block text-lg font-semibold">
                       {relatedService.name}
                     </span>
@@ -273,7 +289,7 @@ export default async function ServicePage({ params }: Props) {
                   <ArrowRight
                     aria-hidden
                     strokeWidth={1.5}
-                    className="text-ink-muted group-hover:text-green-600 size-5 shrink-0 transition-transform group-hover:translate-x-1"
+                    className="text-ink-muted size-5 shrink-0 transition-transform group-hover:translate-x-1 group-hover:text-green-600"
                   />
                 </Link>
               ))}

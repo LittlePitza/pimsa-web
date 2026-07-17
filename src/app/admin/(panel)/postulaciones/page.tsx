@@ -1,10 +1,13 @@
 import { setApplicationStatusAction } from "@/app/admin/actions";
+import { StatusForm } from "@/components/admin/status-form";
 import { APPLICATION_STATUSES } from "@/db/schema";
 import { listApplications } from "@/db/queries/applications";
+import { requireAdmin } from "@/lib/auth";
 import { applicationStatusLabels } from "@/lib/labels";
 import { formatDate } from "@/lib/utils";
 
 export default async function AdminApplicationsPage() {
+  await requireAdmin();
   const applications = await listApplications();
 
   return (
@@ -46,32 +49,15 @@ export default async function AdminApplicationsPage() {
                 ) : (
                   <span className="text-ink-muted text-sm">Sin CV</span>
                 )}
-                <form
+                <StatusForm
                   action={setApplicationStatusAction.bind(null, application.id)}
-                  className="flex items-center gap-2"
-                >
-                  <label htmlFor={`status-${application.id}`} className="sr-only">
-                    Estado de la postulación
-                  </label>
-                  <select
-                    id={`status-${application.id}`}
-                    name="status"
-                    defaultValue={application.status}
-                    className="border-line bg-surface text-ink rounded-sm border px-2 py-1.5 text-sm"
-                  >
-                    {APPLICATION_STATUSES.map((status) => (
-                      <option key={status} value={status}>
-                        {applicationStatusLabels[status]}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    type="submit"
-                    className="text-navy-500 hover:bg-navy-500/10 rounded-sm px-3 py-1.5 text-sm font-medium"
-                  >
-                    Guardar
-                  </button>
-                </form>
+                  id={`status-${application.id}`}
+                  label="Estado de la postulación"
+                  context={application.name}
+                  statuses={APPLICATION_STATUSES}
+                  statusLabels={applicationStatusLabels}
+                  defaultValue={application.status}
+                />
               </div>
             </div>
 

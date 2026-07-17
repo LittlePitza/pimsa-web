@@ -29,6 +29,13 @@ export function StockForm({
 }) {
   const [state, formAction, pending] = useActionState(action, initialState);
 
+  // On a validation error the action echoes what was submitted, so the
+  // React 19 automatic form reset restores the admin's input.
+  const current = state.values ?? {
+    ...values,
+    published: values.published ? "on" : "",
+  };
+
   return (
     <form action={formAction} className="grid max-w-2xl gap-6">
       <div className="grid gap-6 sm:grid-cols-2">
@@ -37,19 +44,19 @@ export function StockForm({
           label="Material"
           required
           maxLength={120}
-          defaultValue={values.material}
+          defaultValue={current.material}
           placeholder="ABS, PC (Policarbonato)…"
         />
         <InputField
           id="color"
           label="Color"
           maxLength={60}
-          defaultValue={values.color}
+          defaultValue={current.color}
           placeholder="Natural, Negro, Varios…"
         />
       </div>
       <div className="grid gap-6 sm:grid-cols-2">
-        <SelectField id="form" label="Presentación" required defaultValue={values.form}>
+        <SelectField id="form" label="Presentación" required defaultValue={current.form}>
           {STOCK_FORMS.map((form) => (
             <option key={form} value={form}>
               {form}
@@ -60,7 +67,7 @@ export function StockForm({
           id="availability"
           label="Disponibilidad"
           required
-          defaultValue={values.availability}
+          defaultValue={current.availability}
         >
           {STOCK_AVAILABILITY.map((availability) => (
             <option key={availability} value={availability}>
@@ -73,7 +80,7 @@ export function StockForm({
         id="notes"
         label="Notas (opcional, visibles en el sitio)"
         maxLength={300}
-        defaultValue={values.notes}
+        defaultValue={current.notes}
         placeholder="Disponible con y sin fibra de vidrio"
       />
 
@@ -81,7 +88,7 @@ export function StockForm({
         <input
           type="checkbox"
           name="published"
-          defaultChecked={values.published}
+          defaultChecked={current.published === "on"}
           className="accent-green-600 size-4"
         />
         <span className="text-ink text-sm">Visible en el sitio público (/stock)</span>

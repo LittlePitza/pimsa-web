@@ -36,15 +36,20 @@ export function VacancyForm({
 }) {
   const [state, formAction, pending] = useActionState(action, initialState);
 
+  // On a validation error the action echoes what was submitted, so the
+  // React 19 automatic form reset restores the admin's input, not the
+  // original record.
+  const current = { ...values, ...state.values };
+
   return (
     <form action={formAction} className="grid max-w-3xl gap-6">
       <div className="grid gap-6 sm:grid-cols-2">
-        <InputField id="title" label="Título" required maxLength={160} defaultValue={values.title} />
+        <InputField id="title" label="Título" required maxLength={160} defaultValue={current.title} />
         <InputField
           id="slug"
           label="Slug (URL, opcional)"
           maxLength={160}
-          defaultValue={values.slug}
+          defaultValue={current.slug}
           placeholder="se genera del título si se deja vacío"
         />
       </div>
@@ -53,7 +58,7 @@ export function VacancyForm({
           id="department"
           label="Área"
           maxLength={120}
-          defaultValue={values.department}
+          defaultValue={current.department}
           placeholder="Producción"
         />
         <InputField
@@ -61,14 +66,14 @@ export function VacancyForm({
           label="Ubicación"
           required
           maxLength={160}
-          defaultValue={values.location}
+          defaultValue={current.location}
         />
         <InputField
           id="employmentType"
           label="Jornada"
           required
           maxLength={60}
-          defaultValue={values.employmentType}
+          defaultValue={current.employmentType}
         />
       </div>
       <div className="grid gap-6 sm:grid-cols-2">
@@ -76,10 +81,10 @@ export function VacancyForm({
           id="salaryRange"
           label="Sueldo (opcional, visible)"
           maxLength={120}
-          defaultValue={values.salaryRange}
+          defaultValue={current.salaryRange}
           placeholder="$12,000 – $15,000 mensuales"
         />
-        <SelectField id="status" label="Estado" required defaultValue={values.status}>
+        <SelectField id="status" label="Estado" required defaultValue={current.status}>
           {VACANCY_STATUSES.map((status) => (
             <option key={status} value={status}>
               {vacancyStatusLabels[status]}
@@ -93,7 +98,7 @@ export function VacancyForm({
         required
         rows={2}
         maxLength={500}
-        defaultValue={values.summary}
+        defaultValue={current.summary}
       />
       <TextareaField
         id="description"
@@ -101,7 +106,7 @@ export function VacancyForm({
         required
         rows={8}
         maxLength={20000}
-        defaultValue={values.description}
+        defaultValue={current.description}
       />
       <div className="grid gap-6 sm:grid-cols-2">
         <TextareaField
@@ -109,14 +114,14 @@ export function VacancyForm({
           label="Requisitos (uno por línea)"
           rows={6}
           maxLength={5000}
-          defaultValue={values.requirements}
+          defaultValue={current.requirements}
         />
         <TextareaField
           id="benefits"
           label="Ofrecemos (uno por línea)"
           rows={6}
           maxLength={5000}
-          defaultValue={values.benefits}
+          defaultValue={current.benefits}
         />
       </div>
 

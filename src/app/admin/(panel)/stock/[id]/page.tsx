@@ -2,12 +2,14 @@ import { notFound } from "next/navigation";
 import { updateStockItemAction } from "@/app/admin/actions";
 import { StockForm } from "@/components/admin/stock-form";
 import { getStockItemById } from "@/db/queries/stock";
+import { requireAdmin } from "@/lib/auth";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditStockItemPage({ params }: Props) {
+  await requireAdmin();
   const { id } = await params;
   const itemId = Number(id);
   if (!Number.isInteger(itemId)) notFound();

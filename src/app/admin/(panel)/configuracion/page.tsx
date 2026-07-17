@@ -1,8 +1,10 @@
 import { EmailSettingsForm } from "@/components/admin/email-settings-form";
 import { TestEmailForm } from "@/components/admin/test-email-form";
+import { requireAdmin } from "@/lib/auth";
 import { getSettingSafe, SETTING_KEYS } from "@/lib/settings";
 
 export default async function AdminSettingsPage() {
+  await requireAdmin();
   const [leadsTo, applicationsTo] = await Promise.all([
     getSettingSafe(SETTING_KEYS.emailLeadsTo),
     getSettingSafe(SETTING_KEYS.emailApplicationsTo),

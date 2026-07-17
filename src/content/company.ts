@@ -3,15 +3,18 @@ import type { Certification, Company, NavItem, SocialLink } from "@/types/conten
 /**
  * Company master data (single source of truth for NAP consistency — SEO).
  * TODO(marketing): confirm email, hours, exact phone and social URLs
- * (see docs/marketing-material-request.md §5).
+ * (see docs/marketing-material-request.md §5). The 2023 corporate deck lists
+ * (442) 688 4636 and hola@plasticospimsa.com, which differ from the current
+ * values below; do not switch lead channels until Marketing confirms them.
  */
 export const company: Company = {
   name: "Plásticos PIMSA",
   legalName: "Plásticos de Ingeniería Mexicanos, S.A. de C.V.",
+  tagline: "Más que reciclaje, una visión a futuro",
   foundedYear: 2008,
   incorporatedYear: 2011,
   description:
-    "Empresa mexicana dedicada a la venta de polímeros de ingeniería reciclados —ABS, PC, PA, POM y más— producidos en planta propia mediante recolección de scrap industrial, triturado, molienda y peletizado con calidad certificada ISO 9001:2015.",
+    "Empresa mexicana dedicada a la venta de polímeros de ingeniería reciclados —ABS, PC, PA, POM y más— producidos en planta propia mediante recolección de scrap industrial, triturado, molienda y peletizado bajo un sistema de gestión de calidad ISO 9001:2015.",
   address: {
     street: "Calle Ingenieros #104",
     neighborhood: "Distrito Industrial Oriente",
@@ -36,11 +39,7 @@ export const company: Company = {
 };
 
 /** Industries served — shown as a mono strip on home (DESIGN.md §7). */
-export const industries = [
-  "Automotriz",
-  "Línea blanca",
-  "Eléctrico y electrónico",
-] as const;
+export const industries = ["Automotriz", "Línea blanca", "Eléctrico y electrónico"] as const;
 
 /**
  * Certifications & registries — key trust signals (PLAN.md §2).
@@ -51,23 +50,26 @@ export const certifications: Certification[] = [
     code: "ISO 9001:2015",
     name: "Sistema de Gestión de Calidad",
     description:
-      "Procesos de reciclaje y comercialización certificados bajo la norma internacional de gestión de calidad.",
+      "Sistema de gestión certificado bajo la norma internacional de calidad ISO 9001:2015.",
   },
   {
     code: "IMMEX",
     name: "Programa de manufactura y exportación",
-    description:
-      "Registro que nos permite operar con empresas maquiladoras y de exportación en todo el país.",
+    description: "Registro en el programa de manufactura y servicios de exportación.",
   },
   {
     code: "DUNS",
     name: "Registro empresarial internacional",
-    description:
-      "Identificador global que respalda nuestra confiabilidad comercial ante clientes internacionales.",
+    description: "Identificador empresarial internacional asignado a la organización.",
   },
 ];
 
-/** Main navigation. */
+/**
+ * Main navigation. The services submenu is written out by hand ON PURPOSE:
+ * the Header is a client component, and deriving these links from
+ * src/content/services.ts would drag the whole service catalog into the
+ * client bundle. Keep the list in sync with the slugs in services.ts.
+ */
 export const mainNav: NavItem[] = [
   { label: "Inicio", href: "/" },
   { label: "Nosotros", href: "/nosotros" },

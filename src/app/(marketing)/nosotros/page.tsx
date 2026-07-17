@@ -11,8 +11,8 @@ import { company } from "@/content/company";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Nosotros — Empresa mexicana de polímeros de ingeniería reciclados",
-  description: `${company.legalName} produce polímeros de ingeniería reciclados desde ${company.foundedYear} en el Bajío industrial, con entrega a todo México. Certificados ISO 9001:2015, IMMEX y DUNS.`,
+  title: "Nosotros — recicladora de plásticos de ingeniería",
+  description: `Producimos polímeros de ingeniería reciclados desde ${company.foundedYear} en el Bajío, con entrega a todo México. ISO 9001:2015 y registros IMMEX y DUNS.`,
   path: "/nosotros",
   keywords: [
     "empresa recicladora de plásticos Querétaro",
@@ -30,7 +30,7 @@ export default function AboutPage() {
         index="01"
         eyebrow="Nosotros"
         title="Ingeniería mexicana en economía circular"
-        intro={`Desde ${company.foundedYear}, desde el corazón del Bajío industrial, transformamos el scrap plástico de la industria en materia prima certificada para todo México.`}
+        intro={`Desde ${company.foundedYear}, desde el corazón del Bajío industrial, transformamos el scrap plástico de la industria en materia prima recuperada con calidad documentada para todo México.`}
         breadcrumbs={[
           { name: "Inicio", path: "/" },
           { name: "Nosotros", path: "/nosotros" },
@@ -44,23 +44,25 @@ export default function AboutPage() {
             index="01"
             eyebrow="Identidad"
             title="Lo que nos mueve"
-            intro="No somos una recicladora genérica: somos una empresa de ingeniería que convierte el scrap en materia prima certificada para nuevas aplicaciones."
+            intro="No somos una recicladora genérica: somos una empresa de ingeniería que convierte el scrap en materia prima recuperada para nuevas aplicaciones."
           />
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             <Card className="h-full">
-              <p className="text-green-600 font-mono text-xs tracking-[0.18em] uppercase">Misión</p>
+              <p className="font-mono text-xs tracking-[0.18em] text-green-600 uppercase">Misión</p>
               <p className="text-ink mt-4">{missionVision.mission}</p>
             </Card>
             <Card className="h-full">
-              <p className="text-green-600 font-mono text-xs tracking-[0.18em] uppercase">Visión</p>
+              <p className="font-mono text-xs tracking-[0.18em] text-green-600 uppercase">Visión</p>
               <p className="text-ink mt-4">{missionVision.vision}</p>
             </Card>
             <Card className="h-full">
-              <p className="text-green-600 font-mono text-xs tracking-[0.18em] uppercase">Valores</p>
+              <p className="font-mono text-xs tracking-[0.18em] text-green-600 uppercase">
+                Valores
+              </p>
               <ul className="text-ink mt-4 space-y-2">
                 {missionVision.values.map((value) => (
                   <li key={value} className="flex items-baseline gap-3">
-                    <span aria-hidden className="bg-green-500 size-1.5 shrink-0 rounded-full" />
+                    <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-green-500" />
                     {value}
                   </li>
                 ))}

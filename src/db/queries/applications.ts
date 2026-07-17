@@ -54,8 +54,8 @@ export interface ApplicationListItem extends Application {
   cvFileId: number | null;
 }
 
-export async function listApplications(status?: ApplicationStatus): Promise<ApplicationListItem[]> {
-  const base = db
+export async function listApplications(): Promise<ApplicationListItem[]> {
+  return db
     .select({
       id: applications.id,
       vacancyId: applications.vacancyId,
@@ -71,16 +71,10 @@ export async function listApplications(status?: ApplicationStatus): Promise<Appl
     .from(applications)
     .leftJoin(applicationFiles, eq(applicationFiles.applicationId, applications.id))
     .orderBy(desc(applications.createdAt));
-
-  return status ? base.where(eq(applications.status, status)) : base;
 }
 
 export async function setApplicationStatus(id: number, status: ApplicationStatus): Promise<void> {
   await db.update(applications).set({ status }).where(eq(applications.id, id));
-}
-
-export async function deleteApplication(id: number): Promise<void> {
-  await db.delete(applications).where(eq(applications.id, id));
 }
 
 export async function getApplicationFile(fileId: number) {

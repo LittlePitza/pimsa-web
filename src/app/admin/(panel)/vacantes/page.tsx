@@ -4,10 +4,12 @@ import { ConfirmButton } from "@/components/admin/confirm-button";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { listVacancies } from "@/db/queries/vacancies";
+import { requireAdmin } from "@/lib/auth";
 import { vacancyStatusLabels } from "@/lib/labels";
 import { cn, formatDate } from "@/lib/utils";
 
 export default async function AdminVacanciesPage() {
+  await requireAdmin();
   const vacancies = await listVacancies();
 
   return (

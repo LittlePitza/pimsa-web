@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { InputField, TextareaField } from "@/components/ui/field";
 import { trackEvent } from "@/lib/analytics";
+import { CV_ACCEPT, MAX_CV_BYTES, MAX_CV_LABEL } from "@/lib/uploads";
 
 type Status = "idle" | "submitting" | "success" | "error";
-
-const MAX_CV_BYTES = 5 * 1024 * 1024;
 
 /** Job application form: fields + CV upload (PDF/Word ≤ 5 MB). */
 export function ApplicationForm({
@@ -19,6 +19,11 @@ export function ApplicationForm({
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const successRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (status === "success") successRef.current?.focus();
+  }, [status]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,7 +36,7 @@ export function ApplicationForm({
     const cv = formData.get("cv");
     if (cv instanceof File && cv.size > MAX_CV_BYTES) {
       setStatus("error");
-      setErrorMessage("El CV supera el tamaño máximo de 5 MB.");
+      setErrorMessage(`El CV supera el tamaño máximo de ${MAX_CV_LABEL}.`);
       return;
     }
 
@@ -54,7 +59,12 @@ export function ApplicationForm({
 
   if (status === "success") {
     return (
-      <div role="status" className="border-green-600 bg-surface shadow-card rounded-md border-l-4 p-8">
+      <div
+        ref={successRef}
+        tabIndex={-1}
+        role="status"
+        className="border-green-600 bg-surface shadow-card rounded-md border-l-4 p-8 focus:outline-none"
+      >
         <h3 className="font-display text-navy-500 text-xl font-semibold">
           ¡Postulación recibida!
         </h3>
@@ -93,14 +103,14 @@ export function ApplicationForm({
           htmlFor="cv"
           className="text-ink font-mono text-xs font-medium tracking-wider uppercase"
         >
-          CV (PDF o Word, máx. 5 MB) <span className="text-green-600">*</span>
+          CV (PDF o Word, máx. {MAX_CV_LABEL}) <span className="text-green-600">*</span>
         </label>
         <input
           id="cv"
           name="cv"
           type="file"
           required
-          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          accept={CV_ACCEPT}
           className="border-line bg-surface text-ink file:bg-navy-500 file:text-white w-full cursor-pointer rounded-sm border px-4 py-2.5 text-sm file:mr-4 file:cursor-pointer file:rounded-sm file:border-0 file:px-4 file:py-2 file:text-sm file:font-medium"
         />
       </div>
@@ -123,9 +133,13 @@ export function ApplicationForm({
         </Button>
         <p className="text-ink-muted mt-4 text-xs">
           Tus datos se usan únicamente para este proceso de reclutamiento conforme a nuestro{" "}
-          <a href="/aviso-de-privacidad" className="text-blue-600 underline">
+          <Link
+            href="/aviso-de-privacidad"
+            target="_blank"
+            className="text-blue-600 underline"
+          >
             aviso de privacidad
-          </a>
+          </Link>
           .
         </p>
       </div>

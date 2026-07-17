@@ -4,7 +4,16 @@
  */
 
 const STORAGE_KEY = "pimsa-utm";
-const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid"];
+
+/** Attribution params captured on landing; also the server-side allowlist. */
+export const UTM_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+  "gclid",
+];
 
 export type UtmParams = Record<string, string>;
 

@@ -56,6 +56,20 @@ export function Header() {
     };
   }, [servicesOpen]);
 
+  // Close the mobile menu with Escape, returning focus to the toggle button.
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
+
   const linkClasses = (href: string) =>
     cn(
       "text-sm font-medium transition-colors duration-150",
@@ -85,6 +99,8 @@ export function Header() {
                   <button
                     type="button"
                     aria-expanded={servicesOpen}
+                    aria-controls="services-menu"
+                    aria-haspopup="true"
                     onClick={() => setServicesOpen((open) => !open)}
                     className={cn(linkClasses(item.href), "inline-flex items-center gap-1")}
                   >
@@ -96,7 +112,10 @@ export function Header() {
                     />
                   </button>
                   {servicesOpen ? (
-                    <ul className="bg-surface border-line shadow-lift absolute top-full left-1/2 mt-3 w-64 -translate-x-1/2 rounded-md border p-2">
+                    <ul
+                      id="services-menu"
+                      className="bg-surface border-line shadow-lift absolute top-full left-1/2 mt-3 w-64 -translate-x-1/2 rounded-md border p-2"
+                    >
                       <li>
                         <Link
                           href={item.href}
@@ -145,6 +164,7 @@ export function Header() {
 
           {/* Mobile menu toggle */}
           <button
+            ref={menuButtonRef}
             type="button"
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
