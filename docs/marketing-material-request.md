@@ -74,7 +74,7 @@ Los textos en Word o Google Docs; las imágenes en su resolución original (sin 
 
 ## 5. Datos de contacto oficiales (P1)
 
-- Teléfono(s) oficial(es) y número de **WhatsApp Business** definitivo (confirmar el +52 442 647 7541)
+- ~~Teléfono(s) oficial(es) y número de **WhatsApp Business** definitivo~~ — confirmado 2026-07-29: **+52 442 274 7546** (teléfono y WhatsApp)
 - Correo(s) que recibirán los **leads del formulario** (¿ventas? ¿varios? ¿por servicio?)
 - Horario de atención
 - Dirección exacta validada + pin de Google Maps correcto

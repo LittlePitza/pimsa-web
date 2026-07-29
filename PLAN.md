@@ -20,7 +20,7 @@
 - **Credentials**: ISO-9001:2015, IMMEX, DUNS — trust signals that must be prominent.
 - **Industries served**: automotive, white goods, electrical/electronic.
 - **Location**: Calle Ingenieros #104, Distrito Industrial Oriente, El Castillo, 38160 Apaseo el Grande, Gto.
-- **Channels**: WhatsApp (+52 1 442 647 7541), Facebook, LinkedIn, Instagram, TikTok.
+- **Channels**: WhatsApp (+52 442 274 7546), Facebook, LinkedIn, Instagram, TikTok.
 - **Current site**: WordPress + Elementor, Spanish, blue/teal branding, contact form, FAQ.
 
 ## 3. Technology Stack

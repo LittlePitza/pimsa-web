@@ -29,7 +29,7 @@ export interface Company {
     country: string;
   };
   phone: string;
-  /** International format without symbols, e.g. "5214426477541" (for wa.me). */
+  /** International format without symbols, e.g. "524422747546" (for wa.me). */
   whatsapp: string;
   whatsappDisplay: string;
   email: string;

@@ -2,10 +2,11 @@ import type { Certification, Company, NavItem, SocialLink } from "@/types/conten
 
 /**
  * Company master data (single source of truth for NAP consistency — SEO).
- * TODO(marketing): confirm email, hours, exact phone and social URLs
+ * Phone/WhatsApp confirmed 2026-07-29: 442 274 7546 (all messages route here).
+ * TODO(marketing): confirm email, hours and social URLs
  * (see docs/marketing-material-request.md §5). The 2023 corporate deck lists
- * (442) 688 4636 and hola@plasticospimsa.com, which differ from the current
- * values below; do not switch lead channels until Marketing confirms them.
+ * hola@plasticospimsa.com, which differs from the current email below; do not
+ * switch that lead channel until Marketing confirms it.
  */
 export const company: Company = {
   name: "Plásticos PIMSA",
@@ -24,9 +25,9 @@ export const company: Company = {
     postalCode: "38160",
     country: "MX",
   },
-  phone: "+52 442 647 7541",
-  whatsapp: "5214426477541",
-  whatsappDisplay: "+52 1 442 647 7541",
+  phone: "+52 442 274 7546",
+  whatsapp: "524422747546",
+  whatsappDisplay: "+52 442 274 7546",
   email: "contacto@plasticospimsa.com",
   hours: "Lunes a Viernes · 8:00 – 18:00",
   social: [
