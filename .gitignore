@@ -36,15 +36,13 @@ coverage/
 !.vscode/extensions.json
 !.vscode/settings.json
 .idea/
+.cursor/
 .DS_Store
 Thumbs.db
 desktop.ini
 
 # Vercel (not used for hosting, but just in case)
 .vercel/
-
-# Claude Code local config (machine-specific)
-.claude/
 
 # Generated document exports (source of truth is the .md files)
 docs/*.docx

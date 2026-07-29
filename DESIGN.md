@@ -2,7 +2,7 @@
 
 > Art direction and design system for plasticospimsa.com.
 > Companion to [PLAN.md](./PLAN.md) · Status: **Approved direction, pre-build** · Last updated: 2026-07-03
-> This document doubles as a design brief (can be handed to Claude Design or any designer as-is).
+> This document doubles as a design brief and can be handed to any designer as-is.
 
 ---
 
