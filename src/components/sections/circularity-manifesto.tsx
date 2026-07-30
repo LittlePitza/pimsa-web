@@ -61,6 +61,7 @@ export function CircularityManifesto() {
               src={scrapIndustrial}
               alt="Scrap plástico industrial separado para su valorización"
               fill
+              quality={60}
               sizes="(max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 44rem"
               placeholder="blur"
               className="object-cover"

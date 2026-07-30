@@ -126,6 +126,7 @@ export function MaterialAtlas() {
                     src={material.image}
                     alt={`Muestra de ${material.name} reciclado`}
                     fill
+                    quality={60}
                     sizes={
                       material.span
                         ? "(max-width: 767px) 45vw, (max-width: 1023px) 66vw, (max-width: 1279px) 50vw, 38rem"
@@ -149,7 +150,7 @@ export function MaterialAtlas() {
               )}
 
               <div className="absolute inset-x-0 bottom-0 p-5">
-                <p className="font-mono text-xs font-semibold tracking-[0.18em] uppercase opacity-90">
+                <p className="font-mono text-xs font-medium tracking-[0.18em] uppercase opacity-90">
                   {material.form}
                 </p>
                 <p className="font-display mt-1 text-3xl font-bold">{material.code}</p>

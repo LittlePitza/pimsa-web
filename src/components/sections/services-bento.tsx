@@ -52,6 +52,7 @@ export function ServicesBento() {
                         src={service.figure.src}
                         alt={service.figure.alt}
                         fill
+                        quality={60}
                         sizes={
                           wide
                             ? "(max-width: 767px) 82vw, (max-width: 1023px) 50vw, 58vw"
@@ -64,7 +65,7 @@ export function ServicesBento() {
                         aria-hidden
                       />
                       <div className="absolute top-4 right-4 left-4 flex items-start justify-between gap-4">
-                        <span className="text-navy-900 bg-green-500 px-3 py-1.5 font-mono text-xs font-semibold tracking-[0.14em]">
+                        <span className="text-navy-900 bg-green-500 px-3 py-1.5 font-mono text-xs font-medium tracking-[0.14em]">
                           {service.index}
                         </span>
                         {service.figure.tag ? (

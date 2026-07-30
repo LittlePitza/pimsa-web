@@ -37,8 +37,13 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
-    /** Non-default qualities must be allow-listed (Next 16). 50 is used by decorative full-bleed backgrounds. */
-    qualities: [50, 75],
+    /**
+     * Non-default qualities must be allow-listed (Next 16). 50 is used by
+     * decorative full-bleed backgrounds, 60 by the below-the-fold card
+     * imagery (indistinguishable from 75 in AVIF at card size, and the bytes
+     * come straight off the mobile critical path).
+     */
+    qualities: [50, 60, 75],
   },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];

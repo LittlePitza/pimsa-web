@@ -71,6 +71,7 @@ export function ProcessLoop() {
                     src={scrapIndustrial}
                     alt="Scrap plástico industrial negro separado para su recuperación"
                     fill
+                    quality={60}
                     sizes="(max-width: 767px) 78vw, (max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 44rem"
                     placeholder="blur"
                     className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
@@ -92,6 +93,7 @@ export function ProcessLoop() {
                     src={millFeed}
                     alt="Alimentación de scrap plástico en el equipo de molienda"
                     fill
+                    quality={60}
                     sizes="(max-width: 767px) 78vw, (max-width: 1023px) 50vw, (max-width: 1279px) 29vw, 22rem"
                     placeholder="blur"
                     className="object-cover"
@@ -108,6 +110,7 @@ export function ProcessLoop() {
                     src={pelletLine}
                     alt="Pellet saliendo de una tolva en la línea de PIMSA"
                     fill
+                    quality={60}
                     sizes="(max-width: 767px) 78vw, (max-width: 1023px) 50vw, (max-width: 1279px) 29vw, 22rem"
                     placeholder="blur"
                     className="object-cover object-[50%_62%]"
@@ -124,6 +127,7 @@ export function ProcessLoop() {
                     src={labPhoto}
                     alt="Equipos del laboratorio de control de calidad de PIMSA"
                     fill
+                    quality={60}
                     sizes="(max-width: 767px) 78vw, (max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 44rem"
                     placeholder="blur"
                     className="object-cover object-[50%_46%]"

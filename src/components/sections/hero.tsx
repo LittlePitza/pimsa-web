@@ -60,6 +60,13 @@ export function Hero() {
                 alt="Pellet negro descargándose desde una tolva en la planta de PIMSA"
                 fill
                 preload
+                /**
+                 * This is the LCP element on mobile. `preload` only emits the
+                 * <link rel=preload>; Next never derives fetchPriority from it,
+                 * so without this the request lands at Low priority and queues
+                 * behind the font files.
+                 */
+                fetchPriority="high"
                 sizes="(max-width: 700px) 82vw, (max-width: 1023px) 30rem, (max-width: 1279px) 34vw, 31rem"
                 placeholder="blur"
                 className="object-cover object-[52%_62%]"
