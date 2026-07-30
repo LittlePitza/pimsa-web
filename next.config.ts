@@ -35,6 +35,20 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: {
+    /**
+     * Ship the stylesheet inside the document instead of as a linked chunk.
+     * The link was render-blocking and PageSpeed put it at ~590 ms, since a
+     * separate request costs a full round trip before anything can paint.
+     *
+     * Measured under real network throttling (Lantern on localhost hides this
+     * — it charges no round trip): LCP score 78-82 -> 97, FCP 2.7 s -> 1.9 s.
+     * The cost is a bigger document (45 -> 86 KB gzipped, as Next repeats the
+     * CSS in the RSC payload) and main-thread time to parse it, which the
+     * 10 ms production TBT has ample room to absorb.
+     */
+    inlineCss: true,
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     /**
