@@ -54,7 +54,15 @@ export function Hero() {
           </div>
 
           <figure className="relative mx-auto w-full max-w-xl lg:max-w-none">
-            <div className="relative ml-auto aspect-[4/5] w-[82%] overflow-hidden border border-blue-400/30">
+            {/*
+              The source photograph is 2992x2000 (3:2 landscape). The 4/5
+              portrait frame is the desktop art direction and crops 47% of its
+              width, which on a phone leaves an unreadable fragment of the
+              pelletizing line. Below `sm` it runs full-bleed at its native 3:2
+              instead — no crop — and the overlapping square below is dropped,
+              since that composition needs width to read as one.
+            */}
+            <div className="relative ml-auto aspect-[3/2] w-full overflow-hidden border border-blue-400/30 sm:aspect-[4/5] sm:w-[82%]">
               <Image
                 src={pelletLine}
                 alt="Pellet negro descargándose desde una tolva en la planta de PIMSA"
@@ -67,7 +75,7 @@ export function Hero() {
                  * behind the font files.
                  */
                 fetchPriority="high"
-                sizes="(max-width: 700px) 82vw, (max-width: 1023px) 30rem, (max-width: 1279px) 34vw, 31rem"
+                sizes="(max-width: 639px) 94vw, (max-width: 700px) 82vw, (max-width: 1023px) 30rem, (max-width: 1279px) 34vw, 31rem"
                 placeholder="blur"
                 className="object-cover object-[52%_62%]"
               />
@@ -99,7 +107,7 @@ export function Hero() {
               </div>
             </div>
 
-            <div className="border-navy-900 absolute bottom-8 left-0 aspect-square w-[38%] overflow-hidden border-8 shadow-2xl">
+            <div className="border-navy-900 absolute bottom-8 left-0 hidden aspect-square w-[38%] overflow-hidden border-8 shadow-2xl sm:block">
               <Image
                 src={heroPolymer}
                 alt=""
@@ -115,7 +123,7 @@ export function Hero() {
               aria-hidden
             />
 
-            <figcaption className="mt-5 ml-[18%] flex items-center justify-between gap-4 font-mono text-xs tracking-[0.18em] text-blue-400 uppercase">
+            <figcaption className="mt-5 flex items-center justify-between gap-4 font-mono text-xs tracking-[0.18em] text-blue-400 uppercase sm:ml-[18%]">
               <span>Planta La Estancia</span>
               <span className="text-green-300">PC · ABS/PC · PA66 · PP</span>
             </figcaption>
