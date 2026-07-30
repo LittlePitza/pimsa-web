@@ -33,14 +33,19 @@ export function SectionHeading({
       </Eyebrow>
       <Heading
         className={cn(
-          "font-display text-h2 mt-4 font-semibold",
+          "font-display text-h2 mt-3 font-semibold md:mt-4",
           tone === "dark" ? "text-paper" : "text-navy-500",
         )}
       >
         {title}
       </Heading>
       {intro ? (
-        <p className={cn("text-lead mt-5", tone === "dark" ? "text-paper/80" : "text-ink-muted")}>
+        <p
+          className={cn(
+            "text-lead mt-3 md:mt-5",
+            tone === "dark" ? "text-paper/80" : "text-ink-muted",
+          )}
+        >
           {intro}
         </p>
       ) : null}

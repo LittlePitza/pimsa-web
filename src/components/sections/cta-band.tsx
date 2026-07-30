@@ -14,7 +14,7 @@ export function CtaBand({
   return (
     <section data-band="dark" className="bg-navy-900 relative overflow-hidden">
       <div className="technical-grid absolute inset-0" aria-hidden />
-      <Container className="relative py-20 md:py-28">
+      <Container className="relative py-12 md:py-28">
         <div className="max-w-2xl">
           <Eyebrow tone="dark">Siguiente paso</Eyebrow>
           <h2 className="font-display text-h2 text-paper mt-4 font-semibold">{title}</h2>

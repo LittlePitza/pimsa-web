@@ -19,7 +19,7 @@ export function FaqSection({
   showAllLink?: boolean;
 }) {
   return (
-    <section className="py-24 md:py-32">
+    <section className="py-12 md:py-32">
       <Container className="max-w-4xl">
         <SectionHeading index={index} eyebrow="FAQ" title={title} intro={intro} />
 

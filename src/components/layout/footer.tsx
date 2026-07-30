@@ -17,11 +17,15 @@ import { services } from "@/content/services";
 export function Footer() {
   return (
     <footer data-band="dark" className="bg-navy-900 text-paper">
-      <Container className="py-16">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+      <Container className="py-10 md:py-16">
+        <div className="grid gap-8 md:grid-cols-2 md:gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           {/* Brand */}
           <div>
-            <Link href="/">
+            <Link
+              href="/"
+              aria-label="Plásticos PIMSA — Ir al inicio"
+              className="inline-flex min-h-11 items-center rounded-sm"
+            >
               <Logo tone="dark" />
             </Link>
             <p className="mt-4 font-mono text-xs tracking-[0.18em] text-green-300 uppercase">
@@ -42,12 +46,12 @@ export function Footer() {
             <h2 className="font-mono text-xs tracking-[0.18em] text-blue-400 uppercase">
               Navegación
             </h2>
-            <ul className="mt-5 space-y-3">
+            <ul className="mt-3 space-y-0.5 md:mt-5 md:space-y-3">
               {mainNav.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-paper/80 text-sm transition-colors hover:text-green-300"
+                    className="text-paper/80 flex min-h-9 items-center text-sm transition-colors hover:text-green-300 md:min-h-0"
                   >
                     {item.label}
                   </Link>
@@ -61,12 +65,12 @@ export function Footer() {
             <h2 className="font-mono text-xs tracking-[0.18em] text-blue-400 uppercase">
               Servicios
             </h2>
-            <ul className="mt-5 space-y-3">
+            <ul className="mt-3 space-y-0.5 md:mt-5 md:space-y-3">
               {services.map((service) => (
                 <li key={service.slug}>
                   <Link
                     href={`/servicios/${service.slug}`}
-                    className="text-paper/80 text-sm transition-colors hover:text-green-300"
+                    className="text-paper/80 flex min-h-9 items-center text-sm transition-colors hover:text-green-300 md:min-h-0"
                   >
                     {service.name}
                   </Link>
@@ -85,7 +89,7 @@ export function Footer() {
               <p>
                 <a
                   href={`tel:${company.phone.replace(/\s/g, "")}`}
-                  className="hover:text-green-300"
+                  className="inline-flex min-h-9 items-center hover:text-green-300 md:min-h-0"
                 >
                   {company.phone}
                 </a>
@@ -95,26 +99,29 @@ export function Footer() {
                   href={whatsappUrl()}
                   rel="noopener noreferrer"
                   target="_blank"
-                  className="hover:text-green-300"
+                  className="inline-flex min-h-9 items-center hover:text-green-300 md:min-h-0"
                 >
                   WhatsApp: {company.whatsappDisplay}
                 </a>
               </p>
               <p>
-                <a href={`mailto:${company.email}`} className="hover:text-green-300">
+                <a
+                  href={`mailto:${company.email}`}
+                  className="inline-flex min-h-9 items-center hover:text-green-300 md:min-h-0"
+                >
                   {company.email}
                 </a>
               </p>
               <p className="text-paper/60">{company.hours}</p>
             </address>
-            <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2" aria-label="Redes sociales">
+            <ul className="mt-4 flex flex-wrap gap-x-5 md:mt-6" aria-label="Redes sociales">
               {company.social.map((social) => (
                 <li key={social.name}>
                   <a
                     href={social.url}
                     rel="noopener noreferrer"
                     target="_blank"
-                    className="font-mono text-xs tracking-wider text-blue-400 uppercase transition-colors hover:text-green-300"
+                    className="flex min-h-9 items-center font-mono text-xs tracking-wider text-blue-400 uppercase transition-colors hover:text-green-300 md:min-h-0"
                   >
                     {social.name}
                   </a>
@@ -134,7 +141,10 @@ export function Footer() {
           <ul className="flex gap-6">
             {legalNav.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="text-paper/60 hover:text-green-300">
+                <Link
+                  href={item.href}
+                  className="text-paper/60 flex min-h-9 items-center hover:text-green-300 md:min-h-0"
+                >
                   {item.label}
                 </Link>
               </li>

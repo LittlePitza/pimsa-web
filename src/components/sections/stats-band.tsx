@@ -9,7 +9,7 @@ import plantExterior from "../../../public/media/corporate/planta-la-estancia.jp
 /** Capacity data over real PIMSA plant photography. */
 export function StatsBand() {
   return (
-    <section data-band="dark" className="bg-navy-900 relative overflow-hidden py-20 md:py-24">
+    <section data-band="dark" className="bg-navy-900 relative overflow-hidden py-12 md:py-24">
       {/* Decorative backdrop under an ~88% overlay — low quality is invisible here. */}
       <Image
         src={plantExterior}

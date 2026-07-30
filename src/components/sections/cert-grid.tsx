@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { BadgeCheck, Factory, Fingerprint } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
+import { CardRail } from "@/components/ui/card-rail";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -107,9 +108,9 @@ function CredentialCard({ cert, index }: { cert: Certification; index: number })
 /** Visual dossier for the quality system and business registries. */
 export function CertGrid({ index = "07" }: { index?: string }) {
   return (
-    <section className="py-14 md:py-24">
+    <section className="py-10 md:py-24">
       <Container>
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(18rem,3fr)] lg:items-end">
+        <div className="grid gap-6 md:gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(18rem,3fr)] lg:items-end">
           <SectionHeading
             index={index}
             eyebrow="Credenciales operativas"
@@ -127,13 +128,24 @@ export function CertGrid({ index = "07" }: { index?: string }) {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-3 md:mt-12 md:grid-cols-2 lg:grid-cols-12">
+        <CardRail
+          label="Credenciales operativas"
+          className="mt-8 md:mt-12 md:grid-cols-2 lg:grid-cols-12"
+        >
           {certifications.map((cert, i) => (
-            <Reveal key={cert.code} delay={i * 60} className={cn("min-w-0", credentialLayout[i])}>
+            <Reveal
+              key={cert.code}
+              delay={i * 60}
+              as="li"
+              className={cn(
+                "w-[80%] shrink-0 snap-start md:w-auto md:min-w-0 md:shrink",
+                credentialLayout[i],
+              )}
+            >
               <CredentialCard cert={cert} index={i} />
             </Reveal>
           ))}
-        </div>
+        </CardRail>
 
         <div className="border-line mt-6 border-t pt-5 lg:hidden">
           <p className="font-mono text-xs tracking-[0.16em] text-green-600 uppercase">

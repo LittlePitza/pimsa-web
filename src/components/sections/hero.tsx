@@ -21,18 +21,18 @@ export function Hero() {
       />
       <PelletPattern className="absolute -top-8 right-0 h-72 w-96 text-green-300/20" />
 
-      <Container className="relative pt-24 pb-12 sm:pt-28 lg:min-h-[50rem] lg:pt-40 lg:pb-16">
-        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(24rem,0.8fr)] lg:gap-14 xl:gap-20">
+      <Container className="relative pt-24 pb-10 sm:pt-28 lg:min-h-[50rem] lg:pt-40 lg:pb-16">
+        <div className="grid items-center gap-6 md:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(24rem,0.8fr)] lg:gap-14 xl:gap-20">
           <div className="max-w-3xl lg:pb-12">
             <Eyebrow tone="dark">Cobertura nacional · ISO 9001:2015 · IMMEX</Eyebrow>
-            <h1 className="font-display text-display text-paper mt-6 font-bold">
+            <h1 className="font-display text-display text-paper mt-4 font-bold md:mt-6">
               Scrap que vuelve como <span className="text-green-300">ingeniería</span>
             </h1>
-            <p className="text-lead text-paper/80 mt-7 max-w-xl">
+            <p className="text-lead text-paper/80 mt-4 max-w-xl md:mt-7">
               Recuperamos, clasificamos y transformamos plásticos industriales en PC, ABS/PC, PA66,
               PP, POM y otras resinas listas para regresar a producción.
             </p>
-            <div className="mt-10 flex flex-wrap gap-4">
+            <div className="mt-7 flex flex-wrap gap-3 md:mt-10 md:gap-4">
               <ButtonLink href="/contacto" variant="accent" size="lg">
                 Solicitar cotización
               </ButtonLink>
@@ -115,7 +115,7 @@ export function Hero() {
           </figure>
         </div>
 
-        <div className="mt-14 flex items-center justify-between border-t border-blue-400/30 pt-4 lg:mt-8">
+        <div className="mt-8 flex items-center justify-between border-t border-blue-400/30 pt-4 md:mt-14 lg:mt-8">
           <p className="font-mono text-xs tracking-[0.18em] text-blue-400 uppercase">
             {company.tagline}
           </p>

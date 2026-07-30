@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ButtonLink } from "@/components/ui/button";
+import { CardRail } from "@/components/ui/card-rail";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { cn } from "@/lib/utils";
@@ -87,9 +88,9 @@ const materials = [
 
 export function MaterialAtlas() {
   return (
-    <section className="bg-green-300/10 py-14 md:py-24">
+    <section className="bg-green-300/10 py-10 md:py-24">
       <Container>
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(20rem,3fr)] lg:items-end">
+        <div className="grid gap-6 md:gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(20rem,3fr)] lg:items-end">
           <SectionHeading
             index="02"
             eyebrow="Materiales"
@@ -106,12 +107,15 @@ export function MaterialAtlas() {
           </div>
         </div>
 
-        <ul className="mt-12 grid auto-rows-[13rem] grid-cols-1 gap-3 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <CardRail
+          label="Materiales disponibles"
+          className="mt-7 h-40 md:mt-12 md:h-auto md:auto-rows-[13rem] md:grid-cols-3 lg:grid-cols-4"
+        >
           {materials.map((material) => (
             <li
               key={material.code}
               className={cn(
-                "group border-line relative overflow-hidden rounded-sm border",
+                "group border-line relative w-[45%] shrink-0 snap-start overflow-hidden rounded-sm border md:w-auto md:shrink",
                 material.span,
                 material.image ? "bg-navy-900 text-white" : material.tone,
               )}
@@ -124,8 +128,8 @@ export function MaterialAtlas() {
                     fill
                     sizes={
                       material.span
-                        ? "(max-width: 359px) 100vw, (max-width: 767px) 50vw, (max-width: 1023px) 66vw, (max-width: 1279px) 50vw, 38rem"
-                        : "(max-width: 359px) 100vw, (max-width: 767px) 50vw, (max-width: 1023px) 33vw, (max-width: 1279px) 25vw, 19rem"
+                        ? "(max-width: 767px) 45vw, (max-width: 1023px) 66vw, (max-width: 1279px) 50vw, 38rem"
+                        : "(max-width: 767px) 45vw, (max-width: 1023px) 33vw, (max-width: 1279px) 25vw, 19rem"
                     }
                     placeholder="blur"
                     className="object-cover transition-transform duration-500 group-hover:scale-[1.035]"
@@ -155,7 +159,7 @@ export function MaterialAtlas() {
               </div>
             </li>
           ))}
-        </ul>
+        </CardRail>
 
         <div className="mt-8 flex justify-end">
           <ButtonLink href="/servicios/polimeros" variant="primary">

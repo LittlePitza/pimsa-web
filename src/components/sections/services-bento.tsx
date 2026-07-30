@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { CardRail } from "@/components/ui/card-rail";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -13,7 +14,7 @@ const serviceLayout = ["lg:col-span-7", "lg:col-span-5", "lg:col-span-5", "lg:co
 /** Image-led service grid using the real operational photography. */
 export function ServicesBento() {
   return (
-    <section className="bg-surface py-20 md:py-24">
+    <section className="bg-surface py-12 md:py-24">
       <Container>
         <SectionHeading
           index="04"
@@ -22,12 +23,20 @@ export function ServicesBento() {
           intro="Polímeros de ingeniería listos para producción — respaldados por los servicios que los hacen posibles: recolección de scrap, molienda y peletizado."
         />
 
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-12">
+        <CardRail label="Servicios" className="mt-7 gap-4 md:mt-12 md:grid-cols-2 lg:grid-cols-12">
           {services.map((service, i) => {
             const featured = i === 0;
             const wide = i === 0 || i === 3;
             return (
-              <Reveal key={service.slug} delay={i * 60} className={cn("min-w-0", serviceLayout[i])}>
+              <Reveal
+                key={service.slug}
+                delay={i * 60}
+                as="li"
+                className={cn(
+                  "w-[82%] shrink-0 snap-start md:w-auto md:min-w-0 md:shrink",
+                  serviceLayout[i],
+                )}
+              >
                 <Link
                   href={`/servicios/${service.slug}`}
                   className="group border-line shadow-card hover:shadow-lift block h-full overflow-hidden rounded-sm border bg-white transition-[translate,box-shadow] duration-150 hover:-translate-y-0.5"
@@ -45,8 +54,8 @@ export function ServicesBento() {
                         fill
                         sizes={
                           wide
-                            ? "(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 58vw"
-                            : "(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 42vw"
+                            ? "(max-width: 767px) 82vw, (max-width: 1023px) 50vw, 58vw"
+                            : "(max-width: 767px) 82vw, (max-width: 1023px) 50vw, 42vw"
                         }
                         className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
                       />
@@ -66,21 +75,23 @@ export function ServicesBento() {
                       </div>
                     </div>
 
-                    <div className="flex flex-1 flex-col p-6 md:p-7">
+                    <div className="flex flex-1 flex-col p-5 md:p-7">
                       <h3 className="font-display text-navy-500 text-2xl font-semibold md:text-[1.75rem]">
                         {service.name}
                       </h3>
-                      <p className="text-ink-muted mt-3 max-w-[58ch] text-sm">{service.summary}</p>
+                      <p className="text-ink-muted mt-2 max-w-[58ch] text-sm md:mt-3">
+                        {service.summary}
+                      </p>
 
                       {featured ? (
-                        <div className="mt-5 flex flex-wrap gap-2">
+                        <div className="mt-4 flex flex-wrap gap-2 md:mt-5">
                           {service.materials.slice(0, 6).map((material) => (
                             <Badge key={material}>{material}</Badge>
                           ))}
                         </div>
                       ) : null}
 
-                      <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-medium text-blue-600">
+                      <span className="mt-auto inline-flex items-center gap-2 pt-4 text-sm font-medium text-blue-600 md:pt-6">
                         Ver servicio
                         <ArrowRight
                           aria-hidden
@@ -94,7 +105,7 @@ export function ServicesBento() {
               </Reveal>
             );
           })}
-        </div>
+        </CardRail>
       </Container>
     </section>
   );

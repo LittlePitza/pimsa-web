@@ -12,13 +12,16 @@ export function Reveal({
   children,
   className,
   delay = 0,
+  as: Tag = "div",
 }: {
   children: React.ReactNode;
   className?: string;
   /** Stagger delay in ms. */
   delay?: number;
+  /** Element to render — use `"li"` inside a list (see CardRail). */
+  as?: "div" | "li";
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -39,12 +42,12 @@ export function Reveal({
   }, []);
 
   return (
-    <div
-      ref={ref}
+    <Tag
+      ref={ref as React.Ref<HTMLDivElement & HTMLLIElement>}
       className={cn("reveal", className)}
       style={delay ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}
-    </div>
+    </Tag>
   );
 }

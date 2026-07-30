@@ -13,7 +13,7 @@ const circularPractices = [
 
 export function CircularityManifesto() {
   return (
-    <section data-band="dark" className="bg-forest-800 relative overflow-hidden py-20 md:py-24">
+    <section data-band="dark" className="bg-forest-800 relative overflow-hidden py-12 md:py-24">
       <PelletPattern className="absolute -right-16 -bottom-16 h-80 w-[32rem] text-green-300/10" />
       <Container className="relative">
         <Eyebrow tone="dark">06 · Compromiso circular</Eyebrow>

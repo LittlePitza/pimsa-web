@@ -33,9 +33,13 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // data-scroll-behavior lets Next.js jump instantly to the top on route changes
+  // instead of animating the whole page height (the pages are long on mobile),
+  // while keeping smooth scrolling for in-page anchors.
   return (
     <html
       lang="es"
+      data-scroll-behavior="smooth"
       className={`${spaceGrotesk.variable} ${inter.variable} ${plexMono.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">

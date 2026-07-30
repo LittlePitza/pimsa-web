@@ -86,7 +86,14 @@ export function Header() {
       )}
     >
       <div className="mx-auto flex h-18 max-w-[1240px] items-center justify-between gap-6 px-5 md:px-8">
-        <Link href="/" className="shrink-0">
+        {/* Full header height so the whole logo area is tappable on mobile —
+            the 36px-tall SVG alone left dead zones above and below it. */}
+        <Link
+          href="/"
+          aria-label="Plásticos PIMSA — Ir al inicio"
+          aria-current={pathname === "/" ? "page" : undefined}
+          className="flex h-full shrink-0 items-center rounded-sm"
+        >
           <Logo tone={overHero ? "dark" : "light"} />
         </Link>
 
@@ -171,7 +178,7 @@ export function Header() {
             aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
             onClick={() => setMenuOpen((open) => !open)}
             className={cn(
-              "inline-flex size-10 items-center justify-center rounded-sm lg:hidden",
+              "-mr-1.5 inline-flex size-11 items-center justify-center rounded-sm lg:hidden",
               overHero ? "text-paper" : "text-navy-500",
             )}
           >
@@ -198,10 +205,13 @@ export function Header() {
                   {item.label}
                 </Link>
                 {item.children ? (
-                  <ul className="pb-3 pl-4">
+                  <ul className="pb-2 pl-4">
                     {item.children.map((child) => (
                       <li key={child.href}>
-                        <Link href={child.href} className="text-ink-muted block py-2 text-sm">
+                        <Link
+                          href={child.href}
+                          className="text-ink-muted flex min-h-11 items-center text-sm"
+                        >
                           {child.label}
                         </Link>
                       </li>
