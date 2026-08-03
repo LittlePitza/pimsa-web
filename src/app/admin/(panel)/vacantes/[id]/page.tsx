@@ -2,14 +2,14 @@ import { notFound } from "next/navigation";
 import { updateVacancyAction } from "@/app/admin/actions";
 import { VacancyForm } from "@/components/admin/vacancy-form";
 import { getVacancyById } from "@/db/queries/vacancies";
-import { requireAdmin } from "@/lib/auth";
+import { requireArea } from "@/lib/auth";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditVacancyPage({ params }: Props) {
-  await requireAdmin();
+  await requireArea("rrhh");
   const { id } = await params;
   const vacancyId = Number(id);
   if (!Number.isInteger(vacancyId)) notFound();

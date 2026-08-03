@@ -5,18 +5,21 @@ import { listApplications } from "@/db/queries/applications";
 import { listLeads } from "@/db/queries/leads";
 import { listStockItems } from "@/db/queries/stock";
 import { listVacancies } from "@/db/queries/vacancies";
-import { requireAdmin } from "@/lib/auth";
+import { requireFullPanel } from "@/lib/auth";
 import { applicationStatusLabels, leadStatusLabels } from "@/lib/labels";
 import { percent } from "@/lib/metrics";
 import { formatDate } from "@/lib/utils";
 
 /**
- * Whole-site overview: headline counts + a door into each area.
+ * Whole-site overview: headline counts + a door into each area. Only
+ * whole-panel accounts land here; Marketing and RRHH are sent straight to
+ * their own portal by the guard.
+ *
  * DB errors surface to the admin error boundary — honest failure beats
  * silently rendering zeros.
  */
 export default async function AdminDashboardPage() {
-  await requireAdmin();
+  await requireFullPanel();
   const [leads, applications, vacancies, stock] = await Promise.all([
     listLeads(),
     listApplications(),

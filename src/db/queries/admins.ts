@@ -1,6 +1,6 @@
 import { and, asc, count, eq, ne } from "drizzle-orm";
 import { db } from "@/db";
-import { adminUsers, type AdminUser } from "@/db/schema";
+import { adminUsers, type AdminRole, type AdminUser } from "@/db/schema";
 
 export async function getAdminByEmail(email: string): Promise<AdminUser | null> {
   const rows = await db
@@ -22,6 +22,7 @@ export interface AdminListItem {
   id: number;
   email: string;
   name: string;
+  role: AdminRole;
   createdAt: Date;
   lastLoginAt: Date | null;
 }
@@ -32,6 +33,7 @@ export async function listAdmins(): Promise<AdminListItem[]> {
       id: adminUsers.id,
       email: adminUsers.email,
       name: adminUsers.name,
+      role: adminUsers.role,
       createdAt: adminUsers.createdAt,
       lastLoginAt: adminUsers.lastLoginAt,
     })
@@ -59,22 +61,24 @@ export async function createAdmin(input: {
   email: string;
   name: string;
   passwordHash: string;
+  role: AdminRole;
 }): Promise<number> {
   const [result] = await db.insert(adminUsers).values({
     email: input.email.trim().toLowerCase(),
     name: input.name,
     passwordHash: input.passwordHash,
+    role: input.role,
   });
   return result.insertId;
 }
 
 export async function updateAdminProfile(
   id: number,
-  input: { email: string; name: string },
+  input: { email: string; name: string; role: AdminRole },
 ): Promise<void> {
   await db
     .update(adminUsers)
-    .set({ email: input.email.trim().toLowerCase(), name: input.name })
+    .set({ email: input.email.trim().toLowerCase(), name: input.name, role: input.role })
     .where(eq(adminUsers.id, id));
 }
 

@@ -1,13 +1,22 @@
 import { EmailSettingsForm } from "@/components/admin/email-settings-form";
 import { TestEmailForm } from "@/components/admin/test-email-form";
 import { requireAdmin } from "@/lib/auth";
+import { canAccess } from "@/lib/roles";
 import { getSettingSafe, SETTING_KEYS } from "@/lib/settings";
 
+/**
+ * Shared screen, split by area: each team configures only the email flow it
+ * owns (Marketing the contact leads, RRHH the job applications). Whole-panel
+ * accounts see both.
+ */
 export default async function AdminSettingsPage() {
-  await requireAdmin();
+  const session = await requireAdmin();
+  const ownsLeads = canAccess(session.role, "marketing");
+  const ownsApplications = canAccess(session.role, "rrhh");
+
   const [leadsTo, applicationsTo] = await Promise.all([
-    getSettingSafe(SETTING_KEYS.emailLeadsTo),
-    getSettingSafe(SETTING_KEYS.emailApplicationsTo),
+    ownsLeads ? getSettingSafe(SETTING_KEYS.emailLeadsTo) : Promise.resolve(""),
+    ownsApplications ? getSettingSafe(SETTING_KEYS.emailApplicationsTo) : Promise.resolve(""),
   ]);
 
   const smtpConfigured = Boolean(
@@ -32,6 +41,8 @@ export default async function AdminSettingsPage() {
             leadsTo={leadsTo ?? ""}
             applicationsTo={applicationsTo ?? ""}
             fallback={process.env.CONTACT_EMAIL_TO ?? ""}
+            showLeads={ownsLeads}
+            showApplications={ownsApplications}
           />
         </div>
       </section>
@@ -56,7 +67,7 @@ export default async function AdminSettingsPage() {
             </>
           )}
         </p>
-        <TestEmailForm />
+        <TestEmailForm showLeads={ownsLeads} showApplications={ownsApplications} />
       </section>
     </>
   );

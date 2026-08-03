@@ -14,6 +14,8 @@ export default async function AccountsPage() {
     id: admin.id,
     name: admin.name,
     email: admin.email,
+    // Super-admins always act as whole-panel, whatever the stored value is.
+    role: isSuperAdmin(admin.email) ? "admin" : admin.role,
     createdAt: admin.createdAt,
     lastLoginAt: admin.lastLoginAt,
     isSuper: isSuperAdmin(admin.email),
@@ -24,8 +26,9 @@ export default async function AccountsPage() {
     <>
       <h1 className="font-display text-navy-500 text-2xl font-bold">Cuentas</h1>
       <p className="text-ink-muted mt-2 max-w-2xl text-sm">
-        Administra el acceso al panel: crea usuarios, cambia sus correos y nombres, y actualiza
-        contraseñas. Solo los super-administradores ven esta sección.
+        Administra el acceso al panel: crea usuarios, asígnales su área, cambia sus correos y
+        nombres, y actualiza contraseñas. Cada cuenta solo entra al portal de su área. Solo los
+        super-administradores ven esta sección.
       </p>
 
       <section className="border-line bg-surface shadow-card mt-8 rounded-md border p-6">

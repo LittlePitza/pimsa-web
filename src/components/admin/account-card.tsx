@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import {
   deleteAccountAction,
   resetAccountPasswordAction,
@@ -8,7 +8,9 @@ import {
   type ActionState,
 } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
-import { InputField } from "@/components/ui/field";
+import { InputField, SelectField } from "@/components/ui/field";
+import { ADMIN_ROLES, type AdminRole } from "@/db/schema";
+import { roleDescriptions, roleLabels } from "@/lib/roles";
 import { formatDate } from "@/lib/utils";
 
 const initialState: ActionState = {};
@@ -17,6 +19,8 @@ export interface AccountCardData {
   id: number;
   name: string;
   email: string;
+  /** Portal this account enters: whole panel, Marketing only, or RRHH only. */
+  role: AdminRole;
   createdAt: Date;
   lastLoginAt: Date | null;
   /** This account is a protected super-admin (cannot be deleted / demoted). */
@@ -52,6 +56,7 @@ export function AccountCard({ account }: { account: AccountCardData }) {
     resetAccountPasswordAction.bind(null, account.id),
     initialState,
   );
+  const [role, setRole] = useState<AdminRole>(account.role);
 
   const canDelete = !account.isSelf && !account.isSuper;
 
@@ -70,7 +75,11 @@ export function AccountCard({ account }: { account: AccountCardData }) {
             <span className="border-green-600 text-green-600 rounded-full border px-2.5 py-0.5 font-mono text-xs tracking-wider uppercase">
               Super-admin
             </span>
-          ) : null}
+          ) : (
+            <span className="border-line text-navy-500 rounded-full border px-2.5 py-0.5 font-mono text-xs tracking-wider uppercase">
+              {roleLabels[account.role]}
+            </span>
+          )}
           <span className="text-ink-muted font-mono text-xs">
             Último acceso: {formatDate(account.lastLoginAt)}
           </span>
@@ -100,6 +109,35 @@ export function AccountCard({ account }: { account: AccountCardData }) {
             required
             maxLength={190}
           />
+          {account.isSuper ? (
+            // Super-admins own account management, so they always keep the
+            // whole panel — the field is fixed, not editable.
+            <>
+              <input type="hidden" name="role" value="admin" />
+              <p className="text-ink-muted text-xs">
+                Los super-administradores conservan el panel completo; su área no se puede
+                cambiar.
+              </p>
+            </>
+          ) : (
+            <div>
+              <SelectField
+                id={`role-${account.id}`}
+                name="role"
+                label="Área"
+                required
+                value={role}
+                onChange={(event) => setRole(event.target.value as AdminRole)}
+              >
+                {ADMIN_ROLES.map((option) => (
+                  <option key={option} value={option}>
+                    {roleLabels[option]}
+                  </option>
+                ))}
+              </SelectField>
+              <p className="text-ink-muted mt-2 text-xs">{roleDescriptions[role]}</p>
+            </div>
+          )}
           <Feedback state={profileState} />
           <div>
             <Button type="submit" variant="outline" size="sm" disabled={profilePending}>

@@ -7,32 +7,42 @@ import { Button } from "@/components/ui/button";
 const initialState: ActionState = {};
 
 /** Sends a test message to the configured recipients of one email flow. */
-export function TestEmailForm() {
+export function TestEmailForm({
+  showLeads = true,
+  showApplications = true,
+}: {
+  showLeads?: boolean;
+  showApplications?: boolean;
+}) {
   const [state, formAction, pending] = useActionState(sendTestEmailAction, initialState);
 
   return (
     <form action={formAction} className="mt-6 grid max-w-2xl gap-4">
       <div className="flex flex-wrap gap-3">
-        <Button
-          type="submit"
-          name="kind"
-          value="leads"
-          variant="outline"
-          size="sm"
-          disabled={pending}
-        >
-          {pending ? "Enviando…" : "Probar correo de leads"}
-        </Button>
-        <Button
-          type="submit"
-          name="kind"
-          value="applications"
-          variant="outline"
-          size="sm"
-          disabled={pending}
-        >
-          {pending ? "Enviando…" : "Probar correo de RH"}
-        </Button>
+        {showLeads ? (
+          <Button
+            type="submit"
+            name="kind"
+            value="leads"
+            variant="outline"
+            size="sm"
+            disabled={pending}
+          >
+            {pending ? "Enviando…" : "Probar correo de leads"}
+          </Button>
+        ) : null}
+        {showApplications ? (
+          <Button
+            type="submit"
+            name="kind"
+            value="applications"
+            variant="outline"
+            size="sm"
+            disabled={pending}
+          >
+            {pending ? "Enviando…" : "Probar correo de RH"}
+          </Button>
+        ) : null}
       </div>
 
       {state.error ? (

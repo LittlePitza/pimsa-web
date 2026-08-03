@@ -136,11 +136,20 @@ export const settings = mysqlTable("settings", {
   updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
 });
 
+/**
+ * Panel access area. `admin` keeps the whole panel (and is the default so
+ * existing accounts don't lose access when this column lands); `marketing`
+ * and `rrhh` only ever see their own portal.
+ */
+export const ADMIN_ROLES = ["admin", "marketing", "rrhh"] as const;
+export type AdminRole = (typeof ADMIN_ROLES)[number];
+
 export const adminUsers = mysqlTable("admin_users", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 190 }).notNull().unique(),
   name: varchar("name", { length: 120 }).notNull(),
   passwordHash: varchar("password_hash", { length: 100 }).notNull(),
+  role: mysqlEnum("role", ADMIN_ROLES).notNull().default("admin"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   lastLoginAt: timestamp("last_login_at"),
 });

@@ -2,12 +2,12 @@ import { setApplicationStatusAction } from "@/app/admin/actions";
 import { StatusForm } from "@/components/admin/status-form";
 import { APPLICATION_STATUSES } from "@/db/schema";
 import { listApplications } from "@/db/queries/applications";
-import { requireAdmin } from "@/lib/auth";
+import { requireArea } from "@/lib/auth";
 import { applicationStatusLabels } from "@/lib/labels";
 import { formatDate } from "@/lib/utils";
 
 export default async function AdminApplicationsPage() {
-  await requireAdmin();
+  await requireArea("rrhh");
   const applications = await listApplications();
 
   return (

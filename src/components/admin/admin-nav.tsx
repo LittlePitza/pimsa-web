@@ -3,6 +3,8 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { AdminRole } from "@/db/schema";
+import { areaLinks, AREAS, canAccess, isFullPanel } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -12,34 +14,42 @@ interface NavItem {
   strong?: boolean;
 }
 
-/** Grouped so each team sees its own area; dividers separate the groups. */
-function buildGroups(canManageAccounts: boolean): { key: string; items: NavItem[] }[] {
-  return [
-    { key: "general", items: [{ label: "Panel", href: "/admin", strong: true }] },
-    {
-      key: "marketing",
-      items: [
-        { label: "Marketing", href: "/admin/marketing", strong: true },
-        { label: "Leads", href: "/admin/leads" },
-        { label: "Stock", href: "/admin/stock" },
-      ],
-    },
-    {
-      key: "rrhh",
-      items: [
-        { label: "RRHH", href: "/admin/rrhh", strong: true },
-        { label: "Vacantes", href: "/admin/vacantes" },
-        { label: "Postulaciones", href: "/admin/postulaciones" },
-      ],
-    },
-    {
-      key: "config",
-      items: [
-        { label: "Configuración", href: "/admin/configuracion" },
-        ...(canManageAccounts ? [{ label: "Cuentas", href: "/admin/cuentas" }] : []),
-      ],
-    },
-  ];
+/**
+ * One group per area the role may enter, so Marketing and RRHH each see a
+ * nav with nothing but their own portal in it. Cosmetic only — the real
+ * gate is requireArea() on every page and action.
+ */
+function buildGroups(
+  role: AdminRole,
+  canManageAccounts: boolean,
+): { key: string; items: NavItem[] }[] {
+  const groups: { key: string; items: NavItem[] }[] = [];
+
+  if (isFullPanel(role)) {
+    groups.push({ key: "general", items: [{ label: "Panel", href: "/admin", strong: true }] });
+  }
+
+  for (const area of AREAS) {
+    if (!canAccess(role, area)) continue;
+    groups.push({
+      key: area,
+      items: areaLinks[area].map((link) => ({
+        label: link.label,
+        href: link.href,
+        strong: link.hub,
+      })),
+    });
+  }
+
+  groups.push({
+    key: "config",
+    items: [
+      { label: "Configuración", href: "/admin/configuracion" },
+      ...(canManageAccounts ? [{ label: "Cuentas", href: "/admin/cuentas" }] : []),
+    ],
+  });
+
+  return groups;
 }
 
 function isActive(pathname: string, href: string): boolean {
@@ -49,13 +59,15 @@ function isActive(pathname: string, href: string): boolean {
 /** Panel navigation with the current section highlighted. */
 export function AdminNav({
   variant,
+  role,
   canManageAccounts = false,
 }: {
   variant: "desktop" | "mobile";
+  role: AdminRole;
   canManageAccounts?: boolean;
 }) {
   const pathname = usePathname();
-  const groups = buildGroups(canManageAccounts);
+  const groups = buildGroups(role, canManageAccounts);
 
   return (
     <ul

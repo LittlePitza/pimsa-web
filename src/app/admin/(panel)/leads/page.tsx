@@ -2,12 +2,12 @@ import { setLeadStatusAction } from "@/app/admin/actions";
 import { StatusForm } from "@/components/admin/status-form";
 import { LEAD_STATUSES } from "@/db/schema";
 import { listLeads } from "@/db/queries/leads";
-import { requireAdmin } from "@/lib/auth";
+import { requireArea } from "@/lib/auth";
 import { leadStatusLabels } from "@/lib/labels";
 import { formatDate } from "@/lib/utils";
 
 export default async function AdminLeadsPage() {
-  await requireAdmin();
+  await requireArea("marketing");
   const leads = await listLeads();
 
   return (

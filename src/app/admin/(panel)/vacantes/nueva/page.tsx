@@ -1,7 +1,10 @@
 import { createVacancyAction } from "@/app/admin/actions";
 import { VacancyForm } from "@/components/admin/vacancy-form";
+import { requireArea } from "@/lib/auth";
 
-export default function NewVacancyPage() {
+export default async function NewVacancyPage() {
+  await requireArea("rrhh");
+
   return (
     <>
       <h1 className="font-display text-navy-500 text-2xl font-bold">Nueva vacante</h1>

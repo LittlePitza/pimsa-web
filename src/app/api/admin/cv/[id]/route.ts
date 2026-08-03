@@ -1,10 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getApplicationFile } from "@/db/queries/applications";
 import { getAdminSession } from "@/lib/auth";
+import { canAccess } from "@/lib/roles";
 
 export const runtime = "nodejs";
 
-/** Streams a stored CV to an authenticated admin. */
+/** Streams a stored CV to RRHH (candidate data never leaves that area). */
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -12,6 +13,9 @@ export async function GET(
   const session = await getAdminSession();
   if (!session) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+  if (!canAccess(session.role, "rrhh")) {
+    return NextResponse.json({ error: "Sin acceso a esta área" }, { status: 403 });
   }
 
   const { id } = await params;

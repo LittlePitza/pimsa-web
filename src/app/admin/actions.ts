@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import {
+  ADMIN_ROLES,
   APPLICATION_STATUSES,
   LEAD_STATUSES,
   STOCK_AVAILABILITY,
@@ -39,15 +40,26 @@ import {
   setVacancyStatus,
   updateVacancy,
 } from "@/db/queries/vacancies";
-import { isSuperAdmin, requireAdmin, requireSuperAdmin, sessionCookieOptions } from "@/lib/auth";
+import {
+  isSuperAdmin,
+  requireAdmin,
+  requireArea,
+  requireSuperAdmin,
+  sessionCookieOptions,
+} from "@/lib/auth";
 import { createMailTransport, mailFrom } from "@/lib/mailer";
 import { rateLimit } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
+import { canAccess, homeFor, roleLabels } from "@/lib/roles";
 import { createSessionToken, SESSION_COOKIE } from "@/lib/session";
 import { getEmailRecipients, SETTING_KEYS, setSetting } from "@/lib/settings";
 import { slugify } from "@/lib/utils";
 
-/** Server actions for the admin panel. Every mutation re-checks the session. */
+/**
+ * Server actions for the admin panel. Every mutation re-checks the session
+ * AND the caller's area — a hidden nav link is cosmetic, this is the gate
+ * that actually keeps Marketing out of RRHH's data and vice versa.
+ */
 
 export interface ActionState {
   error?: string;
@@ -109,7 +121,9 @@ export async function signInAction(
   (await cookies()).set(SESSION_COOKIE, token, sessionCookieOptions());
   touchLastLogin(admin.id).catch(() => undefined);
 
-  redirect("/admin");
+  // Each team lands straight in its own portal; only whole-panel accounts
+  // (and super-admins) see the general dashboard.
+  redirect(homeFor(isSuperAdmin(admin.email) ? "admin" : admin.role));
 }
 
 export async function signOutAction(): Promise<void> {
@@ -194,7 +208,7 @@ export async function createVacancyAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  await requireAdmin();
+  await requireArea("rrhh");
 
   const data = parseVacancyForm(formData);
   if (!data) return invalidVacancyForm(formData);
@@ -215,7 +229,7 @@ export async function updateVacancyAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  await requireAdmin();
+  await requireArea("rrhh");
 
   const data = parseVacancyForm(formData);
   if (!data) return invalidVacancyForm(formData);
@@ -235,7 +249,7 @@ export async function updateVacancyAction(
 }
 
 export async function setVacancyStatusAction(id: number, formData: FormData): Promise<void> {
-  await requireAdmin();
+  await requireArea("rrhh");
   const status = z.enum(VACANCY_STATUSES).safeParse(formData.get("status"));
   if (!status.success) return; // manipulated input — ignore instead of throwing
   await setVacancyStatus(id, status.data);
@@ -244,7 +258,7 @@ export async function setVacancyStatusAction(id: number, formData: FormData): Pr
 }
 
 export async function deleteVacancyAction(id: number): Promise<void> {
-  await requireAdmin();
+  await requireArea("rrhh");
   await deleteVacancy(id);
   revalidateJobBoard();
   revalidatePath("/admin/vacantes");
@@ -253,7 +267,7 @@ export async function deleteVacancyAction(id: number): Promise<void> {
 // ── Applications ─────────────────────────────────────────────────────────
 
 export async function setApplicationStatusAction(id: number, formData: FormData): Promise<void> {
-  await requireAdmin();
+  await requireArea("rrhh");
   const status = z.enum(APPLICATION_STATUSES).safeParse(formData.get("status"));
   if (!status.success) return;
   await setApplicationStatus(id, status.data);
@@ -301,7 +315,7 @@ export async function createStockItemAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  await requireAdmin();
+  await requireArea("marketing");
   const data = parseStockForm(formData);
   if (!data) return invalidStockForm(formData);
 
@@ -315,7 +329,7 @@ export async function updateStockItemAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  await requireAdmin();
+  await requireArea("marketing");
   const data = parseStockForm(formData);
   if (!data) return invalidStockForm(formData);
 
@@ -325,13 +339,13 @@ export async function updateStockItemAction(
 }
 
 export async function setStockPublishedAction(id: number, formData: FormData): Promise<void> {
-  await requireAdmin();
+  await requireArea("marketing");
   await setStockItemPublished(id, formData.get("published") === "true");
   revalidateStock();
 }
 
 export async function deleteStockItemAction(id: number): Promise<void> {
-  await requireAdmin();
+  await requireArea("marketing");
   await deleteStockItem(id);
   revalidateStock();
 }
@@ -349,17 +363,24 @@ const emailListSchema = z
     "Escribe correos válidos separados por comas.",
   );
 
+/**
+ * Saves only the recipient list the caller's area owns. Marketing owns the
+ * contact-form leads, RRHH owns the job applications — a field the caller
+ * doesn't own is ignored even if it arrives in the FormData.
+ */
 export async function saveEmailSettingsAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  await requireAdmin();
+  const session = await requireAdmin();
+  const ownsLeads = canAccess(session.role, "marketing");
+  const ownsApplications = canAccess(session.role, "rrhh");
 
   const parsed = z
     .object({ leadsTo: emailListSchema, applicationsTo: emailListSchema })
     .safeParse({
-      leadsTo: formData.get("leadsTo") ?? "",
-      applicationsTo: formData.get("applicationsTo") ?? "",
+      leadsTo: ownsLeads ? (formData.get("leadsTo") ?? "") : "",
+      applicationsTo: ownsApplications ? (formData.get("applicationsTo") ?? "") : "",
     });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Revisa los correos capturados." };
@@ -372,8 +393,12 @@ export async function saveEmailSettingsAction(
       .filter(Boolean)
       .join(", ");
 
-  await setSetting(SETTING_KEYS.emailLeadsTo, normalize(parsed.data.leadsTo));
-  await setSetting(SETTING_KEYS.emailApplicationsTo, normalize(parsed.data.applicationsTo));
+  if (ownsLeads) {
+    await setSetting(SETTING_KEYS.emailLeadsTo, normalize(parsed.data.leadsTo));
+  }
+  if (ownsApplications) {
+    await setSetting(SETTING_KEYS.emailApplicationsTo, normalize(parsed.data.applicationsTo));
+  }
 
   revalidatePath("/admin/configuracion");
   return { success: "Configuración guardada." };
@@ -383,9 +408,13 @@ export async function sendTestEmailAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  await requireAdmin();
+  const session = await requireAdmin();
 
   const kind = formData.get("kind") === "applications" ? "applications" : "leads";
+  if (!canAccess(session.role, kind === "leads" ? "marketing" : "rrhh")) {
+    return { error: "Ese flujo de correo pertenece a otra área." };
+  }
+
   const recipients = await getEmailRecipients(kind);
   if (!recipients) {
     return { error: "No hay destinatarios: captura correos arriba o configura CONTACT_EMAIL_TO." };
@@ -421,7 +450,7 @@ export async function sendTestEmailAction(
 // ── Leads ────────────────────────────────────────────────────────────────
 
 export async function setLeadStatusAction(id: number, formData: FormData): Promise<void> {
-  await requireAdmin();
+  await requireArea("marketing");
   const status = z.enum(LEAD_STATUSES).safeParse(formData.get("status"));
   if (!status.success) return;
   await setLeadStatus(id, status.data);
@@ -437,6 +466,7 @@ const passwordSchema = z
   .max(200);
 const nameSchema = z.string().trim().min(2, "Escribe un nombre.").max(120);
 const accountEmailSchema = z.email("Escribe un correo válido.").max(190);
+const roleSchema = z.enum(ADMIN_ROLES, { error: "Elige un área válida." });
 
 export async function createAccountAction(
   _prev: ActionState,
@@ -445,11 +475,17 @@ export async function createAccountAction(
   await requireSuperAdmin();
 
   const parsed = z
-    .object({ name: nameSchema, email: accountEmailSchema, password: passwordSchema })
+    .object({
+      name: nameSchema,
+      email: accountEmailSchema,
+      password: passwordSchema,
+      role: roleSchema,
+    })
     .safeParse({
       name: formData.get("name"),
       email: String(formData.get("email") ?? "").trim(),
       password: formData.get("password"),
+      role: formData.get("role"),
     });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Revisa los datos de la cuenta." };
@@ -460,10 +496,18 @@ export async function createAccountAction(
   }
 
   const passwordHash = await bcrypt.hash(parsed.data.password, 12);
-  await createAdmin({ email: parsed.data.email, name: parsed.data.name, passwordHash });
+  await createAdmin({
+    email: parsed.data.email,
+    name: parsed.data.name,
+    passwordHash,
+    // A super-admin email always keeps the whole panel, whatever was picked.
+    role: isSuperAdmin(parsed.data.email) ? "admin" : parsed.data.role,
+  });
 
   revalidatePath("/admin/cuentas");
-  return { success: `Cuenta creada para ${parsed.data.email.toLowerCase()}.` };
+  return {
+    success: `Cuenta creada para ${parsed.data.email.toLowerCase()} — ${roleLabels[parsed.data.role]}.`,
+  };
 }
 
 export async function updateAccountAction(
@@ -474,8 +518,12 @@ export async function updateAccountAction(
   await requireSuperAdmin();
 
   const parsed = z
-    .object({ name: nameSchema, email: accountEmailSchema })
-    .safeParse({ name: formData.get("name"), email: String(formData.get("email") ?? "").trim() });
+    .object({ name: nameSchema, email: accountEmailSchema, role: roleSchema })
+    .safeParse({
+      name: formData.get("name"),
+      email: String(formData.get("email") ?? "").trim(),
+      role: formData.get("role"),
+    });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Revisa los datos de la cuenta." };
   }
@@ -494,9 +542,13 @@ export async function updateAccountAction(
     return { error: "Ese correo ya está registrado en otra cuenta." };
   }
 
-  await updateAdminProfile(id, parsed.data);
+  await updateAdminProfile(id, {
+    ...parsed.data,
+    // Super-admins can't be boxed into one area — they manage the accounts.
+    role: isSuperAdmin(parsed.data.email) ? "admin" : parsed.data.role,
+  });
   revalidatePath("/admin/cuentas");
-  return { success: "Cuenta actualizada." };
+  return { success: `Cuenta actualizada — ${roleLabels[parsed.data.role]}.` };
 }
 
 export async function resetAccountPasswordAction(

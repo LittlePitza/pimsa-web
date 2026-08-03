@@ -4,6 +4,7 @@ import { signOutAction } from "@/app/admin/actions";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { Logo } from "@/components/layout/logo";
 import { isSuperAdmin, requireAdmin } from "@/lib/auth";
+import { homeFor, roleLabels } from "@/lib/roles";
 
 export const metadata: Metadata = {
   title: "Panel de administración",
@@ -13,22 +14,30 @@ export const metadata: Metadata = {
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await requireAdmin();
   const canManageAccounts = isSuperAdmin(session.email);
+  // Every "home" affordance points at the caller's own portal, so Marketing
+  // and RRHH never bounce off the general panel they can't open.
+  const home = homeFor(session.role);
 
   return (
     <div className="flex min-h-svh flex-col">
       <header className="bg-surface border-line border-b">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-5">
           <div className="flex items-center gap-8">
-            <Link href="/admin" aria-label="Panel — inicio">
+            <Link href={home} aria-label="Panel — inicio">
               <Logo />
             </Link>
             <nav aria-label="Navegación del panel" className="hidden md:block">
-              <AdminNav variant="desktop" canManageAccounts={canManageAccounts} />
+              <AdminNav
+                variant="desktop"
+                role={session.role}
+                canManageAccounts={canManageAccounts}
+              />
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-ink-muted hidden font-mono text-xs sm:block">
+            <span className="text-ink-muted hidden text-right font-mono text-xs sm:block">
               {session.email}
+              <span className="text-navy-500 block">{roleLabels[session.role]}</span>
             </span>
             <form action={signOutAction}>
               <button
@@ -42,7 +51,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
         {/* Mobile nav */}
         <nav aria-label="Navegación del panel (móvil)" className="border-line border-t md:hidden">
-          <AdminNav variant="mobile" canManageAccounts={canManageAccounts} />
+          <AdminNav variant="mobile" role={session.role} canManageAccounts={canManageAccounts} />
         </nav>
       </header>
 

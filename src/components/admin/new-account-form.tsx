@@ -1,15 +1,18 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { createAccountAction, type ActionState } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
-import { InputField } from "@/components/ui/field";
+import { InputField, SelectField } from "@/components/ui/field";
+import { ADMIN_ROLES, type AdminRole } from "@/db/schema";
+import { roleDescriptions, roleLabels } from "@/lib/roles";
 
 const initialState: ActionState = {};
 
 /** Create a new admin account (super-admin only). */
 export function NewAccountForm() {
   const [state, formAction, pending] = useActionState(createAccountAction, initialState);
+  const [role, setRole] = useState<AdminRole>("marketing");
 
   return (
     <form action={formAction} className="grid gap-5 sm:grid-cols-2">
@@ -23,6 +26,22 @@ export function NewAccountForm() {
         maxLength={190}
         placeholder="nombre@plasticospimsa.com"
       />
+      <div className="sm:col-span-2">
+        <SelectField
+          id="role"
+          label="Área"
+          required
+          value={role}
+          onChange={(event) => setRole(event.target.value as AdminRole)}
+        >
+          {ADMIN_ROLES.map((option) => (
+            <option key={option} value={option}>
+              {roleLabels[option]}
+            </option>
+          ))}
+        </SelectField>
+        <p className="text-ink-muted mt-2 text-xs">{roleDescriptions[role]}</p>
+      </div>
       <InputField
         id="password"
         label="Contraseña temporal"

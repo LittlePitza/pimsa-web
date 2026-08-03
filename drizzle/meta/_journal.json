@@ -15,6 +15,13 @@
       "when": 1783403864350,
       "tag": "0001_glorious_turbo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1785791811371,
+      "tag": "0002_add_admin_role",
+      "breakpoints": true
     }
   ]
 }

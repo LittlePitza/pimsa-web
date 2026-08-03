@@ -3,7 +3,7 @@ import { BarList, ChartCard, StatCard, TrendChart } from "@/components/admin/cha
 import { LEAD_STATUSES } from "@/db/schema";
 import { listLeads } from "@/db/queries/leads";
 import { listStockItems } from "@/db/queries/stock";
-import { requireAdmin } from "@/lib/auth";
+import { requireArea } from "@/lib/auth";
 import { leadStatusLabels } from "@/lib/labels";
 import { countBy, percent, tallyStatus, trendByMonth } from "@/lib/metrics";
 import { formatDate } from "@/lib/utils";
@@ -12,7 +12,7 @@ export const metadata = { title: "Marketing — Panel" };
 
 /** Marketing dashboard: demand from the contact form + catalog health. */
 export default async function MarketingDashboardPage() {
-  await requireAdmin();
+  await requireArea("marketing");
   const [leads, stock] = await Promise.all([listLeads(), listStockItems()]);
 
   const total = leads.length;

@@ -1,6 +1,7 @@
 /**
  * Creates (or updates the password of) an admin panel user.
- * Usage: node scripts/create-admin.mjs <email> [name]
+ * Usage: node scripts/create-admin.mjs <email> [name] [role]
+ *   role: admin (whole panel, default) | marketing | rrhh
  * The password is read from the ADMIN_PASSWORD env var or prompted
  * interactively (hidden input) — never passed as an argv, so it doesn't
  * land in the shell history or the process list.
@@ -13,11 +14,17 @@ import mysql from "mysql2/promise";
 config({ path: ".env.local" });
 config();
 
-const [email, name = "Administrador"] = process.argv.slice(2);
+const ROLES = ["admin", "marketing", "rrhh"];
+const [email, name = "Administrador", role = "admin"] = process.argv.slice(2);
 
 if (!email) {
-  console.error("Usage: node scripts/create-admin.mjs <email> [name]");
+  console.error("Usage: node scripts/create-admin.mjs <email> [name] [role]");
+  console.error(`Roles: ${ROLES.join(" | ")} (default: admin)`);
   console.error("Password: set ADMIN_PASSWORD or type it at the hidden prompt.");
+  process.exit(1);
+}
+if (!ROLES.includes(role)) {
+  console.error(`Invalid role "${role}". Use one of: ${ROLES.join(", ")}`);
   process.exit(1);
 }
 if (!process.env.DATABASE_URL) {
@@ -69,11 +76,12 @@ const connection = await mysql.createConnection({ uri: process.env.DATABASE_URL 
 const passwordHash = await bcrypt.hash(password, 12);
 
 await connection.execute(
-  `INSERT INTO admin_users (email, name, password_hash)
-   VALUES (?, ?, ?)
-   ON DUPLICATE KEY UPDATE name = VALUES(name), password_hash = VALUES(password_hash)`,
-  [email.toLowerCase(), name, passwordHash],
+  `INSERT INTO admin_users (email, name, password_hash, role)
+   VALUES (?, ?, ?, ?)
+   ON DUPLICATE KEY UPDATE
+     name = VALUES(name), password_hash = VALUES(password_hash), role = VALUES(role)`,
+  [email.toLowerCase(), name, passwordHash, role],
 );
 
-console.log(`Admin user ready: ${email.toLowerCase()}`);
+console.log(`Admin user ready: ${email.toLowerCase()} (${role})`);
 await connection.end();

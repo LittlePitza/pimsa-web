@@ -3,6 +3,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getAdminById } from "@/db/queries/admins";
+import { canAccess, homeFor, isFullPanel, type Area } from "@/lib/roles";
 import {
   passwordVersion,
   SESSION_COOKIE,
@@ -31,14 +32,39 @@ export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
   if (!admin) return null;
   if (session.pwv !== (await passwordVersion(admin.passwordHash))) return null;
 
-  // Fresh values from the DB, so renames/email changes reflect immediately.
-  return { userId: admin.id, email: admin.email, name: admin.name };
+  // Fresh values from the DB, so renames/email/role changes reflect immediately.
+  return {
+    userId: admin.id,
+    email: admin.email,
+    name: admin.name,
+    // Super-admins keep the whole panel whatever the stored role says — they
+    // own account management, so locking them into one area would be a trap.
+    role: isSuperAdmin(admin.email) ? "admin" : admin.role,
+  };
 });
 
 /** Guard for admin pages/actions — redirects to login when unauthenticated. */
 export async function requireAdmin(): Promise<AdminSession> {
   const session = await getAdminSession();
   if (!session) redirect("/admin/login");
+  return session;
+}
+
+/**
+ * Guard for an area portal. Signed-in users from the other team are sent back
+ * to their own front door instead of seeing a 403 — from their side the other
+ * portal simply does not exist.
+ */
+export async function requireArea(area: Area): Promise<AdminSession> {
+  const session = await requireAdmin();
+  if (!canAccess(session.role, area)) redirect(homeFor(session.role));
+  return session;
+}
+
+/** Guard for cross-area screens (the general dashboard). */
+export async function requireFullPanel(): Promise<AdminSession> {
+  const session = await requireAdmin();
+  if (!isFullPanel(session.role)) redirect(homeFor(session.role));
   return session;
 }
 
@@ -62,10 +88,10 @@ export function isSuperAdmin(email: string): boolean {
   return superAdminEmails().includes(email.trim().toLowerCase());
 }
 
-/** Guard for account management — only super-admins; others go back to /admin. */
+/** Guard for account management — only super-admins; others go back to their portal. */
 export async function requireSuperAdmin(): Promise<AdminSession> {
   const session = await requireAdmin();
-  if (!isSuperAdmin(session.email)) redirect("/admin");
+  if (!isSuperAdmin(session.email)) redirect(homeFor(session.role));
   return session;
 }
 

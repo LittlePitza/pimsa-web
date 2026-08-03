@@ -67,36 +67,48 @@ SEO files are generated at the app root: `sitemap.ts`, `robots.ts`, `manifest.ts
 > **Login URL: [`/admin/login`](https://plasticospimsa.com/admin/login)**
 > (`/admin` redirects there when there is no valid session).
 
-| Route | Section |
-| --- | --- |
-| `/admin` | Dashboard with per-area metrics |
-| `/admin/rrhh` | HR area overview |
-| `/admin/vacantes` · `/nueva` · `/[id]` | Vacancy CRUD and publishing |
-| `/admin/postulaciones` | Applications — status workflow + CV download |
-| `/admin/marketing` | Marketing area overview |
-| `/admin/leads` | Contact-form leads with UTM source |
-| `/admin/stock` · `/nuevo` · `/[id]` | Stock catalog CRUD |
-| `/admin/configuracion` | Site settings stored in the database |
-| `/admin/cuentas` | Account management — **super-admins only** |
+| Route | Section | Area |
+| --- | --- | --- |
+| `/admin` | Dashboard with per-area metrics | Whole panel |
+| `/admin/marketing` | Marketing area overview | Marketing |
+| `/admin/leads` | Contact-form leads with UTM source | Marketing |
+| `/admin/stock` · `/nuevo` · `/[id]` | Stock catalog CRUD | Marketing |
+| `/admin/rrhh` | HR area overview | RRHH |
+| `/admin/vacantes` · `/nueva` · `/[id]` | Vacancy CRUD and publishing | RRHH |
+| `/admin/postulaciones` | Applications — status workflow + CV download | RRHH |
+| `/admin/configuracion` | Site settings — each area sees only its own email flow | Both |
+| `/admin/cuentas` | Account management — **super-admins only** | Super-admin |
 
 The panel is `noindex, nofollow` and every page is guarded server-side.
 
-## Authentication
+## Authentication and areas
 
 - Email + password, hashed with **bcrypt**; sessions are **signed JWT cookies**
   (`jose`) — `httpOnly`, `sameSite=lax`, `secure` in production, valid **8 hours**.
-- Guards live in [src/lib/auth.ts](./src/lib/auth.ts): `requireAdmin()` on every panel
-  page, `requireSuperAdmin()` on account management. There is no middleware — the
-  checks run in the layout and in each server action.
+- Every account has a **role** (`admin_users.role`): `marketing`, `rrhh` or `admin`
+  (whole panel — the default, so pre-existing accounts keep full access).
+  Marketing and RRHH log straight into their own portal and never see the other's
+  nav, pages, data, CVs or email settings. Area definitions live in one place:
+  [src/lib/roles.ts](./src/lib/roles.ts).
+- Guards live in [src/lib/auth.ts](./src/lib/auth.ts): `requireAdmin()` for any panel
+  page, `requireArea("marketing" | "rrhh")` for area pages and their mutations,
+  `requireFullPanel()` for the general dashboard, `requireSuperAdmin()` for account
+  management. Hidden nav links are cosmetic — **the guards run in each page, each
+  server action and the CV route**. A user sent to a page outside their area lands
+  back on their own portal.
+- The role is **not** in the session token: it is read from the database on every
+  request, so moving someone between areas takes effect immediately instead of
+  waiting out their 8-hour session.
 - Sessions carry a password-version claim, so **deleting an account or resetting its
   password immediately revokes its open sessions**.
 - **Super-admins** (from `SUPER_ADMIN_EMAILS`, default `sistemas@plasticospimsa.com`)
-  can create users, change emails and reset passwords from `/admin/cuentas`.
+  always keep the whole panel and manage users, areas and passwords from
+  `/admin/cuentas`.
 
-Create the first user:
+Create a user (password comes from `ADMIN_PASSWORD` or a hidden prompt — never argv):
 
 ```bash
-npm run admin:create -- correo@plasticospimsa.com "contraseña-segura" "Nombre"
+npm run admin:create -- correo@plasticospimsa.com "Nombre" marketing
 ```
 
 ## Database setup
@@ -113,7 +125,7 @@ SQL migrations: [`drizzle/`](./drizzle).
 | `leads` | Contact-form submissions with UTM attribution |
 | `stock_items` | Recycled-material catalog |
 | `settings` | Editable site settings |
-| `admin_users` | Panel accounts (bcrypt hashes) |
+| `admin_users` | Panel accounts (bcrypt hashes + area role) |
 
 Order of operations on a fresh environment:
 

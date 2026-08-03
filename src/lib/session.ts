@@ -1,3 +1,4 @@
+import type { AdminRole } from "@/db/schema";
 import { jwtVerify, SignJWT } from "jose";
 
 /**
@@ -7,6 +8,10 @@ import { jwtVerify, SignJWT } from "jose";
  * The token carries a `pwv` claim (short hash of the password hash) so that
  * resetting a password or deleting an account invalidates its sessions — the
  * DB check lives in getAdminSession (Node); the proxy stays optimistic.
+ *
+ * The role deliberately stays OUT of the token: it is read fresh from the DB
+ * on every request, so moving someone between areas takes effect immediately
+ * instead of waiting out an 8-hour token.
  */
 
 /** __Host- prefix binds the cookie to secure + path=/ (production only: dev runs on http). */
@@ -14,13 +19,19 @@ export const SESSION_COOKIE =
   process.env.NODE_ENV === "production" ? "__Host-pimsa_admin_session" : "pimsa_admin_session";
 export const SESSION_HOURS = 8;
 
-export interface AdminSession {
+/** Who the token says you are — everything that is actually signed into it. */
+export interface SessionIdentity {
   userId: number;
   email: string;
   name: string;
 }
 
-export interface VerifiedSession extends AdminSession {
+export interface AdminSession extends SessionIdentity {
+  /** Panel area this account may enter. Always read fresh from the database. */
+  role: AdminRole;
+}
+
+export interface VerifiedSession extends SessionIdentity {
   /** Password-version claim; compared against the stored hash on the server. */
   pwv?: string;
 }
@@ -45,7 +56,7 @@ export async function passwordVersion(passwordHash: string): Promise<string> {
 }
 
 export async function createSessionToken(
-  session: AdminSession,
+  session: SessionIdentity,
   passwordHash: string,
 ): Promise<string> {
   return new SignJWT({
