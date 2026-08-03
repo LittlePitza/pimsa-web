@@ -3,7 +3,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getAdminById } from "@/db/queries/admins";
-import { canAccess, homeFor, isFullPanel, type Area } from "@/lib/roles";
+import { canAccess, homeFor, isAdminRole, isFullPanel, type Area } from "@/lib/roles";
 import {
   passwordVersion,
   SESSION_COOKIE,
@@ -33,13 +33,18 @@ export const getAdminSession = cache(async (): Promise<AdminSession | null> => {
   if (session.pwv !== (await passwordVersion(admin.passwordHash))) return null;
 
   // Fresh values from the DB, so renames/email/role changes reflect immediately.
+  // An unrecognized role falls back to the whole panel: that is what every
+  // account had before roles existed, so a bad value degrades to the old
+  // behaviour instead of locking someone out of a panel they used to run.
+  const storedRole = isAdminRole(admin.role) ? admin.role : "admin";
+
   return {
     userId: admin.id,
     email: admin.email,
     name: admin.name,
     // Super-admins keep the whole panel whatever the stored role says — they
     // own account management, so locking them into one area would be a trap.
-    role: isSuperAdmin(admin.email) ? "admin" : admin.role,
+    role: isSuperAdmin(admin.email) ? "admin" : storedRole,
   };
 });
 

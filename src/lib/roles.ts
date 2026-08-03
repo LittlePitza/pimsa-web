@@ -38,6 +38,16 @@ const areaHome: Record<Area, string> = {
   rrhh: "/admin/rrhh",
 };
 
+/**
+ * Narrows an unknown value to a role. The database column is an enum, but a
+ * schema/deploy mismatch (or a NULL from an older row) can still hand us
+ * something else — and every function below must stay total, because they run
+ * inside the panel layout where a throw takes down the whole panel.
+ */
+export function isAdminRole(value: unknown): value is AdminRole {
+  return value === "admin" || value === "marketing" || value === "rrhh";
+}
+
 /** True when the role may enter that area's portal. */
 export function canAccess(role: AdminRole, area: Area): boolean {
   return role === "admin" || role === area;
@@ -48,9 +58,13 @@ export function isFullPanel(role: AdminRole): boolean {
   return role === "admin";
 }
 
-/** The role's own front door. Marketing/RRHH never land on the general panel. */
+/**
+ * The role's own front door. Marketing/RRHH never land on the general panel.
+ * Total on purpose: this feeds a <Link href>, and an undefined href throws
+ * inside the panel layout — which no error boundary below it can catch.
+ */
 export function homeFor(role: AdminRole): string {
-  return role === "admin" ? "/admin" : areaHome[role];
+  return role === "marketing" || role === "rrhh" ? areaHome[role] : "/admin";
 }
 
 /** Nav links owned by each area, in display order. */
