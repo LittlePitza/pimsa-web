@@ -3,7 +3,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { FaqSection } from "@/components/sections/faq-section";
 import { HiringProcess } from "@/components/sections/hiring-process";
 import { JobList } from "@/components/sections/job-list";
-import { PageHero } from "@/components/sections/page-hero";
+import { JobsHero } from "@/components/sections/jobs-hero";
 import { SpontaneousApplication } from "@/components/sections/spontaneous-application";
 import { WorkAtPimsa } from "@/components/sections/work-at-pimsa";
 import { WorkLocation } from "@/components/sections/work-location";
@@ -17,12 +17,13 @@ export const revalidate = 60;
 
 export const metadata: Metadata = buildMetadata({
   title: "Bolsa de trabajo — Vacantes en PIMSA",
-  description: `Vacantes en Plásticos PIMSA, ${company.address.municipality}, ${company.address.state}. Postúlate en línea con tu CV: producción, mantenimiento, laboratorio y administración.`,
+  description: `Vacantes en Plásticos PIMSA, ${company.address.municipality}, ${company.address.state}: producción, mantenimiento, laboratorio, logística, administración, comercial y sistemas. Postúlate en línea con tu CV.`,
   path: "/vacantes",
   keywords: [
     "bolsa de trabajo Apaseo el Grande",
     "vacantes Apaseo el Grande",
-    "empleo Guanajuato reciclaje",
+    "empleo Guanajuato",
+    "vacantes administrativas Bajío",
     "trabajo en planta Bajío",
     "vacantes PIMSA",
   ],
@@ -47,10 +48,8 @@ export default async function VacanciesPage() {
     <>
       <JsonLd data={faqPageSchema(candidateFaqs)} />
 
-      <PageHero
-        eyebrow="Bolsa de trabajo"
-        title="Trabaja con nosotros"
-        intro={`Somos una planta de reciclaje de plásticos de ingeniería en ${company.address.municipality}, ${company.address.state}. Todas nuestras vacantes se postulan en línea, con tu CV, y llegan directo a Recursos Humanos.`}
+      <JobsHero
+        openCount={vacancies.length}
         breadcrumbs={[
           { name: "Inicio", path: "/" },
           { name: "Bolsa de trabajo", path: "/vacantes" },

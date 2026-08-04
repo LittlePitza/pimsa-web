@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Clock, MapPin, Navigation } from "lucide-react";
+import { MapPin, Navigation } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
@@ -10,10 +10,14 @@ import plantExterior from "../../../public/media/corporate/planta-la-estancia.jp
 /**
  * Where the job actually is.
  *
- * For a plant role this is often the deciding factor — more than the title
- * and sometimes more than the pay. So it gets its own section with the exact
- * address, the office hours, and a maps link that opens straight into
- * directions, rather than a line of small print in the footer.
+ * Commute is often the deciding factor — more than the title and sometimes
+ * more than the pay — and it applies as much to an accountant as to a machine
+ * operator. So it gets its own section with the exact address and a maps link
+ * that opens straight into directions, rather than a line of small print in
+ * the footer.
+ *
+ * No hours here on purpose: the shift belongs to the posting and to RRHH, and
+ * publishing one on the site would turn it into a promise the site is making.
  *
  * The maps URL is built from the address string in `company`, so it can
  * never point somewhere the rest of the site doesn't.
@@ -30,7 +34,7 @@ export function WorkLocation({ index = "04" }: { index?: string }) {
               index={index}
               eyebrow="Ubicación"
               title="Dónde trabajarías"
-              intro="Toda nuestra operación está en una sola planta, en el corredor industrial de Apaseo el Grande."
+              intro="Planta y oficinas están en el mismo sitio, en el corredor industrial de Apaseo el Grande — trabajes en producción, en laboratorio o en un escritorio."
             />
 
             <Reveal>
@@ -48,15 +52,9 @@ export function WorkLocation({ index = "04" }: { index?: string }) {
                     <span className="text-ink-muted mt-1 block text-sm">{fullAddress()}</span>
                   </span>
                 </p>
-                <p className="text-ink-muted mt-5 flex items-center gap-3 text-sm">
-                  <Clock aria-hidden className="text-green-600 size-5 shrink-0" strokeWidth={1.5} />
-                  <span>
-                    Oficina: {company.hours}
-                    <span className="text-ink-muted/80 block text-xs">
-                      Los turnos de planta se detallan en cada vacante.
-                    </span>
-                  </span>
-                </p>
+                {/* Sin horario a proposito: el turno lo define Recursos Humanos
+                    por puesto, y publicarlo aqui lo volveria un compromiso del
+                    sitio. Cada vacante lleva el suyo. */}
               </address>
             </Reveal>
 

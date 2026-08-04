@@ -27,7 +27,7 @@ export function WorkAtPimsa({ index = "02" }: { index?: string }) {
               index={index}
               eyebrow="Trabajar en PIMSA"
               title="Qué hacemos aquí, en corto"
-              intro="Recogemos el plástico que sobra en las fábricas de la región, lo procesamos en nuestra planta y lo devolvemos convertido en materia prima. Eso es todo el negocio, y de eso vive el equipo."
+              intro="Recogemos el plástico que sobra en las fábricas de la región, lo procesamos y lo devolvemos convertido en materia prima. Ese negocio necesita gente en planta, pero también en laboratorio, logística, compras, sistemas y el área comercial."
               tone="dark"
             />
 

@@ -12,12 +12,29 @@ import { MAX_CV_LABEL } from "@/lib/uploads";
  * or culture is invented here — see `workBenefits` below.
  */
 
+/**
+ * The areas a career here can belong to.
+ *
+ * Named explicitly because a recycling plant reads, from outside, as nothing
+ * but production jobs — and that is wrong. The operation needs a laboratory,
+ * a fleet, a quality system, purchasing, sales, systems and HR, all on the
+ * same site. A candidate who assumes otherwise never applies.
+ */
+export const workAreas = [
+  "Producción",
+  "Mantenimiento",
+  "Laboratorio y calidad",
+  "Logística",
+  "Administración y compras",
+  "Comercial",
+  "Sistemas",
+] as const;
+
 /** Why this is a real place to work, in facts rather than adjectives. */
 export const whyWorkHere: Spec[] = [
   {
-    label: "Una planta, no un escritorio",
-    value:
-      "Molienda, peletizado, laboratorio y logística propia. El trabajo es operativo y se ve: entra scrap industrial y sale materia prima.",
+    label: "Muchas áreas, un mismo techo",
+    value: `No todo es piso de planta: ${workAreas.join(", ").toLowerCase()}. Toda la operación convive en un solo sitio, así que se aprende de las demás áreas sin cambiar de empresa.`,
   },
   {
     label: "Procesos documentados",
@@ -88,8 +105,12 @@ export const candidateFaqs: Faq[] = [
       "Sí. En esta misma página puedes enviar una postulación espontánea con tu CV. Queda registrada en nuestra bolsa y Recursos Humanos la revisa cuando se abre una vacante que embone con tu perfil.",
   },
   {
+    question: "¿Sólo contratan personal de producción?",
+    answer: `No. Además de producción y mantenimiento tenemos laboratorio y calidad, logística, administración y compras, comercial y sistemas. Las vacantes abiertas de cada área aparecen agrupadas arriba en esta página.`,
+  },
+  {
     question: "¿Dónde tendría que trabajar?",
-    answer: `En nuestra planta de ${company.address.locality}, ${company.address.municipality}, ${company.address.state}. La dirección completa y el horario de oficina están en esta página.`,
+    answer: `En nuestras instalaciones de ${company.address.locality}, ${company.address.municipality}, ${company.address.state}: planta y oficinas están en el mismo sitio. La dirección completa está en esta página. El horario y el turno dependen del puesto y los define Recursos Humanos.`,
   },
   {
     question: "¿Qué pasa con mi CV y mis datos?",
