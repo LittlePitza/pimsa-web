@@ -3,14 +3,19 @@ import { deleteVacancyAction, setVacancyStatusAction } from "@/app/admin/actions
 import { ConfirmButton } from "@/components/admin/confirm-button";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
-import { listVacancies } from "@/db/queries/vacancies";
+import { ListingCount } from "@/components/admin/listing-count";
+import { countVacancies, listVacancies } from "@/db/queries/vacancies";
 import { requireArea } from "@/lib/auth";
 import { vacancyStatusLabels } from "@/lib/labels";
+import { ADMIN_LIST_LIMIT } from "@/lib/metrics";
 import { cn, formatDate } from "@/lib/utils";
 
 export default async function AdminVacanciesPage() {
   await requireArea("rrhh");
-  const vacancies = await listVacancies();
+  const [vacancies, total] = await Promise.all([
+    listVacancies(ADMIN_LIST_LIMIT),
+    countVacancies(),
+  ]);
 
   return (
     <>
@@ -20,6 +25,7 @@ export default async function AdminVacanciesPage() {
           Nueva vacante
         </ButtonLink>
       </div>
+      <ListingCount shown={vacancies.length} total={total} noun="vacantes" />
 
       <ul className="border-line bg-surface shadow-card mt-8 divide-y divide-(--color-line) rounded-md border">
         {vacancies.map((vacancy) => (

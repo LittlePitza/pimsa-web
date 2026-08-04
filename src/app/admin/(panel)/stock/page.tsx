@@ -3,13 +3,15 @@ import { deleteStockItemAction, setStockPublishedAction } from "@/app/admin/acti
 import { ConfirmButton } from "@/components/admin/confirm-button";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
-import { listStockItems } from "@/db/queries/stock";
+import { ListingCount } from "@/components/admin/listing-count";
+import { listStockItems, stockCounts } from "@/db/queries/stock";
 import { requireArea } from "@/lib/auth";
+import { ADMIN_LIST_LIMIT } from "@/lib/metrics";
 import { cn, formatDate } from "@/lib/utils";
 
 export default async function AdminStockPage() {
   await requireArea("marketing");
-  const items = await listStockItems();
+  const [items, counts] = await Promise.all([listStockItems(ADMIN_LIST_LIMIT), stockCounts()]);
 
   return (
     <>
@@ -26,6 +28,7 @@ export default async function AdminStockPage() {
         </Link>{" "}
         (el sitio se actualiza en menos de un minuto).
       </p>
+      <ListingCount shown={items.length} total={counts.total} noun="materiales" />
 
       <ul className="border-line bg-surface shadow-card mt-8 divide-y divide-(--color-line) rounded-md border">
         {items.map((item) => (

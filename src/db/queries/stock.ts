@@ -23,8 +23,8 @@ export const getPublishedStockItems = cache(async (): Promise<StockItem[]> => {
 
 // ── Admin ────────────────────────────────────────────────────────────────
 
-export async function listStockItems(): Promise<StockItem[]> {
-  return db.select().from(stockItems).orderBy(desc(stockItems.updatedAt));
+export async function listStockItems(limit: number): Promise<StockItem[]> {
+  return db.select().from(stockItems).orderBy(desc(stockItems.updatedAt)).limit(limit);
 }
 
 export async function getStockItemById(id: number): Promise<StockItem | null> {
@@ -49,10 +49,18 @@ export async function deleteStockItem(id: number): Promise<void> {
   await db.delete(stockItems).where(eq(stockItems.id, id));
 }
 
-export async function countPublishedStockItems(): Promise<number> {
-  const [row] = await db
-    .select({ value: count() })
+/** Published vs hidden in a single GROUP BY — the catalog-health card. */
+export async function stockCounts(): Promise<{ total: number; published: number }> {
+  const rows = await db
+    .select({ published: stockItems.published, value: count() })
     .from(stockItems)
-    .where(eq(stockItems.published, true));
-  return row?.value ?? 0;
+    .groupBy(stockItems.published);
+
+  let total = 0;
+  let published = 0;
+  for (const row of rows) {
+    total += row.value;
+    if (row.published) published = row.value;
+  }
+  return { total, published };
 }

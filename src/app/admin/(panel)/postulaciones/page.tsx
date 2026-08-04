@@ -1,14 +1,19 @@
 import { setApplicationStatusAction } from "@/app/admin/actions";
 import { StatusForm } from "@/components/admin/status-form";
 import { APPLICATION_STATUSES } from "@/lib/enums";
-import { listApplications } from "@/db/queries/applications";
+import { ListingCount } from "@/components/admin/listing-count";
+import { countApplications, listApplications } from "@/db/queries/applications";
 import { requireArea } from "@/lib/auth";
 import { applicationStatusLabels } from "@/lib/labels";
+import { ADMIN_LIST_LIMIT } from "@/lib/metrics";
 import { formatDate } from "@/lib/utils";
 
 export default async function AdminApplicationsPage() {
   await requireArea("rrhh");
-  const applications = await listApplications();
+  const [applications, total] = await Promise.all([
+    listApplications(ADMIN_LIST_LIMIT),
+    countApplications(),
+  ]);
 
   return (
     <>
@@ -16,6 +21,7 @@ export default async function AdminApplicationsPage() {
       <p className="text-ink-muted mt-2 text-sm">
         Candidatos recibidos desde la bolsa de trabajo. Los CVs se descargan desde cada tarjeta.
       </p>
+      <ListingCount shown={applications.length} total={total} noun="postulaciones" />
 
       <ul className="mt-8 space-y-4">
         {applications.map((application) => (

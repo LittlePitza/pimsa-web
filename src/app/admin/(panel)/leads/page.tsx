@@ -1,14 +1,16 @@
 import { setLeadStatusAction } from "@/app/admin/actions";
 import { StatusForm } from "@/components/admin/status-form";
 import { LEAD_STATUSES } from "@/lib/enums";
-import { listLeads } from "@/db/queries/leads";
+import { ListingCount } from "@/components/admin/listing-count";
+import { countLeads, listLeads } from "@/db/queries/leads";
 import { requireArea } from "@/lib/auth";
 import { leadStatusLabels } from "@/lib/labels";
+import { ADMIN_LIST_LIMIT } from "@/lib/metrics";
 import { formatDate } from "@/lib/utils";
 
 export default async function AdminLeadsPage() {
   await requireArea("marketing");
-  const leads = await listLeads();
+  const [leads, total] = await Promise.all([listLeads(ADMIN_LIST_LIMIT), countLeads()]);
 
   return (
     <>
@@ -16,6 +18,7 @@ export default async function AdminLeadsPage() {
       <p className="text-ink-muted mt-2 text-sm">
         Solicitudes recibidas por el formulario de contacto (también se entregan por correo).
       </p>
+      <ListingCount shown={leads.length} total={total} noun="leads" />
 
       <ul className="mt-8 space-y-4">
         {leads.map((lead) => (

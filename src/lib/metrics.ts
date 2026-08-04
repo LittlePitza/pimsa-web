@@ -1,12 +1,53 @@
 /**
  * Dashboard aggregations — pure functions over rows already fetched from the
- * DB, so they stay dialect-agnostic and easy to reason about. Inbound volumes
- * for the site (leads, applications) are small enough to tally in memory.
+ * DB, so they stay dialect-agnostic and easy to reason about.
+ *
+ * Totals come from SQL (GROUP BY / COUNT) because they cover all of history;
+ * the shaping helpers here run over the bounded window the charts actually
+ * display, never over the whole table.
  */
+
+/** Months covered by the trend charts — and by the rows they read. */
+export const TREND_MONTHS = 6;
+
+/** Rows shown in the "últimos…" cards on the dashboards. */
+export const RECENT_LIMIT = 5;
+
+/**
+ * Ceiling for the full listing screens. Generous for this site's volume, but
+ * it keeps a single page from ever loading an entire table; the pages show
+ * the real total next to it so nothing looks silently truncated.
+ */
+export const ADMIN_LIST_LIMIT = 200;
 
 export interface Bucket {
   label: string;
   value: number;
+}
+
+/** Totals per status plus the grand total, as returned by a GROUP BY. */
+export interface StatusCounts<S extends string> {
+  total: number;
+  byStatus: Record<S, number>;
+}
+
+/** A zero for every status, so the funnels always show the full set. */
+export function emptyStatusRecord<S extends string>(order: readonly S[]): Record<S, number> {
+  return Object.fromEntries(order.map((status) => [status, 0])) as Record<S, number>;
+}
+
+/** Status counts laid out as chart buckets, in the given (funnel) order. */
+export function statusBuckets<S extends string>(
+  counts: StatusCounts<S>,
+  order: readonly S[],
+  labels: Record<S, string>,
+): Bucket[] {
+  return order.map((status) => ({ label: labels[status], value: counts.byStatus[status] }));
+}
+
+/** First day of the month `n - 1` months back — the start of a trend window. */
+export function startOfMonthsAgo(n: number, now: Date = new Date()): Date {
+  return new Date(now.getFullYear(), now.getMonth() - (n - 1), 1, 0, 0, 0, 0);
 }
 
 export interface MonthPoint {

@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { StatCard } from "@/components/admin/charts";
-import { listApplications } from "@/db/queries/applications";
-import { listLeads } from "@/db/queries/leads";
-import { listStockItems } from "@/db/queries/stock";
-import { listVacancies } from "@/db/queries/vacancies";
+import { applicationStatusCounts, recentApplications } from "@/db/queries/applications";
+import { leadStatusCounts, recentLeads } from "@/db/queries/leads";
+import { stockCounts } from "@/db/queries/stock";
+import { countVacanciesByStatus } from "@/db/queries/vacancies";
 import { requireFullPanel } from "@/lib/auth";
 import { applicationStatusLabels, leadStatusLabels } from "@/lib/labels";
-import { percent } from "@/lib/metrics";
+import { percent, RECENT_LIMIT } from "@/lib/metrics";
 import { formatDate } from "@/lib/utils";
 
 /**
@@ -15,35 +15,38 @@ import { formatDate } from "@/lib/utils";
  * whole-panel accounts land here; Marketing and RRHH are sent straight to
  * their own portal by the guard.
  *
- * DB errors surface to the admin error boundary — honest failure beats
- * silently rendering zeros.
+ * Every number comes from a COUNT/GROUP BY and every list from a LIMIT, so
+ * the page costs the same whether the inbox holds ten rows or a hundred
+ * thousand. DB errors surface to the admin error boundary — honest failure
+ * beats silently rendering zeros.
  */
 export default async function AdminDashboardPage() {
   await requireFullPanel();
-  const [leads, applications, vacancies, stock] = await Promise.all([
-    listLeads(),
-    listApplications(),
-    listVacancies(),
-    listStockItems(),
-  ]);
+  const [leadCounts, applicationCounts, openVacancies, stock, latestLeads, latestApplications] =
+    await Promise.all([
+      leadStatusCounts(),
+      applicationStatusCounts(),
+      countVacanciesByStatus("open"),
+      stockCounts(),
+      recentLeads(RECENT_LIMIT),
+      recentApplications(RECENT_LIMIT),
+    ]);
 
-  const newLeads = leads.filter((lead) => lead.status === "new").length;
-  const closedLeads = leads.filter((lead) => lead.status === "closed").length;
-  const newApplications = applications.filter((a) => a.status === "new").length;
-  const openVacancies = vacancies.filter((v) => v.status === "open").length;
-  const publishedStock = stock.filter((item) => item.published).length;
+  const newLeads = leadCounts.byStatus.new;
+  const closedLeads = leadCounts.byStatus.closed;
+  const newApplications = applicationCounts.byStatus.new;
 
   const areas = [
     {
       href: "/admin/marketing",
       title: "Marketing",
-      metric: `${leads.length} leads`,
-      hint: `${newLeads} sin atender · ${percent(closedLeads, leads.length)}% cerrados`,
+      metric: `${leadCounts.total} leads`,
+      hint: `${newLeads} sin atender · ${percent(closedLeads, leadCounts.total)}% cerrados`,
     },
     {
       href: "/admin/rrhh",
       title: "Recursos Humanos",
-      metric: `${applications.length} postulaciones`,
+      metric: `${applicationCounts.total} postulaciones`,
       hint: `${newApplications} sin revisar · ${openVacancies} vacantes abiertas`,
     },
   ];
@@ -55,7 +58,7 @@ export default async function AdminDashboardPage() {
         Vista de toda la operación del sitio. Entra a cada área para el detalle.
       </p>
 
-      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="admin-stagger mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Leads nuevos" value={newLeads} href="/admin/leads" tone="green" />
         <StatCard
           label="Postulaciones nuevas"
@@ -69,11 +72,16 @@ export default async function AdminDashboardPage() {
           href="/admin/vacantes"
           tone="navy"
         />
-        <StatCard label="Stock publicado" value={publishedStock} href="/admin/stock" tone="navy" />
+        <StatCard
+          label="Stock publicado"
+          value={stock.published}
+          href="/admin/stock"
+          tone="navy"
+        />
       </div>
 
       {/* Area entry points */}
-      <div className="mt-6 grid gap-5 md:grid-cols-2">
+      <div className="admin-stagger mt-6 grid gap-5 md:grid-cols-2">
         {areas.map((area) => (
           <Link
             key={area.href}
@@ -101,7 +109,7 @@ export default async function AdminDashboardPage() {
             Últimos leads
           </h2>
           <ul className="border-line bg-surface shadow-card mt-4 divide-y divide-(--color-line) rounded-md border">
-            {leads.slice(0, 5).map((lead) => (
+            {latestLeads.map((lead) => (
               <li key={lead.id} className="flex items-center justify-between gap-4 p-4">
                 <div>
                   <p className="text-ink font-medium">
@@ -117,7 +125,7 @@ export default async function AdminDashboardPage() {
                 </span>
               </li>
             ))}
-            {leads.length === 0 ? (
+            {latestLeads.length === 0 ? (
               <li className="text-ink-muted p-4 text-sm">Aún no hay leads.</li>
             ) : null}
           </ul>
@@ -128,7 +136,7 @@ export default async function AdminDashboardPage() {
             Últimas postulaciones
           </h2>
           <ul className="border-line bg-surface shadow-card mt-4 divide-y divide-(--color-line) rounded-md border">
-            {applications.slice(0, 5).map((application) => (
+            {latestApplications.map((application) => (
               <li key={application.id} className="flex items-center justify-between gap-4 p-4">
                 <div>
                   <p className="text-ink font-medium">{application.name}</p>
@@ -142,7 +150,7 @@ export default async function AdminDashboardPage() {
                 </span>
               </li>
             ))}
-            {applications.length === 0 ? (
+            {latestApplications.length === 0 ? (
               <li className="text-ink-muted p-4 text-sm">Aún no hay postulaciones.</li>
             ) : null}
           </ul>

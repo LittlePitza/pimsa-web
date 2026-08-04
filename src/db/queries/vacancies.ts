@@ -49,8 +49,8 @@ export const getOpenVacancyBySlug = cache(async (slug: string): Promise<Vacancy 
 
 // ── Admin ────────────────────────────────────────────────────────────────
 
-export async function listVacancies(): Promise<Vacancy[]> {
-  return db.select().from(vacancies).orderBy(desc(vacancies.createdAt));
+export async function listVacancies(limit: number): Promise<Vacancy[]> {
+  return db.select().from(vacancies).orderBy(desc(vacancies.createdAt)).limit(limit);
 }
 
 export async function getVacancyById(id: number): Promise<Vacancy | null> {
@@ -76,6 +76,11 @@ export async function setVacancyStatus(id: number, status: VacancyStatus): Promi
 
 export async function deleteVacancy(id: number): Promise<void> {
   await db.delete(vacancies).where(eq(vacancies.id, id));
+}
+
+export async function countVacancies(): Promise<number> {
+  const [row] = await db.select({ value: count() }).from(vacancies);
+  return row?.value ?? 0;
 }
 
 export async function countVacanciesByStatus(status: VacancyStatus): Promise<number> {
