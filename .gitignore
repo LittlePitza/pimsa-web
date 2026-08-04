@@ -37,6 +37,7 @@ coverage/
 !.vscode/settings.json
 .idea/
 .cursor/
+.claude/
 .DS_Store
 Thumbs.db
 desktop.ini

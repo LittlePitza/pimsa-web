@@ -8,8 +8,8 @@ Deployed to Hostinger Node.js Web Apps with auto-deploy from `main`.
 
 | Document | Contents |
 | --- | --- |
-| [PLAN.md](./PLAN.md) | Project goals, architecture, SEO strategy, roadmap |
-| [DESIGN.md](./DESIGN.md) | Design system, art direction, component inventory |
+| [docs/PLAN.md](./docs/PLAN.md) | Project goals, architecture, SEO strategy, roadmap |
+| [docs/DESIGN.md](./docs/DESIGN.md) | Design system, art direction, component inventory |
 | [docs/marketing-material-request.md](./docs/marketing-material-request.md) | Pending material from Marketing (`TODO(marketing)` markers) |
 
 ---

@@ -2,6 +2,7 @@
 
 > Art direction and design system for plasticospimsa.com.
 > Companion to [PLAN.md](./PLAN.md) · Status: **Approved direction, pre-build** · Last updated: 2026-07-03
+> Referenced throughout the source as `DESIGN.md §n`; the section numbers below are those anchors.
 > This document doubles as a design brief and can be handed to any designer as-is.
 
 ---
