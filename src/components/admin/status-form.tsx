@@ -1,7 +1,38 @@
+"use client";
+
+import { useState } from "react";
+import { useFormStatus } from "react-dom";
+import { cn } from "@/lib/utils";
+
 /**
  * Inline status select + save button used by the leads and applications
- * lists. Server component: receives an already-bound server action.
+ * lists.
+ *
+ * The button stays disabled until the value actually changes, so the row
+ * never invites a no-op write, and it reports its own pending state — the
+ * previous version gave no sign at all that a save was in flight, which on a
+ * remote database reads as a dead click.
  */
+function SaveButton({ context, dirty }: { context: string; dirty: boolean }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={!dirty || pending}
+      aria-label={`Guardar estado de ${context}`}
+      className={cn(
+        "rounded-sm px-3 py-1.5 text-sm font-medium transition-colors",
+        dirty && !pending
+          ? "text-navy-500 hover:bg-navy-500/10"
+          : "text-ink-muted cursor-not-allowed",
+      )}
+    >
+      {pending ? "Guardando…" : "Guardar"}
+    </button>
+  );
+}
+
 export function StatusForm({
   action,
   id,
@@ -22,6 +53,8 @@ export function StatusForm({
   statusLabels: Record<string, string>;
   defaultValue: string;
 }) {
+  const [value, setValue] = useState(defaultValue);
+
   return (
     <form action={action} className="flex items-center gap-2">
       <label htmlFor={id} className="sr-only">
@@ -30,8 +63,9 @@ export function StatusForm({
       <select
         id={id}
         name="status"
-        defaultValue={defaultValue}
-        className="border-line bg-surface text-ink rounded-sm border px-2 py-1.5 text-sm"
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+        className="border-line bg-surface text-ink rounded-sm border px-2 py-1.5 text-sm transition-colors focus:border-blue-600 focus:outline-none"
       >
         {statuses.map((status) => (
           <option key={status} value={status}>
@@ -39,13 +73,7 @@ export function StatusForm({
           </option>
         ))}
       </select>
-      <button
-        type="submit"
-        aria-label={`Guardar estado de ${context}`}
-        className="text-navy-500 hover:bg-navy-500/10 rounded-sm px-3 py-1.5 text-sm font-medium"
-      >
-        Guardar
-      </button>
+      <SaveButton context={context} dirty={value !== defaultValue} />
     </form>
   );
 }

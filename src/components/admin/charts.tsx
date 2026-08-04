@@ -111,7 +111,7 @@ export function BarList({
           </span>
           <span className="bg-line/60 relative h-2.5 overflow-hidden rounded-full">
             <span
-              className={cn("absolute inset-y-0 left-0 rounded-full", barFill[tone])}
+              className={cn("admin-bar absolute inset-y-0 left-0 rounded-full", barFill[tone])}
               style={{ width: `${Math.max((item.value / max) * 100, item.value > 0 ? 4 : 0)}%` }}
             />
           </span>
@@ -128,13 +128,17 @@ export function TrendChart({ points, tone = "green" }: { points: MonthPoint[]; t
 
   return (
     <div className="flex h-44 items-end gap-2 sm:gap-3">
-      {points.map((point) => (
+      {points.map((point, i) => (
         <div key={point.key} className="flex flex-1 flex-col items-center gap-2">
           <span className="text-ink-muted font-mono text-xs">{point.value}</span>
           <div className="flex w-full flex-1 items-end">
             <div
-              className={cn("w-full rounded-t", barFill[tone])}
-              style={{ height: `${point.value > 0 ? Math.max((point.value / max) * 100, 3) : 0}%` }}
+              className={cn("admin-column w-full rounded-t", barFill[tone])}
+              style={{
+                height: `${point.value > 0 ? Math.max((point.value / max) * 100, 3) : 0}%`,
+                // Left-to-right sweep, so the trend reads in reading order.
+                animationDelay: `${i * 45}ms`,
+              }}
             />
           </div>
           <span className="text-ink-muted font-mono text-[10px] tracking-wider uppercase">

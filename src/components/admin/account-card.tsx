@@ -7,6 +7,7 @@ import {
   updateAccountAction,
   type ActionState,
 } from "@/app/admin/actions";
+import { ConfirmButton } from "@/components/admin/confirm-button";
 import { Button } from "@/components/ui/button";
 import { InputField, SelectField } from "@/components/ui/field";
 import { ADMIN_ROLES, type AdminRole } from "@/lib/enums";
@@ -175,17 +176,12 @@ export function AccountCard({ account }: { account: AccountCardData }) {
           action={deleteAccountAction.bind(null, account.id)}
           className="mt-5 border-t border-(--color-line) pt-4"
         >
-          <button
-            type="submit"
+          <ConfirmButton
+            message={`¿Eliminar la cuenta de ${account.email}? Esta acción no se puede deshacer.`}
             className="text-sm font-medium text-red-700 hover:underline"
-            onClick={(event) => {
-              if (!confirm(`¿Eliminar la cuenta de ${account.email}? Esta acción no se puede deshacer.`)) {
-                event.preventDefault();
-              }
-            }}
           >
             Eliminar cuenta
-          </button>
+          </ConfirmButton>
         </form>
       ) : null}
     </li>
