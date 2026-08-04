@@ -3,7 +3,7 @@ import { z } from "zod";
 import { insertLeadSafe } from "@/db/queries/leads";
 import { createMailTransport, mailFrom } from "@/lib/mailer";
 import { rateLimit } from "@/lib/rate-limit";
-import { clientIp } from "@/lib/request";
+import { clientIp, isCrossOrigin } from "@/lib/request";
 import { getEmailRecipients } from "@/lib/settings";
 import { UTM_KEYS } from "@/lib/utm";
 
@@ -35,6 +35,12 @@ const contactSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  // Only this site's own form may post here (server actions get this check
+  // from Next; route handlers have to do it themselves).
+  if (isCrossOrigin(request.headers)) {
+    return NextResponse.json({ error: "Origen no permitido." }, { status: 403 });
+  }
+
   // Rate limit per IP: 5 submissions / 10 minutes.
   const ip = clientIp(request.headers);
   if (!rateLimit(`contact:${ip}`, { limit: 5, windowMs: 10 * 60_000 })) {

@@ -48,7 +48,7 @@ import {
   sessionCookieOptions,
 } from "@/lib/auth";
 import { createMailTransport, mailFrom } from "@/lib/mailer";
-import { rateLimit } from "@/lib/rate-limit";
+import { isRateLimited, rateLimit, recordAttempt } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { canAccess, homeFor, roleLabels } from "@/lib/roles";
 import { createSessionToken, SESSION_COOKIE } from "@/lib/session";
@@ -91,10 +91,19 @@ export async function signInAction(
     return { error: "Ingresa tu correo y contraseña." };
   }
 
-  // Brute-force guard: 5 attempts / 15 min per IP.
+  // Brute-force guards. Per IP stops one host hammering away; per account
+  // stops a botnet spreading the same guesses across many IPs, which the IP
+  // limit alone never sees. Only failures count against the per-account
+  // budget, so a legitimate user signing in never spends their own quota.
   const ip = clientIp(await headers());
   if (!rateLimit(`admin-login:${ip}`, { limit: 5, windowMs: 15 * 60_000 })) {
     return { error: "Demasiados intentos. Espera 15 minutos e inténtalo de nuevo." };
+  }
+
+  const accountKey = `admin-login-account:${email}`;
+  const accountLimit = { limit: 10, windowMs: 15 * 60_000 };
+  if (isRateLimited(accountKey, accountLimit)) {
+    return { error: "Demasiados intentos para esta cuenta. Espera 15 minutos." };
   }
 
   let admin;
@@ -111,6 +120,7 @@ export async function signInAction(
   const valid = await bcrypt.compare(password, hash);
 
   if (!admin || !valid) {
+    recordAttempt(accountKey, accountLimit);
     return { error: "Correo o contraseña incorrectos." };
   }
 

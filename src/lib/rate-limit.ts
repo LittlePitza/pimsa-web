@@ -19,6 +19,31 @@ interface Bucket {
 
 const buckets = new Map<string, Bucket>();
 
+/** Timestamps still inside the window, pruned of anything older. */
+function liveTimestamps(key: string, windowMs: number, now: number): number[] {
+  return (buckets.get(key)?.timestamps ?? []).filter((t) => t > now - windowMs);
+}
+
+/**
+ * Read-only check. Use with `recordAttempt` when only *failures* should count
+ * against the budget — a login throttle that also charges successful sign-ins
+ * punishes the legitimate user for the attacker's traffic.
+ */
+export function isRateLimited(key: string, { limit, windowMs }: Options): boolean {
+  const now = Date.now();
+  const timestamps = liveTimestamps(key, windowMs, now);
+  buckets.set(key, { windowMs, timestamps });
+  return timestamps.length >= limit;
+}
+
+/** Charges one hit against the budget without checking it. */
+export function recordAttempt(key: string, { windowMs }: Options): void {
+  const now = Date.now();
+  const timestamps = liveTimestamps(key, windowMs, now);
+  timestamps.push(now);
+  buckets.set(key, { windowMs, timestamps });
+}
+
 export function rateLimit(key: string, { limit, windowMs }: Options): boolean {
   const now = Date.now();
   const windowStart = now - windowMs;

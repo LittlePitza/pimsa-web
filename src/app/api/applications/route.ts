@@ -4,7 +4,7 @@ import { createApplication } from "@/db/queries/applications";
 import { getOpenVacancyBySlug } from "@/db/queries/vacancies";
 import { createMailTransport, mailFrom } from "@/lib/mailer";
 import { rateLimit } from "@/lib/rate-limit";
-import { clientIp } from "@/lib/request";
+import { clientIp, isCrossOrigin } from "@/lib/request";
 import { getEmailRecipients } from "@/lib/settings";
 import { ALLOWED_CV_EXTENSIONS, ALLOWED_CV_MIME_TYPES, MAX_CV_BYTES } from "@/lib/uploads";
 
@@ -24,6 +24,12 @@ const fieldsSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  // multipart/form-data is a "simple" request: without this check any page on
+  // the internet could POST applications here from a visitor's browser.
+  if (isCrossOrigin(request.headers)) {
+    return NextResponse.json({ error: "Origen no permitido." }, { status: 403 });
+  }
+
   const ip = clientIp(request.headers);
   if (!rateLimit(`applications:${ip}`, { limit: 3, windowMs: 10 * 60_000 })) {
     return NextResponse.json(

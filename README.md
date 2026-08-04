@@ -101,6 +101,13 @@ The panel is `noindex, nofollow` and every page is guarded server-side.
   waiting out their 8-hour session.
 - Sessions carry a password-version claim, so **deleting an account or resetting its
   password immediately revokes its open sessions**.
+- Login is throttled **per IP** (5 / 15 min) *and* **per account** (10 failures /
+  15 min), so spreading the same guesses across a botnet no longer slips past a
+  limit that only ever saw one address. Successful sign-ins cost nothing.
+- The public API routes (`/api/contact`, `/api/applications`) reject requests a
+  browser sent from another origin. Server actions get that check from Next;
+  route handlers do not, and multipart uploads are a "simple" request that no
+  preflight would have stopped.
 - **Super-admins** (from `SUPER_ADMIN_EMAILS`, default `sistemas@plasticospimsa.com`)
   always keep the whole panel and manage users, areas and passwords from
   `/admin/cuentas`.
