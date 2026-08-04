@@ -1,14 +1,23 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/json-ld";
+import { AboutDatasheet } from "@/components/sections/about-datasheet";
 import { CertGrid } from "@/components/sections/cert-grid";
 import { CtaBand } from "@/components/sections/cta-band";
+import { IdentityStatement } from "@/components/sections/identity-statement";
+import { LocationBand } from "@/components/sections/location-band";
 import { PageHero } from "@/components/sections/page-hero";
+import { PlantShowcase } from "@/components/sections/plant-showcase";
+import { StatsBand } from "@/components/sections/stats-band";
 import { Timeline } from "@/components/sections/timeline";
-import { Card } from "@/components/ui/card";
-import { Container } from "@/components/ui/container";
-import { SectionHeading } from "@/components/ui/section-heading";
-import { missionVision } from "@/content/about";
+import { operationFigures } from "@/content/about";
 import { company } from "@/content/company";
 import { buildMetadata } from "@/lib/seo";
+import { aboutPageSchema } from "@/lib/structured-data";
+
+const breadcrumbs = [
+  { name: "Inicio", path: "/" },
+  { name: "Nosotros", path: "/nosotros" },
+];
 
 export const metadata: Metadata = buildMetadata({
   title: "Nosotros — recicladora de plásticos de ingeniería",
@@ -23,60 +32,48 @@ export const metadata: Metadata = buildMetadata({
   ],
 });
 
+/**
+ * About page, ordered for the person who actually reads it: a purchasing or
+ * quality engineer deciding whether PIMSA can be a supplier.
+ *
+ * The sequence answers their questions in the order they ask them — who are
+ * you, can you handle my volume, is the plant real, will you survive my
+ * audit, how long have you been at this, what do you stand for, where are
+ * you — and only then asks for the contact. Mission and values come late on
+ * purpose: nobody qualifies a supplier from a vision statement, so the
+ * evidence goes first.
+ *
+ * Every section is a self-contained component fed from src/content, which is
+ * the composition promise in DESIGN.md §8. All of it renders on the server;
+ * the only client JS on the page is the stat counters and the reveal
+ * observer.
+ */
 export default function AboutPage() {
   return (
     <>
+      {/* BreadcrumbList is emitted by <Breadcrumbs> inside PageHero — adding a
+          second one here would ship conflicting structured data. */}
+      <JsonLd data={aboutPageSchema(operationFigures.map((figure) => figure.src))} />
+
       <PageHero
         index="01"
         eyebrow="Nosotros"
         title="Ingeniería mexicana en economía circular"
         intro={`Desde ${company.foundedYear}, desde el corazón del Bajío industrial, transformamos el scrap plástico de la industria en materia prima recuperada con calidad documentada para todo México.`}
-        breadcrumbs={[
-          { name: "Inicio", path: "/" },
-          { name: "Nosotros", path: "/nosotros" },
-        ]}
+        breadcrumbs={breadcrumbs}
       />
+      <AboutDatasheet />
 
-      {/* Mission / vision / values */}
-      <section className="py-24 md:py-32">
-        <Container>
-          <SectionHeading
-            index="01"
-            eyebrow="Identidad"
-            title="Lo que nos mueve"
-            intro="No somos una recicladora genérica: somos una empresa de ingeniería que convierte el scrap en materia prima recuperada para nuevas aplicaciones."
-          />
-          <div className="mt-14 grid gap-5 md:grid-cols-3">
-            <Card className="h-full">
-              <p className="font-mono text-xs tracking-[0.18em] text-green-600 uppercase">Misión</p>
-              <p className="text-ink mt-4">{missionVision.mission}</p>
-            </Card>
-            <Card className="h-full">
-              <p className="font-mono text-xs tracking-[0.18em] text-green-600 uppercase">Visión</p>
-              <p className="text-ink mt-4">{missionVision.vision}</p>
-            </Card>
-            <Card className="h-full">
-              <p className="font-mono text-xs tracking-[0.18em] text-green-600 uppercase">
-                Valores
-              </p>
-              <ul className="text-ink mt-4 space-y-2">
-                {missionVision.values.map((value) => (
-                  <li key={value} className="flex items-baseline gap-3">
-                    <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-green-500" />
-                    {value}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          </div>
-        </Container>
-      </section>
+      <StatsBand index="02" />
+      <PlantShowcase index="03" />
+      <CertGrid index="04" />
+      <Timeline index="05" />
+      <IdentityStatement index="06" />
+      <LocationBand index="07" />
 
-      <Timeline />
-      <CertGrid index="03" />
       <CtaBand
         title="Conoce cómo trabajamos"
-        intro="Agenda una visita o cuéntanos qué necesita tu operación; te respondemos el mismo día hábil."
+        intro="Agenda una visita a planta o cuéntanos qué necesita tu operación; te respondemos el mismo día hábil."
       />
     </>
   );

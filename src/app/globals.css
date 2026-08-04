@@ -121,6 +121,161 @@
     animation: admin-pulse 1.1s var(--ease-brand) infinite alternate;
   }
 
+  /* ── Timeline: the rule draws as you scroll ───────────────────────────
+   * Scroll-driven CSS animation — no JS, no observer, no scroll listener.
+   * The motion means something: the line advancing *is* the passage of time
+   * the section describes.
+   *
+   * Progressive enhancement in the safest direction. The <ol> keeps its own
+   * static border; this overlay only paints on top of it, so a browser
+   * without animation-timeline shows exactly today's design and loses
+   * nothing. @supports keeps the overlay out of those browsers entirely,
+   * where an un-animated scaleY(0) would render an invisible line.
+   */
+  .timeline-rule {
+    position: relative;
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .timeline-rule::before {
+        content: "";
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: -1px;
+        width: 1px;
+        background-color: var(--color-green-500);
+        transform-origin: top center;
+        animation: timeline-draw linear both;
+        animation-timeline: view();
+        /* Starts drawing as the list enters and completes before it leaves,
+         * so the line is never still catching up with the last milestone. */
+        animation-range: entry 15% cover 60%;
+      }
+    }
+  }
+
+  @keyframes timeline-draw {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  /* ── Timeline: each milestone reacts as it passes ─────────────────────
+   * Tied to scroll POSITION, not to a one-shot "has entered" trigger, so
+   * scrubbing back up plays it in reverse and the section feels alive under
+   * the finger rather than replaying a canned animation.
+   *
+   * The <li> publishes a named view timeline and its children read it, so
+   * every part of a milestone is driven by that milestone's own progress
+   * through the viewport — not by each element's individual visibility,
+   * which would desynchronise the marker from its year.
+   */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .timeline-item {
+        view-timeline-name: --milestone;
+        view-timeline-axis: block;
+      }
+
+      /* The dot fills as the milestone reaches reading position. */
+      .timeline-item .timeline-marker {
+        animation: marker-activate linear both;
+        animation-timeline: --milestone;
+        animation-range: entry 25% cover 40%;
+      }
+
+      /* Parallax: the year drifts against its own text block. Amplitude is
+       * deliberately tiny — enough to feel depth, not enough to notice as
+       * an effect. */
+      .timeline-item .timeline-year {
+        animation: year-drift linear both;
+        animation-timeline: --milestone;
+        animation-range: entry 0% exit 100%;
+      }
+    }
+  }
+
+  @keyframes marker-activate {
+    from {
+      background-color: var(--color-paper);
+      box-shadow: 0 0 0 2px var(--color-line);
+      scale: 0.6;
+    }
+    to {
+      background-color: var(--color-green-500);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-green-500) 18%, transparent);
+      scale: 1;
+    }
+  }
+
+  @keyframes year-drift {
+    from {
+      translate: 0 9px;
+    }
+    to {
+      translate: 0 -9px;
+    }
+  }
+
+  /* Media parallax inside a fixed frame: the photograph drifts slowly behind
+   * its own border, which reads as depth without the page ever moving. The
+   * image carries scale headroom so the drift never exposes an edge. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .parallax-media img {
+        scale: 1.12;
+        animation: media-drift linear both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 100%;
+      }
+    }
+  }
+
+  @keyframes media-drift {
+    from {
+      translate: 0 -3.5%;
+    }
+    to {
+      translate: 0 3.5%;
+    }
+  }
+
+  /* Annotated figure corner ticks: drawn in once the figure is revealed.
+   * The ticks are what make a photograph read as an engineering plate, so
+   * they earn the motion; the photo itself never moves. */
+  @keyframes tick-draw-x {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  @keyframes tick-draw-y {
+    from {
+      transform: scaleY(0);
+    }
+  }
+
+  @media (scripting: enabled) {
+    .reveal .figure-tick {
+      animation-play-state: paused;
+    }
+    .reveal.is-visible .figure-tick {
+      animation-play-state: running;
+    }
+  }
+
+  .figure-tick-h {
+    transform-origin: var(--tick-origin-x, left) center;
+    animation: tick-draw-x var(--duration-base) var(--ease-brand) 120ms backwards;
+  }
+  .figure-tick-v {
+    transform-origin: center var(--tick-origin-y, top);
+    animation: tick-draw-y var(--duration-base) var(--ease-brand) 120ms backwards;
+  }
+
   /* Lift the WhatsApp FAB above the sticky mobile CTA bar when present */
   @media (max-width: 47.9rem) {
     body:has(.sticky-cta) .whatsapp-fab {

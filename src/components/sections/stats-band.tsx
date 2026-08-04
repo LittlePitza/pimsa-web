@@ -7,7 +7,7 @@ import { stats } from "@/content/about";
 import plantExterior from "../../../public/media/corporate/planta-la-estancia.jpg";
 
 /** Capacity data over real PIMSA plant photography. */
-export function StatsBand() {
+export function StatsBand({ index = "05" }: { index?: string }) {
   return (
     <section data-band="dark" className="bg-navy-900 relative overflow-hidden py-12 md:py-24">
       {/* Decorative backdrop under an ~88% overlay — low quality is invisible here. */}
@@ -30,7 +30,7 @@ export function StatsBand() {
       <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-[minmax(18rem,4fr)_minmax(0,8fr)] lg:items-end">
           <SectionHeading
-            index="05"
+            index={index}
             eyebrow="Capacidad instalada"
             title="Escala industrial, evidencia visible"
             intro="Infraestructura propia para recibir, transformar y devolver material a cadenas productivas de alto volumen."

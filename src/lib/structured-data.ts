@@ -1,4 +1,4 @@
-import { company } from "@/content/company";
+import { certifications, company } from "@/content/company";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
 import type { Vacancy } from "@/db/schema";
 import type { Faq, Service } from "@/types/content";
@@ -123,6 +123,43 @@ export function jobPostingSchema(vacancy: Vacancy): JsonLdObject {
     },
     directApply: true,
     url: absoluteUrl(`/vacantes/${vacancy.slug}`),
+  };
+}
+
+/**
+ * AboutPage node for /nosotros.
+ *
+ * `mainEntity` points at the Organization so Google reads the page as the
+ * company's own description rather than a loose article, which is what makes
+ * it eligible to feed the knowledge panel. The images are the real plant
+ * photographs the page already shows — claiming pictures the page doesn't
+ * render is exactly the kind of mismatch that gets structured data ignored.
+ */
+export function aboutPageSchema(images: string[]): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "@id": `${SITE_URL}/nosotros#aboutpage`,
+    url: absoluteUrl("/nosotros"),
+    name: `Nosotros — ${company.name}`,
+    description: company.description,
+    inLanguage: "es-MX",
+    primaryImageOfPage: images[0] ? absoluteUrl(images[0]) : undefined,
+    image: images.map((src) => absoluteUrl(src)),
+    mainEntity: {
+      ...organizationNode(),
+      legalName: company.legalName,
+      foundingDate: String(company.foundedYear),
+      description: company.description,
+      address: postalAddress(),
+      areaServed: { "@type": "Country", name: "México" },
+      hasCredential: certifications.map((cert) => ({
+        "@type": "EducationalOccupationalCredential",
+        credentialCategory: cert.name,
+        name: cert.code,
+      })),
+      sameAs: company.social.map((s) => s.url),
+    },
   };
 }
 

@@ -1,4 +1,4 @@
-import type { Milestone, Stat } from "@/types/content";
+import type { Milestone, ServiceImage, Spec, Stat } from "@/types/content";
 import { company } from "@/content/company";
 import {
   millingCapacityTonsPerYear,
@@ -7,6 +7,76 @@ import {
 } from "@/content/operational-facts";
 
 const yearsOperating = new Date().getFullYear() - company.foundedYear;
+
+/**
+ * Identity card under the About hero — the facts a purchasing or quality
+ * engineer checks first, in the mono "datasheet" register of the brand.
+ * Every value derives from company data; nothing is written by hand twice.
+ */
+export const identityFacts: Spec[] = [
+  { label: "Razón social", value: company.legalName },
+  { label: "Operando desde", value: String(company.foundedYear) },
+  { label: "Constituida", value: String(company.incorporatedYear) },
+  { label: "Planta", value: `${company.address.municipality}, ${company.address.state}` },
+  { label: "Sistema de gestión", value: "ISO 9001:2015" },
+  { label: "Cobertura", value: "Toda la República Mexicana" },
+];
+
+/**
+ * The plant, in evidence. A supplier page without proof of a real operation
+ * is a brochure — these are the four stages a visiting auditor would walk
+ * through, in the order they happen.
+ */
+export const operationFigures: ServiceImage[] = [
+  {
+    src: "/media/corporate/scrap-industrial.jpg",
+    alt: "Scrap plástico industrial clasificado en el patio de recepción de PIMSA",
+    caption: "Fig. 01 — Recepción y clasificación",
+    tag: "Entrada",
+  },
+  {
+    src: "/media/corporate/peletizado-linea.jpg",
+    alt: "Línea de peletizado en operación dentro de la planta de PIMSA",
+    caption: "Fig. 02 — Línea de peletizado",
+    tag: "Transformación",
+  },
+  {
+    src: "/media/corporate/laboratorio-calidad.jpg",
+    alt: "Laboratorio de control de calidad donde se verifican los polímeros recuperados",
+    caption: "Fig. 03 — Control de calidad",
+    tag: "Verificación",
+  },
+  {
+    src: "/media/corporate/logistica-unidad.jpg",
+    alt: "Unidad de transporte propia de PIMSA lista para entrega de material",
+    caption: "Fig. 04 — Logística de entrega",
+    tag: "Salida",
+  },
+];
+
+/**
+ * Why the Bajío matters commercially. This is also the page's only
+ * geographic copy, and the target keywords ("recicladora de plásticos
+ * Querétaro / Guanajuato") depend on it existing in the body, not just in
+ * the meta tags.
+ */
+export const locationHighlights: Spec[] = [
+  {
+    label: "Corredor industrial",
+    value:
+      "La planta está en el Bajío, entre los clústeres automotrices y de línea blanca de Guanajuato y Querétaro.",
+  },
+  {
+    label: "Cercanía operativa",
+    value:
+      "Estar junto a quien genera el scrap acorta la recolección y reduce el costo logístico de devolver el material ya transformado.",
+  },
+  {
+    label: "Alcance nacional",
+    value:
+      "Desde ahí entregamos polímeros de ingeniería recuperados a plantas de toda la República Mexicana.",
+  },
+];
 
 /**
  * Oversized stats — protagonists of the design (DESIGN.md §4.6).
