@@ -147,10 +147,7 @@ export function ProcessLoop() {
           />
 
           <div className="mt-8 grid gap-8 md:mt-14 md:gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(22rem,5fr)] lg:items-start">
-            <CardRail
-              label="Planta y proceso PIMSA"
-              className="h-56 md:h-auto md:grid-cols-2 lg:sticky lg:top-28"
-            >
+            <CardRail label="Planta y proceso PIMSA" className="h-56 md:h-auto md:grid-cols-2">
               {shots.map((shot) => (
                 <li
                   key={shot.src.src}
@@ -164,7 +161,19 @@ export function ProcessLoop() {
               ))}
             </CardRail>
 
-            <ol className="relative border-l border-blue-400/30">
+            {/* Centred against the taller photo column so the leftover height
+                splits above and below instead of pooling into one hole at the
+                bottom.
+
+                The sticky that used to live here was on the photo column —
+                the TALLER of the two, which fills the grid row and so has
+                nothing to stick against: it did nothing. Pinning this column
+                instead is tempting and was the first attempt, but the list
+                runs ~570px and a 1366x768 laptop leaves ~546px under the
+                header, which would strand step 05 off-screen for as long as
+                it stayed pinned. Centring cannot break at any viewport
+                height. */}
+            <ol className="relative border-l border-blue-400/30 lg:self-center">
               {stages.map((stage, i) => (
                 <li key={stage.index} className="relative pb-9 pl-8 last:pb-0 md:pl-10">
                   <span
