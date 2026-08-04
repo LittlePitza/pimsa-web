@@ -1,8 +1,9 @@
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { CardRail } from "@/components/ui/card-rail";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { cn } from "@/lib/utils";
 import labPhoto from "../../../public/media/corporate/laboratorio-calidad.jpg";
 import pelletLine from "../../../public/media/corporate/peletizado-linea.jpg";
 import scrapIndustrial from "../../../public/media/corporate/scrap-industrial.jpg";
@@ -11,7 +12,67 @@ import millFeed from "../../../public/media/servicios/molienda-alimentacion.jpg"
 /**
  * The material cycle as a documentary contact sheet: real PIMSA process
  * photography paired with the five transformation stages.
+ *
+ * The frames are deliberately different sizes — a wide establishing shot, two
+ * details, a wide closer (DESIGN.md §6: mixed-size cards, not four equal
+ * columns, which is what makes a grid read as a template). What they share is
+ * the *treatment*: one caption style, one border, one overlay. Varying the
+ * size is composition; varying the treatment just looks unfinished.
+ *
+ * No hover effect on purpose. These figures are not links, and a card that
+ * lifts or zooms under the cursor promises a click that never arrives.
  */
+
+interface Shot {
+  src: StaticImageData;
+  alt: string;
+  /** Mono caption, bottom-left. */
+  caption: string;
+  /** Optional mono tag, bottom-right — the annotated-figure pattern. */
+  tag?: string;
+  /** Grid span + aspect from `md` up. */
+  frame: string;
+  /** object-position when the subject isn't centred. */
+  position?: string;
+  sizes: string;
+}
+
+const shots: Shot[] = [
+  {
+    src: scrapIndustrial,
+    alt: "Scrap plástico industrial negro separado para su recuperación",
+    caption: "Materia de entrada",
+    tag: "Scrap post-industrial",
+    frame: "md:col-span-2 md:aspect-[16/10]",
+    sizes: "(max-width: 767px) 78vw, (max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 44rem",
+  },
+  {
+    src: millFeed,
+    alt: "Alimentación de scrap plástico en el equipo de molienda",
+    caption: "Reducción de tamaño",
+    tag: "Molienda",
+    frame: "md:aspect-[4/3]",
+    sizes: "(max-width: 767px) 78vw, (max-width: 1023px) 50vw, (max-width: 1279px) 29vw, 22rem",
+  },
+  {
+    src: pelletLine,
+    alt: "Pellet saliendo de una tolva en la línea de PIMSA",
+    caption: "Peletizado",
+    tag: "Salida",
+    frame: "md:aspect-[4/3]",
+    position: "object-[50%_62%]",
+    sizes: "(max-width: 767px) 78vw, (max-width: 1023px) 50vw, (max-width: 1279px) 29vw, 22rem",
+  },
+  {
+    src: labPhoto,
+    alt: "Equipos del laboratorio de control de calidad de PIMSA",
+    caption: "Laboratorio y liberación de lote",
+    tag: "ISO 9001:2015",
+    frame: "md:col-span-2 md:aspect-[16/7]",
+    position: "object-[50%_46%]",
+    sizes: "(max-width: 767px) 78vw, (max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 44rem",
+  },
+];
 
 const stages = [
   {
@@ -46,6 +107,31 @@ const stages = [
   },
 ];
 
+function ProcessFigure({ shot }: { shot: Shot }) {
+  return (
+    <figure
+      className={cn(
+        "relative h-full overflow-hidden border border-blue-400/30 md:h-auto",
+        shot.frame,
+      )}
+    >
+      <Image
+        src={shot.src}
+        alt={shot.alt}
+        fill
+        quality={60}
+        sizes={shot.sizes}
+        placeholder="blur"
+        className={cn("object-cover", shot.position)}
+      />
+      <figcaption className="bg-navy-900/85 absolute inset-x-0 bottom-0 flex items-baseline justify-between gap-3 px-3 py-2 font-mono text-[0.65rem] tracking-[0.14em] uppercase">
+        <span className="text-blue-400 truncate">{shot.caption}</span>
+        {shot.tag ? <span className="text-green-300 shrink-0">{shot.tag}</span> : null}
+      </figcaption>
+    </figure>
+  );
+}
+
 export function ProcessLoop() {
   return (
     <section data-band="dark" className="bg-navy-900 relative overflow-hidden py-12 md:py-24">
@@ -65,79 +151,17 @@ export function ProcessLoop() {
               label="Planta y proceso PIMSA"
               className="h-56 md:h-auto md:grid-cols-2 lg:sticky lg:top-28"
             >
-              <li className="w-[78%] shrink-0 snap-start md:col-span-2 md:w-auto md:shrink">
-                <figure className="group relative h-full overflow-hidden border border-blue-400/30 md:aspect-[16/10] md:h-auto">
-                  <Image
-                    src={scrapIndustrial}
-                    alt="Scrap plástico industrial negro separado para su recuperación"
-                    fill
-                    quality={60}
-                    sizes="(max-width: 767px) 78vw, (max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 44rem"
-                    placeholder="blur"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
-                  />
-                  <div
-                    className="from-navy-900/80 absolute inset-0 bg-gradient-to-t via-transparent to-transparent"
-                    aria-hidden
-                  />
-                  <figcaption className="absolute right-4 bottom-4 left-4 flex items-end justify-between gap-4 font-mono text-xs tracking-[0.15em] text-white uppercase">
-                    <span>Materia de entrada</span>
-                    <span className="text-green-300">Scrap post-industrial</span>
-                  </figcaption>
-                </figure>
-              </li>
-
-              <li className="w-[78%] shrink-0 snap-start md:w-auto md:shrink">
-                <figure className="relative h-full overflow-hidden border border-blue-400/30 md:aspect-[4/3] md:h-auto">
-                  <Image
-                    src={millFeed}
-                    alt="Alimentación de scrap plástico en el equipo de molienda"
-                    fill
-                    quality={60}
-                    sizes="(max-width: 767px) 78vw, (max-width: 1023px) 50vw, (max-width: 1279px) 29vw, 22rem"
-                    placeholder="blur"
-                    className="object-cover"
-                  />
-                  <figcaption className="bg-navy-900/85 absolute right-0 bottom-0 left-0 px-3 py-2 font-mono text-[0.65rem] tracking-[0.14em] text-blue-400 uppercase">
-                    Reducción de tamaño
-                  </figcaption>
-                </figure>
-              </li>
-
-              <li className="w-[78%] shrink-0 snap-start md:w-auto md:shrink">
-                <figure className="relative h-full overflow-hidden border border-blue-400/30 md:aspect-[4/3] md:h-auto">
-                  <Image
-                    src={pelletLine}
-                    alt="Pellet saliendo de una tolva en la línea de PIMSA"
-                    fill
-                    quality={60}
-                    sizes="(max-width: 767px) 78vw, (max-width: 1023px) 50vw, (max-width: 1279px) 29vw, 22rem"
-                    placeholder="blur"
-                    className="object-cover object-[50%_62%]"
-                  />
-                  <figcaption className="bg-navy-900/85 absolute right-0 bottom-0 left-0 px-3 py-2 font-mono text-[0.65rem] tracking-[0.14em] text-blue-400 uppercase">
-                    Peletizado
-                  </figcaption>
-                </figure>
-              </li>
-
-              <li className="w-[78%] shrink-0 snap-start md:col-span-2 md:w-auto md:shrink">
-                <figure className="relative h-full overflow-hidden border border-blue-400/30 md:aspect-[16/7] md:h-auto">
-                  <Image
-                    src={labPhoto}
-                    alt="Equipos del laboratorio de control de calidad de PIMSA"
-                    fill
-                    quality={60}
-                    sizes="(max-width: 767px) 78vw, (max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 44rem"
-                    placeholder="blur"
-                    className="object-cover object-[50%_46%]"
-                  />
-                  <div className="bg-navy-900/25 absolute inset-0" aria-hidden />
-                  <figcaption className="bg-navy-900/85 absolute right-0 bottom-0 left-0 px-3 py-2 font-mono text-[0.65rem] tracking-[0.14em] text-blue-400 uppercase">
-                    Laboratorio y liberación de lote
-                  </figcaption>
-                </figure>
-              </li>
+              {shots.map((shot) => (
+                <li
+                  key={shot.src.src}
+                  className={cn(
+                    "w-[78%] shrink-0 snap-start md:w-auto md:shrink",
+                    shot.frame.includes("col-span-2") && "md:col-span-2",
+                  )}
+                >
+                  <ProcessFigure shot={shot} />
+                </li>
+              ))}
             </CardRail>
 
             <ol className="relative border-l border-blue-400/30">
