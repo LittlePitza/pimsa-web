@@ -9,7 +9,7 @@ import {
 } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { InputField, SelectField } from "@/components/ui/field";
-import { ADMIN_ROLES, type AdminRole } from "@/db/schema";
+import { ADMIN_ROLES, type AdminRole } from "@/lib/enums";
 import { roleDescriptions, roleLabels } from "@/lib/roles";
 import { formatDate } from "@/lib/utils";
 

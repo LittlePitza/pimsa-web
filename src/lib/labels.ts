@@ -1,4 +1,4 @@
-import type { ApplicationStatus, LeadStatus, VacancyStatus } from "@/db/schema";
+import type { ApplicationStatus, LeadStatus, VacancyStatus } from "@/lib/enums";
 
 /** Spanish UI labels for enum statuses. */
 

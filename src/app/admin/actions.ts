@@ -12,7 +12,7 @@ import {
   STOCK_AVAILABILITY,
   STOCK_FORMS,
   VACANCY_STATUSES,
-} from "@/db/schema";
+} from "@/lib/enums";
 import {
   countAdmins,
   createAdmin,

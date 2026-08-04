@@ -1,4 +1,4 @@
-import type { AdminRole } from "@/db/schema";
+import type { AdminRole } from "@/lib/enums";
 
 /**
  * Panel areas. Marketing and RRHH each own a portal and never see the other's

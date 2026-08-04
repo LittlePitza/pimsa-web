@@ -3,7 +3,7 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { AdminRole } from "@/db/schema";
+import type { AdminRole } from "@/lib/enums";
 import { areaLinks, AREAS, canAccess, isFullPanel } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 

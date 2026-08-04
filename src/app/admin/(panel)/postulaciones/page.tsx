@@ -1,6 +1,6 @@
 import { setApplicationStatusAction } from "@/app/admin/actions";
 import { StatusForm } from "@/components/admin/status-form";
-import { APPLICATION_STATUSES } from "@/db/schema";
+import { APPLICATION_STATUSES } from "@/lib/enums";
 import { listApplications } from "@/db/queries/applications";
 import { requireArea } from "@/lib/auth";
 import { applicationStatusLabels } from "@/lib/labels";

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BarList, ChartCard, StatCard, TrendChart } from "@/components/admin/charts";
-import { LEAD_STATUSES } from "@/db/schema";
+import { LEAD_STATUSES } from "@/lib/enums";
 import { listLeads } from "@/db/queries/leads";
 import { listStockItems } from "@/db/queries/stock";
 import { requireArea } from "@/lib/auth";

@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import type { ActionState } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { InputField, SelectField } from "@/components/ui/field";
-import { STOCK_AVAILABILITY, STOCK_FORMS } from "@/db/schema";
+import { STOCK_AVAILABILITY, STOCK_FORMS } from "@/lib/enums";
 
 export interface StockFormValues {
   material: string;

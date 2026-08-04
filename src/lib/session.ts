@@ -1,4 +1,4 @@
-import type { AdminRole } from "@/db/schema";
+import type { AdminRole } from "@/lib/enums";
 import { jwtVerify, SignJWT } from "jose";
 
 /**

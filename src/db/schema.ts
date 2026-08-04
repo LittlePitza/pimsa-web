@@ -8,11 +8,23 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import {
+  ADMIN_ROLES,
+  APPLICATION_STATUSES,
+  LEAD_STATUSES,
+  STOCK_AVAILABILITY,
+  STOCK_FORMS,
+  VACANCY_STATUSES,
+} from "@/lib/enums";
 
 /**
  * Database schema (MySQL/MariaDB on Hostinger).
  * Migrations are generated with `npm run db:generate` into ./drizzle and
  * applied with `npm run db:migrate`.
+ *
+ * The enum *values* live in `@/lib/enums` because the forms that edit them
+ * are client components — importing them from here would ship drizzle to the
+ * browser. Import them from there, never from this file.
  */
 
 /** LONGBLOB column for CV files (kept in DB so Git redeploys never wipe them). */
@@ -40,9 +52,6 @@ const jsonColumn = <TData>(name: string) =>
     },
   })(name);
 
-export const VACANCY_STATUSES = ["draft", "open", "closed"] as const;
-export type VacancyStatus = (typeof VACANCY_STATUSES)[number];
-
 export const vacancies = mysqlTable("vacancies", {
   id: int("id").autoincrement().primaryKey(),
   slug: varchar("slug", { length: 160 }).notNull().unique(),
@@ -62,9 +71,6 @@ export const vacancies = mysqlTable("vacancies", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
 });
-
-export const APPLICATION_STATUSES = ["new", "reviewing", "finalist", "hired", "rejected"] as const;
-export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
 export const applications = mysqlTable("applications", {
   id: int("id").autoincrement().primaryKey(),
@@ -92,9 +98,6 @@ export const applicationFiles = mysqlTable("application_files", {
   data: longblob("data").notNull(),
 });
 
-export const LEAD_STATUSES = ["new", "contacted", "closed"] as const;
-export type LeadStatus = (typeof LEAD_STATUSES)[number];
-
 export const leads = mysqlTable("leads", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 120 }).notNull(),
@@ -108,12 +111,6 @@ export const leads = mysqlTable("leads", {
   status: mysqlEnum("status", LEAD_STATUSES).notNull().default("new"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
-
-export const STOCK_FORMS = ["Molido", "Pellet", "Original"] as const;
-export type StockForm = (typeof STOCK_FORMS)[number];
-
-export const STOCK_AVAILABILITY = ["Disponible", "Bajo pedido", "Consultar"] as const;
-export type StockAvailability = (typeof STOCK_AVAILABILITY)[number];
 
 /** Plastic stock catalog — managed from the admin panel, shown on /stock. */
 export const stockItems = mysqlTable("stock_items", {
@@ -136,14 +133,6 @@ export const settings = mysqlTable("settings", {
   updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
 });
 
-/**
- * Panel access area. `admin` keeps the whole panel (and is the default so
- * existing accounts don't lose access when this column lands); `marketing`
- * and `rrhh` only ever see their own portal.
- */
-export const ADMIN_ROLES = ["admin", "marketing", "rrhh"] as const;
-export type AdminRole = (typeof ADMIN_ROLES)[number];
-
 export const adminUsers = mysqlTable("admin_users", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 190 }).notNull().unique(),
@@ -153,6 +142,19 @@ export const adminUsers = mysqlTable("admin_users", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   lastLoginAt: timestamp("last_login_at"),
 });
+
+/**
+ * Re-exported so `@/db/schema` stays the single import for *types* on the
+ * server. Types are erased at compile time, so this never reaches a bundle.
+ */
+export type {
+  AdminRole,
+  ApplicationStatus,
+  LeadStatus,
+  StockAvailability,
+  StockForm,
+  VacancyStatus,
+} from "@/lib/enums";
 
 export type Vacancy = typeof vacancies.$inferSelect;
 export type NewVacancy = typeof vacancies.$inferInsert;

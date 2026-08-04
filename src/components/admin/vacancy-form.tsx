@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import type { ActionState } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { InputField, SelectField, TextareaField } from "@/components/ui/field";
-import { VACANCY_STATUSES } from "@/db/schema";
+import { VACANCY_STATUSES } from "@/lib/enums";
 import { vacancyStatusLabels } from "@/lib/labels";
 
 export interface VacancyFormValues {

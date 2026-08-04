@@ -1,6 +1,6 @@
 import { setLeadStatusAction } from "@/app/admin/actions";
 import { StatusForm } from "@/components/admin/status-form";
-import { LEAD_STATUSES } from "@/db/schema";
+import { LEAD_STATUSES } from "@/lib/enums";
 import { listLeads } from "@/db/queries/leads";
 import { requireArea } from "@/lib/auth";
 import { leadStatusLabels } from "@/lib/labels";
