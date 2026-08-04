@@ -1,97 +1,74 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight, MapPin } from "lucide-react";
+import { JsonLd } from "@/components/seo/json-ld";
+import { FaqSection } from "@/components/sections/faq-section";
+import { HiringProcess } from "@/components/sections/hiring-process";
+import { JobList } from "@/components/sections/job-list";
 import { PageHero } from "@/components/sections/page-hero";
-import { Badge } from "@/components/ui/badge";
-import { ButtonLink } from "@/components/ui/button";
-import { Container } from "@/components/ui/container";
+import { SpontaneousApplication } from "@/components/sections/spontaneous-application";
+import { WorkAtPimsa } from "@/components/sections/work-at-pimsa";
+import { WorkLocation } from "@/components/sections/work-location";
+import { candidateFaqs } from "@/content/careers";
+import { company } from "@/content/company";
 import { getOpenVacancies } from "@/db/queries/vacancies";
 import { buildMetadata } from "@/lib/seo";
+import { faqPageSchema } from "@/lib/structured-data";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = buildMetadata({
   title: "Bolsa de trabajo — Vacantes en PIMSA",
-  description:
-    "Únete al equipo de Plásticos PIMSA en Apaseo el Grande, Guanajuato. Consulta las vacantes abiertas en producción, administración y mantenimiento, y postúlate en línea.",
+  description: `Vacantes en Plásticos PIMSA, ${company.address.municipality}, ${company.address.state}. Postúlate en línea con tu CV: producción, mantenimiento, laboratorio y administración.`,
   path: "/vacantes",
-  keywords: ["bolsa de trabajo Apaseo el Grande", "vacantes reciclaje Guanajuato", "empleo PIMSA"],
+  keywords: [
+    "bolsa de trabajo Apaseo el Grande",
+    "vacantes Apaseo el Grande",
+    "empleo Guanajuato reciclaje",
+    "trabajo en planta Bajío",
+    "vacantes PIMSA",
+  ],
 });
 
+/**
+ * Job board, built for the candidate instead of the buyer.
+ *
+ * The previous version was a bare list whose only escape hatch — "no veo mi
+ * vacante" — pointed at /contacto, the SALES form: no CV upload, delivered to
+ * the commercial inbox, invisible to RRHH. That is fixed at the root here;
+ * every path on this page now files a real application.
+ *
+ * Order follows what a job seeker asks, in order: what's open, what is this
+ * company, what happens after I apply, where would I work, can I apply
+ * anyway, and the small print.
+ */
 export default async function VacanciesPage() {
   const vacancies = await getOpenVacancies();
 
   return (
     <>
+      <JsonLd data={faqPageSchema(candidateFaqs)} />
+
       <PageHero
         eyebrow="Bolsa de trabajo"
-        title="Únete al equipo"
-        intro="Somos una empresa en crecimiento con más de 15 años dando una segunda vida al plástico industrial. Estas son nuestras vacantes abiertas."
+        title="Trabaja con nosotros"
+        intro={`Somos una planta de reciclaje de plásticos de ingeniería en ${company.address.municipality}, ${company.address.state}. Todas nuestras vacantes se postulan en línea, con tu CV, y llegan directo a Recursos Humanos.`}
         breadcrumbs={[
           { name: "Inicio", path: "/" },
           { name: "Bolsa de trabajo", path: "/vacantes" },
         ]}
       />
 
-      <section className="py-16 md:py-24">
-        <Container>
-          {vacancies.length === 0 ? (
-            <div className="border-line bg-surface shadow-card max-w-2xl rounded-md border p-8">
-              <h2 className="font-display text-navy-500 text-xl font-semibold">
-                Por el momento no hay vacantes abiertas
-              </h2>
-              <p className="text-ink-muted mt-3">
-                Nuestro equipo crece constantemente. Escríbenos y guardaremos tu perfil para
-                futuras oportunidades.
-              </p>
-              <ButtonLink href="/contacto" className="mt-6">
-                Enviar mis datos
-              </ButtonLink>
-            </div>
-          ) : (
-            <ul className="border-line border-t">
-              {vacancies.map((vacancy) => (
-                <li key={vacancy.id} className="border-line border-b">
-                  <Link
-                    href={`/vacantes/${vacancy.slug}`}
-                    className="group grid items-center gap-x-8 gap-y-3 py-8 md:grid-cols-[1fr_auto] md:py-9"
-                  >
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h2 className="font-display text-h3 text-navy-500 group-hover:text-blue-600 font-semibold transition-colors">
-                          {vacancy.title}
-                        </h2>
-                        <Badge>{vacancy.department}</Badge>
-                      </div>
-                      <p className="text-ink-muted mt-2 max-w-[68ch]">{vacancy.summary}</p>
-                      <p className="text-ink-muted mt-3 flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
-                        <MapPin aria-hidden className="size-3.5" strokeWidth={1.5} />
-                        {vacancy.location} · {vacancy.employmentType}
-                      </p>
-                    </div>
-                    <span className="text-blue-600 inline-flex items-center gap-2 text-sm font-medium">
-                      Ver vacante
-                      <ArrowRight
-                        aria-hidden
-                        strokeWidth={1.5}
-                        className="size-4 transition-transform duration-150 group-hover:translate-x-1"
-                      />
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+      <JobList vacancies={vacancies} index="01" />
+      <WorkAtPimsa index="02" />
+      <HiringProcess index="03" />
+      <WorkLocation index="04" />
+      <SpontaneousApplication index="05" />
 
-          <p className="text-ink-muted mt-10 max-w-[68ch] text-sm">
-            ¿No encuentras una vacante para tu perfil? Envíanos tu CV por medio del{" "}
-            <Link href="/contacto" className="text-blue-600 underline">
-              formulario de contacto
-            </Link>{" "}
-            y lo tendremos en cuenta para futuras oportunidades.
-          </p>
-        </Container>
-      </section>
+      <FaqSection
+        items={candidateFaqs}
+        index="06"
+        title="Dudas antes de postularte"
+        intro="Lo que más nos preguntan quienes están por enviar su CV."
+      />
     </>
   );
 }

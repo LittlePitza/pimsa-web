@@ -15,7 +15,14 @@ export const runtime = "nodejs";
 const ALLOWED_CV_TYPES = new Set<string>(ALLOWED_CV_MIME_TYPES);
 
 const fieldsSchema = z.object({
-  vacancySlug: z.string().trim().min(1).max(160),
+  /**
+   * Empty means a spontaneous application — someone whose profile doesn't
+   * match any open vacancy. The schema was always built for it
+   * (`applications.vacancy_id` is nullable and the panel labels those rows
+   * "Postulación general"); it simply had no way in from the site, so the job
+   * board sent those people to the sales contact form instead.
+   */
+  vacancySlug: z.string().trim().max(160).default(""),
   name: z.string().trim().min(2, "Nombre demasiado corto").max(120),
   email: z.email("Correo electrónico inválido").max(200),
   phone: z.string().trim().min(7, "Teléfono inválido").max(30),
@@ -46,7 +53,9 @@ export async function POST(request: NextRequest) {
   }
 
   const parsed = fieldsSchema.safeParse({
-    vacancySlug: formData.get("vacancySlug"),
+    // `?? ""` because an absent field reads as null, and zod's .default()
+    // only fills undefined — a spontaneous application sends no slug at all.
+    vacancySlug: formData.get("vacancySlug") ?? "",
     name: formData.get("name"),
     email: formData.get("email"),
     phone: formData.get("phone"),
@@ -79,30 +88,29 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let vacancy;
-  try {
-    vacancy = await getOpenVacancyBySlug(fields.vacancySlug);
-  } catch (error) {
-    // DB outage ≠ closed vacancy — tell the candidate to retry, not to leave.
-    console.error("[applications] Vacancy lookup failed:", error);
-    return NextResponse.json(
-      { error: "No pudimos procesar tu postulación. Inténtalo de nuevo en unos minutos." },
-      { status: 503 },
-    );
-  }
-  if (!vacancy) {
-    return NextResponse.json(
-      { error: "Esta vacante ya no está disponible." },
-      { status: 404 },
-    );
+  let vacancy = null;
+  if (fields.vacancySlug) {
+    try {
+      vacancy = await getOpenVacancyBySlug(fields.vacancySlug);
+    } catch (error) {
+      // DB outage ≠ closed vacancy — tell the candidate to retry, not to leave.
+      console.error("[applications] Vacancy lookup failed:", error);
+      return NextResponse.json(
+        { error: "No pudimos procesar tu postulación. Inténtalo de nuevo en unos minutos." },
+        { status: 503 },
+      );
+    }
+    if (!vacancy) {
+      return NextResponse.json({ error: "Esta vacante ya no está disponible." }, { status: 404 });
+    }
   }
 
   const cvBuffer = Buffer.from(await cv.arrayBuffer());
 
   try {
     await createApplication({
-      vacancyId: vacancy.id,
-      vacancyTitle: vacancy.title,
+      vacancyId: vacancy?.id ?? null,
+      vacancyTitle: vacancy?.title ?? "",
       name: fields.name,
       email: fields.email,
       phone: fields.phone,
@@ -126,8 +134,8 @@ export async function POST(request: NextRequest) {
   // after() runs once the response is sent and keeps the work alive on any
   // host, without delaying the candidate's confirmation.
   after(() =>
-    notifyHr(vacancy.title, fields, { fileName: cv.name, content: cvBuffer }).catch((error) =>
-      console.error("[applications] HR notification failed:", error),
+    notifyHr(vacancy?.title ?? "", fields, { fileName: cv.name, content: cvBuffer }).catch(
+      (error) => console.error("[applications] HR notification failed:", error),
     ),
   );
 
@@ -144,13 +152,15 @@ async function notifyHr(
   const transporter = createMailTransport();
   if (!transporter || !recipients) return;
 
+  const label = vacancyTitle || "Postulación general";
+
   await transporter.sendMail({
     from: mailFrom(),
     to: recipients,
     replyTo: fields.email,
-    subject: `Nueva postulación — ${vacancyTitle} — ${fields.name}`,
+    subject: `Nueva postulación — ${label} — ${fields.name}`,
     text: [
-      `Vacante:  ${vacancyTitle}`,
+      `Vacante:  ${label}`,
       `Nombre:   ${fields.name}`,
       `Correo:   ${fields.email}`,
       `Teléfono: ${fields.phone}`,

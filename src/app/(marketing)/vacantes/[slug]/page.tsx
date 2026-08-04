@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { ApplicationForm } from "@/components/sections/application-form";
+import { HiringProcess } from "@/components/sections/hiring-process";
 import { PageHero } from "@/components/sections/page-hero";
+import { StickyApplyCta } from "@/components/sections/sticky-apply-cta";
 import { Container } from "@/components/ui/container";
 import { getOpenVacancies, getOpenVacancyBySlug } from "@/db/queries/vacancies";
 import { jobPostingSchema } from "@/lib/structured-data";
 import { buildMetadata } from "@/lib/seo";
+import { MAX_CV_LABEL } from "@/lib/uploads";
 
 export const revalidate = 60;
 
@@ -117,18 +121,40 @@ export default async function VacancyPage({ params }: Props) {
       </section>
 
       {/* Application form */}
-      <section id="postularme" className="border-line border-t py-16 md:py-24">
+      <section id="postularme" className="bg-surface border-line border-t py-16 md:py-24">
         <Container className="max-w-3xl">
           <h2 className="font-display text-h2 text-navy-500 font-semibold">Postúlate</h2>
           <p className="text-ink-muted mt-4">
-            Llena el formulario y adjunta tu CV (PDF o Word, máximo 5 MB). Nuestro equipo de
-            Recursos Humanos revisará tu perfil y te contactará.
+            Llena el formulario y adjunta tu CV (PDF o Word, máximo {MAX_CV_LABEL}). Tu
+            postulación llega directo a Recursos Humanos.
           </p>
           <div className="mt-10">
             <ApplicationForm vacancySlug={vacancy.slug} vacancyTitle={vacancy.title} />
           </div>
         </Container>
       </section>
+
+      <HiringProcess index="02" />
+
+      <section className="border-line border-t py-14">
+        <Container>
+          <p className="text-ink-muted max-w-[68ch]">
+            ¿Esta vacante no es para ti?{" "}
+            <Link href="/vacantes" className="text-blue-600 underline">
+              Vuelve a la bolsa de trabajo
+            </Link>{" "}
+            o{" "}
+            <Link href="/vacantes#postulacion-general" className="text-blue-600 underline">
+              déjanos tu CV
+            </Link>{" "}
+            para futuras oportunidades.
+          </p>
+        </Container>
+      </section>
+
+      {/* Bottom padding so the sticky bar never covers the last line on mobile. */}
+      <div aria-hidden className="h-20 md:hidden" />
+      <StickyApplyCta vacancyTitle={vacancy.title} />
     </>
   );
 }

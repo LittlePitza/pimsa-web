@@ -9,13 +9,22 @@ import { CV_ACCEPT, MAX_CV_BYTES, MAX_CV_LABEL } from "@/lib/uploads";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
-/** Job application form: fields + CV upload (PDF/Word ≤ 5 MB). */
+/**
+ * Job application form: fields + CV upload (PDF/Word ≤ 5 MB).
+ *
+ * Works in two modes. Against a vacancy it applies to that posting; with no
+ * slug it files a spontaneous application, which the panel lists as
+ * "Postulación general". Either way the CV reaches RRHH — before this, a
+ * candidate with no matching vacancy was pointed at the sales contact form,
+ * which has no file upload and delivers to the commercial inbox.
+ */
 export function ApplicationForm({
-  vacancySlug,
+  vacancySlug = "",
   vacancyTitle,
 }: {
-  vacancySlug: string;
-  vacancyTitle: string;
+  vacancySlug?: string;
+  /** Omitted for a spontaneous application. */
+  vacancyTitle?: string;
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -48,7 +57,7 @@ export function ApplicationForm({
         throw new Error(body?.error ?? "No pudimos enviar tu postulación.");
       }
       setStatus("success");
-      trackEvent("job_application_submit", { vacancy: vacancySlug });
+      trackEvent("job_application_submit", { vacancy: vacancySlug || "general" });
     } catch (error) {
       setStatus("error");
       setErrorMessage(
@@ -69,8 +78,10 @@ export function ApplicationForm({
           ¡Postulación recibida!
         </h3>
         <p className="text-ink-muted mt-3">
-          Gracias por tu interés en la vacante de {vacancyTitle}. Recursos Humanos revisará tu
-          perfil y te contactará si avanzas en el proceso.
+          {vacancyTitle
+            ? `Gracias por tu interés en la vacante de ${vacancyTitle}.`
+            : "Gracias por enviarnos tu perfil."}{" "}
+          Recursos Humanos revisará tu CV y te contactará si avanzas en el proceso.
         </p>
       </div>
     );
@@ -95,7 +106,11 @@ export function ApplicationForm({
         label="Cuéntanos de ti"
         required
         maxLength={3000}
-        placeholder="Experiencia relevante, disponibilidad y por qué te interesa esta vacante."
+        placeholder={
+          vacancyTitle
+            ? "Experiencia relevante, disponibilidad y por qué te interesa esta vacante."
+            : "Qué tipo de puesto buscas, tu experiencia y tu disponibilidad."
+        }
       />
 
       <div className="flex flex-col gap-2">
