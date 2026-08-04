@@ -54,13 +54,34 @@ export default async function ServicePage({ params }: Props) {
     .map((relatedSlug) => getService(relatedSlug))
     .filter((s) => s !== undefined);
 
+  /**
+   * Section numbers, counted at render rather than hard-coded.
+   *
+   * `service.index` is the catalogue position ("this is service 03 of 4") and
+   * used to double as the section index too, so /polimeros showed "01 /
+   * SERVICIO" above "01 / PROCESO" — the same number meaning two different
+   * things. The hero now spells its number out in words and the sections keep
+   * a sequence of their own.
+   *
+   * It has to be computed because three of these sections are conditional: a
+   * fixed sequence would leave gaps like 01, 02, 04 on the services that
+   * don't have a material gallery or a model table.
+   */
+  let sectionCount = 0;
+  const nextIndex = () => String(++sectionCount).padStart(2, "0");
+  const sectionIndex = {
+    process: nextIndex(),
+    materials: service.materialShots?.length ? nextIndex() : undefined,
+    models: service.containerModels?.length ? nextIndex() : undefined,
+    benefits: nextIndex(),
+  };
+
   return (
     <>
       <JsonLd data={serviceSchema(service)} />
 
       <PageHero
-        index={service.index}
-        eyebrow="Servicio"
+        eyebrow={`Servicio ${service.index} de ${String(services.length).padStart(2, "0")}`}
         title={service.name}
         intro={service.tagline}
         breadcrumbs={[
@@ -118,7 +139,7 @@ export default async function ServicePage({ params }: Props) {
       <section data-band="dark" className="bg-navy-900 py-20 md:py-28">
         <Container>
           <SectionHeading
-            index={service.index}
+            index={sectionIndex.process}
             eyebrow="Proceso"
             title="Cómo trabajamos"
             tone="dark"
@@ -146,6 +167,7 @@ export default async function ServicePage({ params }: Props) {
         <section className="py-20 md:py-28">
           <Container>
             <SectionHeading
+              index={sectionIndex.materials}
               eyebrow="Materiales"
               title="El material, de cerca"
               intro="Fotografía real de nuestros lotes: molidos y pellets por familia de resina."
@@ -182,6 +204,7 @@ export default async function ServicePage({ params }: Props) {
         <section className="py-20 md:py-28">
           <Container>
             <SectionHeading
+              index={sectionIndex.models}
               eyebrow="Modelos"
               title="Medidas disponibles"
               intro={`${service.containerModels.length} modelos en inventario. Medidas externas en pulgadas (frente × fondo × alto).`}
@@ -214,8 +237,8 @@ export default async function ServicePage({ params }: Props) {
                     <tr key={model.code} className="border-line border-b">
                       <td className="py-4 pr-6 font-mono text-sm text-green-600">{model.code}</td>
                       <td className="text-navy-500 py-4 pr-6 text-sm font-medium">{model.size}</td>
-                      <td className="text-ink py-4 pr-6 text-sm">HDPE</td>
-                      <td className="text-ink py-4 text-sm">Negro</td>
+                      <td className="text-ink py-4 pr-6 text-sm">{model.material}</td>
+                      <td className="text-ink py-4 text-sm">{model.color}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -250,7 +273,11 @@ export default async function ServicePage({ params }: Props) {
       {/* Benefits */}
       <section className="border-line border-t py-20 md:py-28">
         <Container>
-          <SectionHeading eyebrow="Beneficios" title="Por qué con PIMSA" />
+          <SectionHeading
+            index={sectionIndex.benefits}
+            eyebrow="Beneficios"
+            title="Por qué con PIMSA"
+          />
           <ul className="mt-12 grid max-w-4xl gap-5 sm:grid-cols-2">
             {service.benefits.map((benefit) => (
               <li key={benefit} className="flex items-start gap-3">

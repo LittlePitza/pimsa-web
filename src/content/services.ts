@@ -414,5 +414,33 @@ export function getService(slug: string): Service | undefined {
   return services.find((s) => s.slug === slug);
 }
 
+/**
+ * Situation → service.
+ *
+ * Nobody arrives searching for "maquila de peletizado". They arrive with a
+ * problem in their own words — a yard filling up with scrap, a purchase order
+ * to fill, a batch out of spec — and have to guess which of four industry
+ * terms covers it. Each line below is the opening sentence of that service's
+ * own description, rewritten from the customer's side.
+ */
+export const serviceFinder: { need: string; slug: string }[] = [
+  {
+    need: "Mi planta genera scrap plástico y hoy solo representa un costo",
+    slug: "recoleccion-scrap",
+  },
+  {
+    need: "Necesito comprar materia prima reciclada para mi producción",
+    slug: "polimeros",
+  },
+  {
+    need: "Tengo material fuera de especificación y quiero recuperarlo",
+    slug: "molienda-peletizado",
+  },
+  {
+    need: "Necesito mover componentes entre plantas sin gastar en empaque",
+    slug: "contenedores",
+  },
+];
+
 /** Lightweight list serialized by Server Components into forms and controls. */
 export const serviceNames = services.map((s) => s.name);

@@ -86,6 +86,31 @@ export function serviceSchema(service: Service): JsonLdObject {
   };
 }
 
+/**
+ * ItemList for the services hub.
+ *
+ * Each detail page already carries its own Service node; this tells Google
+ * the four are one ordered catalogue rather than four unrelated pages, which
+ * is what lets the set surface together for a category query. Positions
+ * follow the editorial index so the markup and the visible numbering agree.
+ */
+export function serviceListSchema(list: Service[]): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Servicios de Plásticos PIMSA",
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: list.length,
+    itemListElement: list.map((service, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: service.name,
+      description: service.summary,
+      url: absoluteUrl(`/servicios/${service.slug}`),
+    })),
+  };
+}
+
 export function faqPageSchema(faqs: Faq[]): JsonLdObject {
   return {
     "@context": "https://schema.org",

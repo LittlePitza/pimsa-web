@@ -129,6 +129,7 @@ export function ContactForm({ serviceNames }: { serviceNames: readonly string[] 
           <Link
             href="/aviso-de-privacidad"
             target="_blank"
+            rel="noopener noreferrer"
             className="text-blue-600 underline"
           >
             aviso de privacidad

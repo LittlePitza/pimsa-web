@@ -74,6 +74,9 @@ export interface ContainerModel {
   code: string;
   /** External dimensions in inches, e.g. "48 × 45 × 25". */
   size: string;
+  /** Resin the body is moulded from, e.g. "HDPE". */
+  material: string;
+  color: string;
 }
 
 export interface Service {
