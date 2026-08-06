@@ -41,8 +41,8 @@ export const operationFigures: ServiceImage[] = [
     tag: "Transformación",
   },
   {
-    src: "/media/corporate/laboratorio-balanza.jpg",
-    alt: "Balanza analítica del laboratorio de PIMSA con una muestra pesada",
+    src: "/media/corporate/inspeccion-pellet.jpg",
+    alt: "Operador de PIMSA revisando con la mano el pellet natural a la salida de la criba",
     caption: "Fig. 03 — Control de calidad",
     tag: "Verificación",
   },

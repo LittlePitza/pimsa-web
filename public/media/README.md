@@ -15,6 +15,18 @@ entry, check it is not already published under another name — the site
 previously reused five frames across fifteen slots and read as one page
 repeated. See [docs/fotografia-plan.md](../../docs/fotografia-plan.md).
 
+"Another name" includes **another frame of the same scene**: `scrap-recuperado`
+lasted exactly one commit because it was, two shots apart, the same photograph
+as `servicios/molienda-molino`. Compare by opening both, never by filename.
+
+The second rule is harder to check and matters more: **the photograph has to be
+a photograph.** Much of the archive is record-keeping — someone raised a camera
+to establish that a thing exists. That serves an inventory, not a page. A
+benchtop scale on a cluttered desk shipped here as "control de calidad" and had
+to be pulled. If a frame does not decide where to stand and what to show, leave
+the slot on the old image until the good one exists; the shot list is in
+[docs/guion-fotografia-video.md](../../docs/guion-fotografia-video.md).
+
 ## Hero
 
 - `hero-polimero.jpg` — square inset inside the home hero.
@@ -34,10 +46,10 @@ Institutional and process photography, selected from the internal library
 | `peletizado-tina.jpg` | Home · ProcessLoop 03 — peletizado |
 | `laboratorio-flama.jpg` | Home · ProcessLoop 04 — laboratorio |
 | `almacen-pasillo.jpg` | Home · StatsBand (fondo bajo overlay 88 %) |
-| `scrap-recuperado.jpg` | Home · CircularityManifesto |
+| `pellet-mano.jpg` | Home · CircularityManifesto |
 | `patio-recepcion.jpg` | Nosotros · PlantShowcase Fig. 01 |
 | `peletizado-extrusor.jpg` | Nosotros · PlantShowcase Fig. 02 |
-| `laboratorio-balanza.jpg` | Nosotros · PlantShowcase Fig. 03 |
+| `inspeccion-pellet.jpg` | Nosotros · PlantShowcase Fig. 03 |
 | `producto-terminado.jpg` | Nosotros · PlantShowcase Fig. 04 |
 | `almacen-nave.jpg` | Nosotros · StatsBand (fondo) |
 | `nave-produccion.jpg` | Vacantes · JobsHero (fondo) |

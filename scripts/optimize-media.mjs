@@ -34,6 +34,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(ROOT, "media-src");
 const OUT = join(ROOT, "public", "media");
 
+/**
+ * `_NIKON/` holds the December 2024 card: 24 MP frames, and the only ones in
+ * the whole archive shot with any intent rather than as a record that
+ * something exists. Prefer them.
+ */
+
 const MAX_EDGE = 2000;
 const QUALITY = 82;
 
@@ -52,12 +58,17 @@ const MEDIA = [
 
   // Home · StatsBand + CircularityManifesto
   ["corporate/almacen-pasillo.jpg", "planta/almacen-pasillo.jpg"],
-  ["corporate/scrap-recuperado.jpg", "molienda/scrap-pieza.jpg"],
+  // The scrap pile that lived here was, two frames apart, the same photograph
+  // as servicios/molienda-molino.jpg. This is the recovered material itself,
+  // in someone's hand — the whole argument of the section in one frame.
+  ["corporate/pellet-mano.jpg", "_NIKON/DSC_0172.JPG"],
 
   // Nosotros · PlantShowcase (entrada -> transformación -> verificación -> salida)
   ["corporate/patio-recepcion.jpg", "planta/patio-sacos.jpg"],
   ["corporate/peletizado-extrusor.jpg", "peletizado/linea-peletizado.jpg"],
-  ["corporate/laboratorio-balanza.jpg", "laboratorio/balanza-precision.jpg"],
+  // A benchtop scale on a cluttered desk was standing in for "verificación".
+  // This is product being checked by hand as it comes off the screen.
+  ["corporate/inspeccion-pellet.jpg", "_NIKON/DSC_0166.JPG"],
   ["corporate/producto-terminado.jpg", "logistica/producto-terminado.jpg"],
 
   // Nosotros · StatsBand (distinta a la de Home a propósito)
