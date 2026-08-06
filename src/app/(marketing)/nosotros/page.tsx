@@ -13,6 +13,7 @@ import { operationFigures } from "@/content/about";
 import { company } from "@/content/company";
 import { buildMetadata } from "@/lib/seo";
 import { aboutPageSchema } from "@/lib/structured-data";
+import warehouseHall from "../../../../public/media/corporate/almacen-nave.jpg";
 
 const breadcrumbs = [
   { name: "Inicio", path: "/" },
@@ -64,7 +65,10 @@ export default function AboutPage() {
       />
       <AboutDatasheet />
 
-      <StatsBand index="02" />
+      {/* A different backdrop from the Home band on purpose — the two pages
+          are one click apart and the repeat was the first thing that made
+          the site read as a template. */}
+      <StatsBand index="02" image={warehouseHall} imagePosition="object-[50%_46%]" />
       <PlantShowcase index="03" />
       <CertGrid index="04" />
       <Timeline index="05" />

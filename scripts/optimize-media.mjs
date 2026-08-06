@@ -1,0 +1,121 @@
+/**
+ * Promotes curated photographs from the staging library into public/media.
+ *
+ * The staging library (`media-src/`, git-ignored) holds untouched originals
+ * copied from the marketing OneDrive — 2992x2000 frames of 2-3 MB each. This
+ * script is the only path from there into the repository, so every published
+ * photograph goes through the same three guarantees:
+ *
+ *   1. `rotate()` bakes the EXIF orientation into the pixels. 13 of the
+ *      originals are portrait frames stored landscape with an orientation
+ *      tag; stripping metadata without rotating first is exactly how
+ *      `corporate/logistica-unidad.jpg` ended up sideways on the About page.
+ *   2. The long edge is capped at 2000 px. The widest slot on the site asks
+ *      for 45vw, so at 2x DPR on a 1920 viewport nothing needs more than
+ *      ~1730 px — beyond that we would be shipping bytes next/image discards.
+ *   3. Metadata is dropped (sharp's default), which removes the GPS tags the
+ *      camera wrote into every frame.
+ *
+ * Usage: node scripts/optimize-media.mjs [--check]
+ *   --check  report what would change without writing anything
+ */
+import sharp from "sharp";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const SRC = join(ROOT, "media-src");
+const OUT = join(ROOT, "public", "media");
+
+const MAX_EDGE = 2000;
+const QUALITY = 82;
+
+/**
+ * Published photograph -> staging original.
+ *
+ * One entry per slot on the site: the whole point of the exercise is that no
+ * two sections share a photograph, so a duplicated source path here is a bug.
+ */
+const MEDIA = [
+  // Home · ProcessLoop — the four documented stages
+  ["corporate/entrada-scrap.jpg", "recoleccion/scrap-cromado.jpg"],
+  ["corporate/molienda-molido.jpg", "molienda/molido-montana.jpg"],
+  ["corporate/peletizado-tina.jpg", "peletizado/tina-hilos.jpg"],
+  ["corporate/laboratorio-flama.jpg", "laboratorio/prueba-flama.jpg"],
+
+  // Home · StatsBand + CircularityManifesto
+  ["corporate/almacen-pasillo.jpg", "planta/almacen-pasillo.jpg"],
+  ["corporate/valorizacion-scrap.jpg", "recoleccion/scrap-carga.jpg"],
+
+  // Nosotros · PlantShowcase (entrada -> transformación -> verificación -> salida)
+  ["corporate/patio-recepcion.jpg", "planta/patio-sacos.jpg"],
+  ["corporate/peletizado-extrusor.jpg", "peletizado/linea-peletizado.jpg"],
+  ["corporate/laboratorio-tecnico.jpg", "laboratorio/tecnico-mufla.jpg"],
+  ["corporate/camion-entrega.jpg", "logistica/camion-tres-cuartos.jpg"],
+
+  // Nosotros · StatsBand (distinta a la de Home a propósito)
+  ["corporate/almacen-nave.jpg", "planta/almacen-nave.jpg"],
+
+  // Vacantes · JobsHero, WorkAtPimsa, WorkLocation
+  ["corporate/equipo-planta.jpg", "equipo/equipo-tambores.jpg"],
+  ["corporate/equipo-envasado.jpg", "peletizado/envasado-pellet.jpg"],
+  // The three head-on façade frames in the library are 1280x960 web exports;
+  // this is the only full-resolution exterior, and the approach from the road
+  // is the view a candidate actually arrives to.
+  ["corporate/fachada-planta.jpg", "planta/perimetro-reja.jpg"],
+];
+
+/**
+ * Already-published files that only need re-encoding — they came from the
+ * same originals but were committed at full camera size.
+ */
+const RECOMPRESS = ["corporate/peletizado-linea.jpg", "hero-polimero.jpg"];
+
+const check = process.argv.includes("--check");
+const kb = (n) => `${Math.round(n / 1024)} KB`;
+
+async function encode(input, outputPath) {
+  const before = Buffer.isBuffer(input) ? input.length : (await stat(input)).size;
+  const buf = await sharp(input)
+    .rotate()
+    .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: "inside", withoutEnlargement: true })
+    .jpeg({ quality: QUALITY, mozjpeg: true, progressive: true })
+    .toBuffer();
+
+  const { width, height } = await sharp(buf).metadata();
+  if (!check) {
+    await mkdir(dirname(outputPath), { recursive: true });
+    await writeFile(outputPath, buf);
+  }
+  return { before, after: buf.length, width, height };
+}
+
+let totalBefore = 0;
+let totalAfter = 0;
+
+for (const [dest, src] of MEDIA) {
+  const { before, after, width, height } = await encode(join(SRC, src), join(OUT, dest));
+  totalBefore += before;
+  totalAfter += after;
+  console.log(
+    `${dest.padEnd(34)} ${String(width).padStart(4)}x${height}  ${kb(before)} -> ${kb(after)}`,
+  );
+}
+
+for (const rel of RECOMPRESS) {
+  const path = join(OUT, rel);
+  // Read into memory first: sharp streams its input lazily, so encoding
+  // straight back over the same path races the write.
+  const { before, after, width, height } = await encode(await readFile(path), path);
+  totalBefore += before;
+  totalAfter += after;
+  console.log(
+    `${rel.padEnd(34)} ${String(width).padStart(4)}x${height}  ${kb(before)} -> ${kb(after)}`,
+  );
+}
+
+console.log(
+  `\n${MEDIA.length + RECOMPRESS.length} archivos · ${kb(totalBefore)} -> ${kb(totalAfter)} ` +
+    `(-${Math.round((1 - totalAfter / totalBefore) * 100)}%)${check ? "  [--check: nada escrito]" : ""}`,
+);

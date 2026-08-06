@@ -4,10 +4,10 @@ import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { cn } from "@/lib/utils";
-import labPhoto from "../../../public/media/corporate/laboratorio-calidad.jpg";
-import pelletLine from "../../../public/media/corporate/peletizado-linea.jpg";
-import scrapIndustrial from "../../../public/media/corporate/scrap-industrial.jpg";
-import millFeed from "../../../public/media/servicios/molienda-alimentacion.jpg";
+import flameTest from "../../../public/media/corporate/laboratorio-flama.jpg";
+import groundMaterial from "../../../public/media/corporate/molienda-molido.jpg";
+import strandBath from "../../../public/media/corporate/peletizado-tina.jpg";
+import incomingScrap from "../../../public/media/corporate/entrada-scrap.jpg";
 
 /**
  * The material cycle as a documentary contact sheet: real PIMSA process
@@ -39,37 +39,36 @@ interface Shot {
 
 const shots: Shot[] = [
   {
-    src: scrapIndustrial,
-    alt: "Scrap plástico industrial negro separado para su recuperación",
+    src: incomingScrap,
+    alt: "Contenedor con scrap plástico cromado recibido en la planta de PIMSA",
     caption: "Materia de entrada",
     tag: "Scrap post-industrial",
     frame: "md:col-span-2 md:aspect-[16/10]",
     sizes: "(max-width: 767px) 78vw, (max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 44rem",
   },
   {
-    src: millFeed,
-    alt: "Alimentación de scrap plástico en el equipo de molienda",
+    src: groundMaterial,
+    alt: "Material plástico ya molido acumulado junto al molino",
     caption: "Reducción de tamaño",
     tag: "Molienda",
     frame: "md:aspect-[4/3]",
     sizes: "(max-width: 767px) 78vw, (max-width: 1023px) 50vw, (max-width: 1279px) 29vw, 22rem",
   },
   {
-    src: pelletLine,
-    alt: "Pellet saliendo de una tolva en la línea de PIMSA",
+    src: strandBath,
+    alt: "Hilos de polímero entrando a la tina de enfriamiento del peletizador",
     caption: "Peletizado",
     tag: "Salida",
     frame: "md:aspect-[4/3]",
-    position: "object-[50%_62%]",
     sizes: "(max-width: 767px) 78vw, (max-width: 1023px) 50vw, (max-width: 1279px) 29vw, 22rem",
   },
   {
-    src: labPhoto,
-    alt: "Equipos del laboratorio de control de calidad de PIMSA",
+    src: flameTest,
+    alt: "Prueba de flama para identificar la resina de un lote en PIMSA",
     caption: "Laboratorio y liberación de lote",
     tag: "ISO 9001:2015",
     frame: "md:col-span-2 md:aspect-[16/7]",
-    position: "object-[50%_46%]",
+    position: "object-[50%_58%]",
     sizes: "(max-width: 767px) 78vw, (max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 44rem",
   },
 ];
@@ -125,8 +124,8 @@ function ProcessFigure({ shot }: { shot: Shot }) {
         className={cn("object-cover", shot.position)}
       />
       <figcaption className="bg-navy-900/85 absolute inset-x-0 bottom-0 flex items-baseline justify-between gap-3 px-3 py-2 font-mono text-[0.65rem] tracking-[0.14em] uppercase">
-        <span className="text-blue-400 truncate">{shot.caption}</span>
-        {shot.tag ? <span className="text-green-300 shrink-0">{shot.tag}</span> : null}
+        <span className="truncate text-blue-400">{shot.caption}</span>
+        {shot.tag ? <span className="shrink-0 text-green-300">{shot.tag}</span> : null}
       </figcaption>
     </figure>
   );

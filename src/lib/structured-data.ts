@@ -57,7 +57,7 @@ export function localBusinessSchema(): JsonLdObject {
     "@id": `${SITE_URL}/#localbusiness`,
     name: company.name,
     url: SITE_URL,
-    image: [absoluteUrl("/media/corporate/planta-la-estancia.jpg")],
+    image: [absoluteUrl("/media/corporate/fachada-planta.jpg")],
     telephone: company.phone,
     email: company.email,
     address: postalAddress(),

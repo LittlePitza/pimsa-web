@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { company, fullAddress } from "@/content/company";
-import plantExterior from "../../../public/media/corporate/planta-la-estancia.jpg";
+import plantExterior from "../../../public/media/corporate/fachada-planta.jpg";
 
 /**
  * Where the job actually is.
@@ -42,7 +42,7 @@ export function WorkLocation({ index = "04" }: { index?: string }) {
                 <p className="flex items-start gap-3">
                   <MapPin
                     aria-hidden
-                    className="text-green-600 mt-1 size-5 shrink-0"
+                    className="mt-1 size-5 shrink-0 text-green-600"
                     strokeWidth={1.5}
                   />
                   <span>
@@ -81,7 +81,7 @@ export function WorkLocation({ index = "04" }: { index?: string }) {
                   quality={65}
                   sizes="(min-width: 1024px) 55vw, 100vw"
                   placeholder="blur"
-                  className="object-cover object-[50%_60%]"
+                  className="object-cover object-[50%_58%]"
                 />
               </div>
               <figcaption className="text-ink-muted mt-3 font-mono text-xs tracking-[0.14em] uppercase">

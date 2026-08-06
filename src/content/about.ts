@@ -29,25 +29,25 @@ export const identityFacts: Spec[] = [
  */
 export const operationFigures: ServiceImage[] = [
   {
-    src: "/media/corporate/scrap-industrial.jpg",
-    alt: "Scrap plástico industrial clasificado en el patio de recepción de PIMSA",
+    src: "/media/corporate/patio-recepcion.jpg",
+    alt: "Super sacos y gaylords de scrap plástico en el patio de recepción de PIMSA",
     caption: "Fig. 01 — Recepción y clasificación",
     tag: "Entrada",
   },
   {
-    src: "/media/corporate/peletizado-linea.jpg",
-    alt: "Línea de peletizado en operación dentro de la planta de PIMSA",
+    src: "/media/corporate/peletizado-extrusor.jpg",
+    alt: "Extrusor y tolva de la línea de peletizado de PIMSA",
     caption: "Fig. 02 — Línea de peletizado",
     tag: "Transformación",
   },
   {
-    src: "/media/corporate/laboratorio-calidad.jpg",
-    alt: "Laboratorio de control de calidad donde se verifican los polímeros recuperados",
+    src: "/media/corporate/laboratorio-tecnico.jpg",
+    alt: "Técnica de laboratorio de PIMSA cargando una muestra en la mufla",
     caption: "Fig. 03 — Control de calidad",
     tag: "Verificación",
   },
   {
-    src: "/media/corporate/logistica-unidad.jpg",
+    src: "/media/corporate/camion-entrega.jpg",
     alt: "Unidad de transporte propia de PIMSA lista para entrega de material",
     caption: "Fig. 04 — Logística de entrega",
     tag: "Salida",

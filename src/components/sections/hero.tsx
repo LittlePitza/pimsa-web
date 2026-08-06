@@ -55,12 +55,14 @@ export function Hero() {
 
           <figure className="relative mx-auto w-full max-w-xl lg:max-w-none">
             {/*
-              The source photograph is 2992x2000 (3:2 landscape). The 4/5
-              portrait frame is the desktop art direction and crops 47% of its
-              width, which on a phone leaves an unreadable fragment of the
-              pelletizing line. Below `sm` it runs full-bleed at its native 3:2
-              instead — no crop — and the overlapping square below is dropped,
-              since that composition needs width to read as one.
+              The source photograph is 1337x2000 (2:3 portrait — it used to
+              ship as a 2992x2000 file carrying an EXIF orientation tag, which
+              browsers honoured but `image-size` did not, so Next reported the
+              wrong intrinsic aspect; scripts/optimize-media.mjs now bakes the
+              rotation in). The 4/5 desktop frame therefore crops height, not
+              width. Below `sm` it runs at 3:2, which takes a wide band out of
+              the middle, and the overlapping square below is dropped since
+              that composition needs width to read as one.
             */}
             <div className="relative ml-auto aspect-[3/2] w-full overflow-hidden border border-blue-400/30 sm:aspect-[4/5] sm:w-[82%]">
               <Image

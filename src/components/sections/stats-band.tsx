@@ -1,24 +1,42 @@
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { Container } from "@/components/ui/container";
 import { PelletPattern } from "@/components/ui/pellet-pattern";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Stat } from "@/components/ui/stat";
 import { stats } from "@/content/about";
-import plantExterior from "../../../public/media/corporate/planta-la-estancia.jpg";
+import { cn } from "@/lib/utils";
+import warehouseAisle from "../../../public/media/corporate/almacen-pasillo.jpg";
 
-/** Capacity data over real PIMSA plant photography. */
-export function StatsBand({ index = "05" }: { index?: string }) {
+/**
+ * Capacity data over real PIMSA plant photography.
+ *
+ * The backdrop is a prop because this band runs on both Home and Nosotros:
+ * hard-coding it meant the same photograph greeted the reader twice within
+ * two clicks, which is what made the site feel like one page repeated. Any
+ * frame passed here disappears under an ~88% overlay, so pick for structure
+ * and tonal range, never for subject.
+ */
+export function StatsBand({
+  index = "05",
+  image = warehouseAisle,
+  imagePosition = "object-[50%_52%]",
+}: {
+  index?: string;
+  image?: StaticImageData;
+  /** Tailwind object-position for the backdrop crop. */
+  imagePosition?: string;
+}) {
   return (
     <section data-band="dark" className="bg-navy-900 relative overflow-hidden py-12 md:py-24">
       {/* Decorative backdrop under an ~88% overlay — low quality is invisible here. */}
       <Image
-        src={plantExterior}
+        src={image}
         alt=""
         fill
         sizes="100vw"
         quality={50}
         placeholder="blur"
-        className="object-cover object-[50%_68%]"
+        className={cn("object-cover", imagePosition)}
       />
       <div className="bg-navy-900/88 absolute inset-0 mix-blend-multiply" aria-hidden />
       <div

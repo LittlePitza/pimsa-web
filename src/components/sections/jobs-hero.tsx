@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { PelletPattern } from "@/components/ui/pellet-pattern";
 import { workAreas } from "@/content/careers";
-import plantExterior from "../../../public/media/corporate/planta-la-estancia.jpg";
+import plantTeam from "../../../public/media/corporate/equipo-planta.jpg";
 
 /**
  * Job-board hero — deliberately louder than the corporate PageHero.
@@ -22,26 +22,20 @@ import plantExterior from "../../../public/media/corporate/planta-la-estancia.jp
  * operation has to be visible before the first scroll or half the audience
  * self-rejects.
  */
-export function JobsHero({
-  openCount,
-  breadcrumbs,
-}: {
-  openCount: number;
-  breadcrumbs: Crumb[];
-}) {
+export function JobsHero({ openCount, breadcrumbs }: { openCount: number; breadcrumbs: Crumb[] }) {
   const hasOpenings = openCount > 0;
 
   return (
     <section data-band="dark" className="bg-navy-900 relative overflow-hidden">
       <Image
-        src={plantExterior}
+        src={plantTeam}
         alt=""
         fill
         sizes="100vw"
         quality={55}
         priority
         placeholder="blur"
-        className="object-cover object-[50%_62%]"
+        className="object-cover object-[50%_46%]"
       />
       <div className="bg-navy-900/85 absolute inset-0 mix-blend-multiply" aria-hidden />
       <div
@@ -65,7 +59,11 @@ export function JobsHero({
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-4">
-            <ButtonLink href={hasOpenings ? "#vacantes" : "#postulacion-general"} variant="accent" size="lg">
+            <ButtonLink
+              href={hasOpenings ? "#vacantes" : "#postulacion-general"}
+              variant="accent"
+              size="lg"
+            >
               {hasOpenings
                 ? `Ver ${openCount} ${openCount === 1 ? "vacante" : "vacantes"}`
                 : "Dejar mi CV"}
