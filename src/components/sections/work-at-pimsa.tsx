@@ -4,7 +4,7 @@ import { PelletPattern } from "@/components/ui/pellet-pattern";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { whyWorkHere } from "@/content/careers";
-import packingCrew from "../../../public/media/corporate/equipo-envasado.jpg";
+import millOperator from "../../../public/media/corporate/operador-molino.jpg";
 
 /**
  * What the company is, explained to a candidate instead of a buyer.
@@ -49,13 +49,13 @@ export function WorkAtPimsa({ index = "02" }: { index?: string }) {
             <figure className="relative">
               <div className="relative aspect-4/5 overflow-hidden border border-blue-400/30">
                 <Image
-                  src={packingCrew}
-                  alt="Dos operadores de PIMSA envasando pellet recuperado en el almacén"
+                  src={millOperator}
+                  alt="Operador de PIMSA alimentando el molino con equipo de protección auditiva"
                   fill
                   quality={65}
                   sizes="(min-width: 1024px) 45vw, 100vw"
                   placeholder="blur"
-                  className="object-cover object-[50%_45%]"
+                  className="object-cover object-[50%_55%]"
                 />
                 <div
                   className="from-navy-900/70 absolute inset-0 bg-gradient-to-t via-transparent to-transparent"
@@ -63,7 +63,7 @@ export function WorkAtPimsa({ index = "02" }: { index?: string }) {
                 />
               </div>
               <figcaption className="mt-3 flex items-baseline justify-between gap-4 font-mono text-xs tracking-[0.14em] text-blue-400 uppercase">
-                <span>Envasado de pellet</span>
+                <span>Alimentación del molino</span>
                 <span className="text-green-300">Planta El Castillo</span>
               </figcaption>
             </figure>

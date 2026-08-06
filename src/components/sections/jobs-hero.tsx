@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { PelletPattern } from "@/components/ui/pellet-pattern";
 import { workAreas } from "@/content/careers";
-import plantTeam from "../../../public/media/corporate/equipo-planta.jpg";
+import warehouseFloor from "../../../public/media/corporate/nave-produccion.jpg";
 
 /**
  * Job-board hero — deliberately louder than the corporate PageHero.
@@ -28,14 +28,14 @@ export function JobsHero({ openCount, breadcrumbs }: { openCount: number; breadc
   return (
     <section data-band="dark" className="bg-navy-900 relative overflow-hidden">
       <Image
-        src={plantTeam}
+        src={warehouseFloor}
         alt=""
         fill
         sizes="100vw"
         quality={55}
         priority
         placeholder="blur"
-        className="object-cover object-[50%_46%]"
+        className="object-cover object-[50%_52%]"
       />
       <div className="bg-navy-900/85 absolute inset-0 mix-blend-multiply" aria-hidden />
       <div

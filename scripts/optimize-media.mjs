@@ -16,6 +16,12 @@
  *   3. Metadata is dropped (sharp's default), which removes the GPS tags the
  *      camera wrote into every frame.
  *
+ * A fourth rule is not enforceable in code and has to hold at selection time:
+ * nothing published here may show a recognisable face or a readable licence
+ * plate. Employees at work are still people whose image needs their consent,
+ * and the library is full of frames that fail this — check every candidate at
+ * 100%, including the background, before adding it to the table below.
+ *
  * Usage: node scripts/optimize-media.mjs [--check]
  *   --check  report what would change without writing anything
  */
@@ -46,24 +52,31 @@ const MEDIA = [
 
   // Home · StatsBand + CircularityManifesto
   ["corporate/almacen-pasillo.jpg", "planta/almacen-pasillo.jpg"],
-  ["corporate/valorizacion-scrap.jpg", "recoleccion/scrap-carga.jpg"],
+  ["corporate/scrap-recuperado.jpg", "molienda/scrap-pieza.jpg"],
 
   // Nosotros · PlantShowcase (entrada -> transformación -> verificación -> salida)
   ["corporate/patio-recepcion.jpg", "planta/patio-sacos.jpg"],
   ["corporate/peletizado-extrusor.jpg", "peletizado/linea-peletizado.jpg"],
-  ["corporate/laboratorio-tecnico.jpg", "laboratorio/tecnico-mufla.jpg"],
-  ["corporate/camion-entrega.jpg", "logistica/camion-tres-cuartos.jpg"],
+  ["corporate/laboratorio-balanza.jpg", "laboratorio/balanza-precision.jpg"],
+  ["corporate/producto-terminado.jpg", "logistica/producto-terminado.jpg"],
 
   // Nosotros · StatsBand (distinta a la de Home a propósito)
   ["corporate/almacen-nave.jpg", "planta/almacen-nave.jpg"],
 
   // Vacantes · JobsHero, WorkAtPimsa, WorkLocation
-  ["corporate/equipo-planta.jpg", "equipo/equipo-tambores.jpg"],
-  ["corporate/equipo-envasado.jpg", "peletizado/envasado-pellet.jpg"],
+  // The mill-hall frame would suit this better but the library only holds it
+  // as a 589x332 web export. This is the Vegil warehouse — no other published
+  // photograph comes from that plant, so it does not echo anything.
+  ["corporate/nave-produccion.jpg", "planta/almacen-vegil.jpg"],
+  ["corporate/operador-molino.jpg", "molienda/molino-alimentacion-2.jpg"],
   // The three head-on façade frames in the library are 1280x960 web exports;
   // this is the only full-resolution exterior, and the approach from the road
   // is the view a candidate actually arrives to.
   ["corporate/fachada-planta.jpg", "planta/perimetro-reja.jpg"],
+
+  // Servicios · relevos de las dos fotos que mostraban rostros
+  ["servicios/recoleccion-gaylords.jpg", "planta/patio-gaylords.jpg"],
+  ["servicios/molienda-criba.jpg", "peletizado/pellet-criba.jpg"],
 ];
 
 /**

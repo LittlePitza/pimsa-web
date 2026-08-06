@@ -41,15 +41,15 @@ export const operationFigures: ServiceImage[] = [
     tag: "Transformación",
   },
   {
-    src: "/media/corporate/laboratorio-tecnico.jpg",
-    alt: "Técnica de laboratorio de PIMSA cargando una muestra en la mufla",
+    src: "/media/corporate/laboratorio-balanza.jpg",
+    alt: "Balanza analítica del laboratorio de PIMSA con una muestra pesada",
     caption: "Fig. 03 — Control de calidad",
     tag: "Verificación",
   },
   {
-    src: "/media/corporate/camion-entrega.jpg",
-    alt: "Unidad de transporte propia de PIMSA lista para entrega de material",
-    caption: "Fig. 04 — Logística de entrega",
+    src: "/media/corporate/producto-terminado.jpg",
+    alt: "Gaylord de pellet recuperado etiquetado y listo para embarque",
+    caption: "Fig. 04 — Producto terminado",
     tag: "Salida",
   },
 ];

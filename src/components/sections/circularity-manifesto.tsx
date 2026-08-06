@@ -3,7 +3,7 @@ import { CheckCircle2, Recycle } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { PelletPattern } from "@/components/ui/pellet-pattern";
-import scrapSorting from "../../../public/media/corporate/valorizacion-scrap.jpg";
+import recoveredScrap from "../../../public/media/corporate/scrap-recuperado.jpg";
 
 const circularPractices = [
   "Metodología 5S en la gestión de scrap",
@@ -58,13 +58,13 @@ export function CircularityManifesto() {
 
           <article className="relative min-h-[28rem] overflow-hidden">
             <Image
-              src={scrapSorting}
-              alt="Operador de PIMSA cargando piezas plásticas recuperadas en un contenedor"
+              src={recoveredScrap}
+              alt="Scrap plástico recuperado acumulado junto al molino de PIMSA"
               fill
               quality={60}
               sizes="(max-width: 1023px) 100vw, (max-width: 1279px) 58vw, 44rem"
               placeholder="blur"
-              className="object-cover object-[50%_38%]"
+              className="object-cover object-[50%_42%]"
             />
             <div
               className="from-navy-900 via-navy-900/45 absolute inset-0 bg-gradient-to-t to-transparent"

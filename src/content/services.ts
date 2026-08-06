@@ -233,8 +233,8 @@ export const services: Service[] = [
         tag: "Molienda",
       },
       {
-        src: "/media/servicios/molienda-cribado.jpg",
-        alt: "Operador cribando pellet reciclado sobre malla",
+        src: "/media/servicios/molienda-criba.jpg",
+        alt: "Pellet reciclado sobre la malla de cribado",
         caption: "Fig. 03 — Cribado de pellet",
         tag: "Control de calidad",
       },
@@ -300,10 +300,10 @@ export const services: Service[] = [
       "Ahorro en mano de obra dedicada al manejo de residuos",
     ],
     figure: {
-      src: "/media/servicios/recoleccion-camion.jpg",
-      alt: "Camión de recolección de PIMSA con su operador en planta",
-      caption: "Fig. 01 — Unidad de recolección",
-      tag: "Flota propia",
+      src: "/media/servicios/recoleccion-gaylords.jpg",
+      alt: "Gaylords de scrap plástico recolectado y clasificado en el patio de PIMSA",
+      caption: "Fig. 01 — Scrap recolectado",
+      tag: "Clasificado por resina",
     },
     gallery: [
       {

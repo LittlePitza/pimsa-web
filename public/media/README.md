@@ -34,14 +34,14 @@ Institutional and process photography, selected from the internal library
 | `peletizado-tina.jpg` | Home · ProcessLoop 03 — peletizado |
 | `laboratorio-flama.jpg` | Home · ProcessLoop 04 — laboratorio |
 | `almacen-pasillo.jpg` | Home · StatsBand (fondo bajo overlay 88 %) |
-| `valorizacion-scrap.jpg` | Home · CircularityManifesto |
+| `scrap-recuperado.jpg` | Home · CircularityManifesto |
 | `patio-recepcion.jpg` | Nosotros · PlantShowcase Fig. 01 |
 | `peletizado-extrusor.jpg` | Nosotros · PlantShowcase Fig. 02 |
-| `laboratorio-tecnico.jpg` | Nosotros · PlantShowcase Fig. 03 |
-| `camion-entrega.jpg` | Nosotros · PlantShowcase Fig. 04 |
+| `laboratorio-balanza.jpg` | Nosotros · PlantShowcase Fig. 03 |
+| `producto-terminado.jpg` | Nosotros · PlantShowcase Fig. 04 |
 | `almacen-nave.jpg` | Nosotros · StatsBand (fondo) |
-| `equipo-planta.jpg` | Vacantes · JobsHero (fondo) |
-| `equipo-envasado.jpg` | Vacantes · WorkAtPimsa |
+| `nave-produccion.jpg` | Vacantes · JobsHero (fondo) |
+| `operador-molino.jpg` | Vacantes · WorkAtPimsa |
 | `fachada-planta.jpg` | Vacantes · WorkLocation + JSON-LD LocalBusiness |
 
 ## servicios/
@@ -52,13 +52,24 @@ the pipeline and are already within budget.
 
 ## Antes de publicar una foto nueva
 
-Keep the OneDrive originals unchanged, and check the frame for:
+Keep the OneDrive originals unchanged, and check the frame at 100 % — incluido
+el fondo — para:
 
-- **Placas de vehículos** y rótulos de clientes.
-- **Rostros identificables.** `laboratorio-tecnico.jpg`, `equipo-envasado.jpg`
-  y `valorizacion-scrap.jpg` muestran personal de PIMSA en su puesto; se
-  publican como fotografía corporativa de la propia empresa. Confirmar con
-  RRHH que existe consentimiento de imagen antes de sumar más retratos.
+- **Rostros identificables.** Ninguna foto publicada aquí muestra una cara
+  reconocible. La regla es que un empleado en su puesto sigue siendo una
+  persona cuya imagen requiere su consentimiento, y la librería está llena de
+  tomas que no lo cumplen. Sí se aceptan personas **de espaldas, a contraluz o
+  a distancia sin rasgos resolubles**: `almacen-pasillo.jpg` y
+  `producto-terminado.jpg` tienen figuras al fondo de espaldas, y
+  `operador-molino.jpg` muestra a un operador visto por detrás.
+  Para publicar retratos hace falta la carta de consentimiento de uso de
+  imagen firmada — ver el bloque A de
+  [guion-fotografia-video.md](../../docs/guion-fotografia-video.md).
+- **Placas de vehículos** y rótulos de clientes. Toda la serie de camiones de
+  la librería tiene la placa legible; por eso el sitio no publica ninguna hoy.
 - **Orientación.** Si `sharp(f).metadata()` reporta `orientation` distinto de
   1, el archivo es una foto vertical guardada como horizontal. El script lo
   resuelve; copiarla a mano no.
+- **Resolución real.** Varios archivos de la librería son exports web
+  disfrazados de original (`pele3.jpg` mide 589x332). Verificar antes de
+  asignar un slot.
