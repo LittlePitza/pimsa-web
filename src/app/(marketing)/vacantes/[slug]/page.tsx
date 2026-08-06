@@ -9,9 +9,11 @@ import { PageHero } from "@/components/sections/page-hero";
 import { StickyApplyCta } from "@/components/sections/sticky-apply-cta";
 import { Container } from "@/components/ui/container";
 import { getOpenVacancies, getOpenVacancyBySlug } from "@/db/queries/vacancies";
+import { employmentTypeLabels, workModeLabels } from "@/lib/labels";
 import { jobPostingSchema } from "@/lib/structured-data";
 import { buildMetadata } from "@/lib/seo";
 import { MAX_CV_LABEL } from "@/lib/uploads";
+import { vacancyLocation, vacancyParagraphs, vacancySalaryLabel } from "@/lib/vacancy";
 
 export const revalidate = 60;
 
@@ -45,12 +47,15 @@ export default async function VacancyPage({ params }: Props) {
   const vacancy = await getOpenVacancyBySlug(slug);
   if (!vacancy) notFound();
 
+  // Empty values are dropped rather than rendered as a blank row.
   const specs = [
     { label: "Área", value: vacancy.department },
-    { label: "Ubicación", value: vacancy.location },
-    { label: "Jornada", value: vacancy.employmentType },
-    ...(vacancy.salaryRange ? [{ label: "Sueldo", value: vacancy.salaryRange }] : []),
-  ];
+    { label: "Ubicación", value: vacancyLocation(vacancy) },
+    { label: "Modalidad", value: workModeLabels[vacancy.workMode] },
+    { label: "Jornada", value: employmentTypeLabels[vacancy.employmentType] },
+    { label: "Sueldo", value: vacancySalaryLabel(vacancy) },
+    { label: "Plazas", value: vacancy.openings > 1 ? String(vacancy.openings) : "" },
+  ].filter((spec) => spec.value);
 
   return (
     <>
@@ -70,8 +75,14 @@ export default async function VacancyPage({ params }: Props) {
       <section className="py-16 md:py-24">
         <Container className="grid gap-14 lg:grid-cols-[7fr_5fr]">
           <div>
-            {vacancy.description.split(/\n{2,}/).map((paragraph) => (
-              <p key={paragraph.slice(0, 40)} className="text-ink mt-5 max-w-[68ch] first:mt-0">
+            {/* pre-line keeps the single line breaks RRHH typed — the feed
+                renders those as <br>, so without it the page and the job
+                boards would show the same posting differently. */}
+            {vacancyParagraphs(vacancy.description).map((paragraph) => (
+              <p
+                key={paragraph.slice(0, 40)}
+                className="text-ink mt-5 max-w-[68ch] whitespace-pre-line first:mt-0"
+              >
                 {paragraph}
               </p>
             ))}

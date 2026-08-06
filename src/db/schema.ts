@@ -11,10 +11,13 @@ import {
 import {
   ADMIN_ROLES,
   APPLICATION_STATUSES,
+  EMPLOYMENT_TYPES,
   LEAD_STATUSES,
+  SALARY_PERIODS,
   STOCK_AVAILABILITY,
   STOCK_FORMS,
   VACANCY_STATUSES,
+  WORK_MODES,
 } from "@/lib/enums";
 
 /**
@@ -52,20 +55,41 @@ const jsonColumn = <TData>(name: string) =>
     },
   })(name);
 
+/**
+ * Vacancies double as the source for the job boards: /vacantes.xml and the
+ * JobPosting JSON-LD are generated from these rows, which is why the place,
+ * the pay and the closing date are stored as discrete values instead of the
+ * free text a person would type. Google, Indeed and Computrabajo match
+ * candidates on those fields; a single "Apaseo el Grande, Guanajuato" string
+ * or a "$12,000 a $15,000 mensuales" note cannot be parsed back reliably.
+ */
 export const vacancies = mysqlTable("vacancies", {
   id: int("id").autoincrement().primaryKey(),
   slug: varchar("slug", { length: 160 }).notNull().unique(),
   title: varchar("title", { length: 160 }).notNull(),
   department: varchar("department", { length: 120 }).notNull().default(""),
-  location: varchar("location", { length: 160 })
-    .notNull()
-    .default("Apaseo el Grande, Guanajuato"),
-  employmentType: varchar("employment_type", { length: 60 }).notNull().default("Tiempo completo"),
+  city: varchar("city", { length: 120 }).notNull().default("Apaseo el Grande"),
+  region: varchar("region", { length: 120 }).notNull().default("Guanajuato"),
+  /** Blank falls back to the plant's postal code when the city is the plant's. */
+  postalCode: varchar("postal_code", { length: 12 }).notNull().default(""),
+  workMode: mysqlEnum("work_mode", WORK_MODES).notNull().default("onsite"),
+  employmentType: mysqlEnum("employment_type", EMPLOYMENT_TYPES).notNull().default("FULL_TIME"),
   summary: varchar("summary", { length: 500 }).notNull().default(""),
   description: text("description").notNull(),
   requirements: jsonColumn<string[]>("requirements").notNull(),
   benefits: jsonColumn<string[]>("benefits").notNull(),
+  salaryMin: int("salary_min"),
+  salaryMax: int("salary_max"),
+  salaryPeriod: mysqlEnum("salary_period", SALARY_PERIODS).notNull().default("MONTH"),
+  /**
+   * Free-text fallback ("Sueldo a tratar"), used only when no amounts are
+   * captured. The structured columns win everywhere so the page and the feeds
+   * can never quote two different salaries.
+   */
   salaryRange: varchar("salary_range", { length: 120 }),
+  openings: int("openings").notNull().default(1),
+  /** Explicit close date; blank falls back to publishedAt + 60 days. */
+  expiresAt: timestamp("expires_at"),
   status: mysqlEnum("status", VACANCY_STATUSES).notNull().default("draft"),
   publishedAt: timestamp("published_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

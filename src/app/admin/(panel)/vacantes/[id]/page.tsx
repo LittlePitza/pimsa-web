@@ -8,6 +8,11 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+/** <input type="date"> only accepts YYYY-MM-DD. */
+function dateInputValue(date: Date | null): string {
+  return date ? date.toISOString().slice(0, 10) : "";
+}
+
 export default async function EditVacancyPage({ params }: Props) {
   await requireArea("rrhh");
   const { id } = await params;
@@ -29,9 +34,17 @@ export default async function EditVacancyPage({ params }: Props) {
             title: vacancy.title,
             slug: vacancy.slug,
             department: vacancy.department,
-            location: vacancy.location,
+            city: vacancy.city,
+            region: vacancy.region,
+            postalCode: vacancy.postalCode,
+            workMode: vacancy.workMode,
             employmentType: vacancy.employmentType,
+            salaryMin: vacancy.salaryMin?.toString() ?? "",
+            salaryMax: vacancy.salaryMax?.toString() ?? "",
+            salaryPeriod: vacancy.salaryPeriod,
             salaryRange: vacancy.salaryRange ?? "",
+            openings: String(vacancy.openings),
+            expiresAt: dateInputValue(vacancy.expiresAt),
             summary: vacancy.summary,
             description: vacancy.description,
             requirements: vacancy.requirements.join("\n"),

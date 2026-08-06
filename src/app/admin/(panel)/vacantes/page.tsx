@@ -8,7 +8,8 @@ import { countVacancies, listVacancies } from "@/db/queries/vacancies";
 import { requireArea } from "@/lib/auth";
 import { vacancyStatusLabels } from "@/lib/labels";
 import { ADMIN_LIST_LIMIT } from "@/lib/metrics";
-import { cn, formatDate } from "@/lib/utils";
+import { absoluteUrl } from "@/lib/site";
+import { cn, formatDate, formatDay } from "@/lib/utils";
 
 export default async function AdminVacanciesPage() {
   await requireArea("rrhh");
@@ -26,6 +27,16 @@ export default async function AdminVacanciesPage() {
         </ButtonLink>
       </div>
       <ListingCount shown={vacancies.length} total={total} noun="vacantes" />
+
+      <p className="border-line bg-surface text-ink-muted mt-6 rounded-md border p-4 text-sm">
+        Feed para bolsas de trabajo:{" "}
+        <a href="/vacantes.xml" className="text-blue-600 font-mono break-all underline">
+          {absoluteUrl("/vacantes.xml")}
+        </a>
+        <br />
+        Entrega esta dirección a Computrabajo, OCC o Indeed y publican solas todas las
+        vacantes en estado «Publicada». Google las toma directo de cada página.
+      </p>
 
       <ul className="border-line bg-surface shadow-card mt-8 divide-y divide-(--color-line) rounded-md border">
         {vacancies.map((vacancy) => (
@@ -50,6 +61,14 @@ export default async function AdminVacanciesPage() {
               <p className="text-ink-muted mt-1 text-sm">
                 {vacancy.department || "Sin área"} · /vacantes/{vacancy.slug} · Actualizada{" "}
                 {formatDate(vacancy.updatedAt)}
+                {/* An expired posting still reads "Publicada" here but has already
+                    dropped off every board — worth saying out loud. */}
+                {vacancy.expiresAt ? (
+                  <span className={cn(vacancy.expiresAt < new Date() && "text-red-700")}>
+                    {vacancy.expiresAt < new Date() ? " · Venció el " : " · Cierra el "}
+                    {formatDay(vacancy.expiresAt)}
+                  </span>
+                ) : null}
               </p>
             </div>
 

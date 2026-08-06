@@ -14,6 +14,29 @@
 export const VACANCY_STATUSES = ["draft", "open", "closed"] as const;
 export type VacancyStatus = (typeof VACANCY_STATUSES)[number];
 
+/**
+ * Employment type, work mode and salary period are stored as the schema.org
+ * enum values rather than Spanish text ON PURPOSE: Google Jobs, Indeed and the
+ * XML feed the other boards consume read these verbatim. The Spanish wording a
+ * candidate sees lives in `@/lib/labels`, so the copy can change without ever
+ * breaking a listing.
+ */
+export const EMPLOYMENT_TYPES = [
+  "FULL_TIME",
+  "PART_TIME",
+  "CONTRACTOR",
+  "TEMPORARY",
+  "INTERN",
+] as const;
+export type EmploymentType = (typeof EMPLOYMENT_TYPES)[number];
+
+export const WORK_MODES = ["onsite", "hybrid", "remote"] as const;
+export type WorkMode = (typeof WORK_MODES)[number];
+
+/** schema.org MonetaryAmount unitText values. */
+export const SALARY_PERIODS = ["HOUR", "DAY", "WEEK", "MONTH", "YEAR"] as const;
+export type SalaryPeriod = (typeof SALARY_PERIODS)[number];
+
 export const APPLICATION_STATUSES = ["new", "reviewing", "finalist", "hired", "rejected"] as const;
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 

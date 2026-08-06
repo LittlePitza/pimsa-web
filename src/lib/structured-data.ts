@@ -1,5 +1,13 @@
 import { certifications, company } from "@/content/company";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
+import {
+  SALARY_CURRENCY,
+  vacancyDatePosted,
+  vacancyDescriptionHtml,
+  vacancyIsAtHeadquarters,
+  vacancyPostalCode,
+  vacancyValidThrough,
+} from "@/lib/vacancy";
 import type { Vacancy } from "@/db/schema";
 import type { Faq, Service } from "@/types/content";
 
@@ -123,29 +131,85 @@ export function faqPageSchema(faqs: Faq[]): JsonLdObject {
   };
 }
 
-/** Days a posting stays valid for Google Jobs when no explicit close date exists. */
-const JOB_POSTING_VALID_DAYS = 60;
+/**
+ * baseSalary, only when real amounts exist.
+ *
+ * A free-text note like "sueldo a tratar" is deliberately NOT emitted: Google
+ * discards a MonetaryAmount it cannot read as a number, and a wrong one is
+ * worse than none — the posting gets filtered out of every salary-bounded
+ * search a candidate runs.
+ */
+function baseSalaryNode(vacancy: Vacancy): JsonLdObject | undefined {
+  const { salaryMin, salaryMax } = vacancy;
+  if (salaryMin === null && salaryMax === null) return undefined;
 
-/** Google Jobs eligibility for vacancy pages (JobPosting structured data). */
+  const spread = salaryMin !== null && salaryMax !== null && salaryMin !== salaryMax;
+  return {
+    "@type": "MonetaryAmount",
+    currency: SALARY_CURRENCY,
+    value: {
+      "@type": "QuantitativeValue",
+      ...(spread
+        ? { minValue: salaryMin, maxValue: salaryMax }
+        : { value: salaryMin ?? salaryMax }),
+      unitText: vacancy.salaryPeriod,
+    },
+  };
+}
+
+/** Where the job physically is — the plant's street only when it IS the plant. */
+function vacancyAddress(vacancy: Vacancy): JsonLdObject {
+  const a = company.address;
+  const postalCode = vacancyPostalCode(vacancy);
+  return {
+    "@type": "PostalAddress",
+    streetAddress: vacancyIsAtHeadquarters(vacancy)
+      ? `${a.street}, ${a.neighborhood}, ${a.locality}`
+      : undefined,
+    addressLocality: vacancy.city,
+    addressRegion: vacancy.region,
+    postalCode: postalCode || undefined,
+    addressCountry: a.country,
+  };
+}
+
+/**
+ * Google Jobs eligibility for vacancy pages (JobPosting structured data).
+ *
+ * `directApply: true` is a claim Google checks: the URL must land on a form
+ * the candidate can actually submit, which /vacantes/[slug] does. It is also
+ * what keeps the application in our own panel instead of a board's inbox.
+ */
 export function jobPostingSchema(vacancy: Vacancy): JsonLdObject {
-  const datePosted = vacancy.publishedAt ?? vacancy.createdAt;
-  const validThrough = new Date(
-    datePosted.getTime() + JOB_POSTING_VALID_DAYS * 24 * 60 * 60 * 1000,
-  );
+  const remote = vacancy.workMode === "remote";
 
   return {
     "@context": "https://schema.org",
     "@type": "JobPosting",
     title: vacancy.title,
-    description: vacancy.description.replace(/\n/g, "<br>"),
-    datePosted: datePosted.toISOString(),
-    validThrough: validThrough.toISOString(),
-    employmentType: vacancy.employmentType === "Tiempo completo" ? "FULL_TIME" : "OTHER",
-    hiringOrganization: organizationNode(),
-    jobLocation: {
-      "@type": "Place",
-      address: postalAddress(),
+    description: vacancyDescriptionHtml(vacancy),
+    identifier: {
+      "@type": "PropertyValue",
+      name: company.name,
+      value: String(vacancy.id),
     },
+    datePosted: vacancyDatePosted(vacancy).toISOString(),
+    validThrough: vacancyValidThrough(vacancy).toISOString(),
+    employmentType: vacancy.employmentType,
+    // sameAs repeats the site URL by design here: inside a JobPosting, Google
+    // reads it as the employer's own website rather than as a social profile.
+    hiringOrganization: { ...organizationNode(), sameAs: SITE_URL },
+    jobLocation: { "@type": "Place", address: vacancyAddress(vacancy) },
+    // A remote posting still declares a jobLocation (the hiring site) plus the
+    // country a candidate may live in; dropping the location instead makes
+    // Google treat the listing as incomplete.
+    jobLocationType: remote ? "TELECOMMUTE" : undefined,
+    applicantLocationRequirements: remote
+      ? { "@type": "Country", name: "México" }
+      : undefined,
+    baseSalary: baseSalaryNode(vacancy),
+    occupationalCategory: vacancy.department || undefined,
+    totalJobOpenings: vacancy.openings,
     directApply: true,
     url: absoluteUrl(`/vacantes/${vacancy.slug}`),
   };

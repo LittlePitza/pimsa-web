@@ -8,10 +8,13 @@ import { z } from "zod";
 import {
   ADMIN_ROLES,
   APPLICATION_STATUSES,
+  EMPLOYMENT_TYPES,
   LEAD_STATUSES,
+  SALARY_PERIODS,
   STOCK_AVAILABILITY,
   STOCK_FORMS,
   VACANCY_STATUSES,
+  WORK_MODES,
 } from "@/lib/enums";
 import {
   countAdmins,
@@ -143,27 +146,96 @@ export async function signOutAction(): Promise<void> {
 
 // ── Vacancies ────────────────────────────────────────────────────────────
 
-const vacancySchema = z.object({
-  title: z.string().trim().min(3).max(160),
-  slug: z.string().trim().max(160).optional().default(""),
-  department: z.string().trim().max(120).default(""),
-  location: z.string().trim().min(2).max(160),
-  employmentType: z.string().trim().min(2).max(60),
-  salaryRange: z.string().trim().max(120).default(""),
-  summary: z.string().trim().min(10).max(500),
-  description: z.string().trim().min(10).max(20000),
-  requirements: z.string().trim().max(5000).default(""),
-  benefits: z.string().trim().max(5000).default(""),
-  status: z.enum(VACANCY_STATUSES),
-});
+/**
+ * A salary amount as typed ("12,000", "$12000") → a number, or null when the
+ * field is left empty. Blank is a valid answer: not every vacancy publishes a
+ * salary, and the free-text note covers "a tratar".
+ */
+const salaryAmountSchema = z
+  .string()
+  .trim()
+  .transform((value) => value.replace(/\D/g, ""))
+  .transform((value) => (value === "" ? null : Number(value)))
+  .refine(
+    (value) => value === null || (value > 0 && value <= 10_000_000),
+    "Los montos de sueldo deben ser números mayores a cero.",
+  );
+
+/**
+ * <input type="date"> → the end of that day. Stored in UTC like every other
+ * timestamp here; the six-hour drift against Mexico City is immaterial for a
+ * date whose only job is telling the boards when to drop the posting.
+ */
+const expirySchema = z
+  .string()
+  .trim()
+  .transform((value) => (value === "" ? null : new Date(`${value}T23:59:59.000Z`)))
+  .refine(
+    (value) => value === null || !Number.isNaN(value.getTime()),
+    "Revisa la fecha de cierre.",
+  );
+
+/**
+ * Messages are written out in Spanish because RRHH sees them: this form now
+ * carries the data three job boards read, and "revisa los campos" on eighteen
+ * inputs is not an error message.
+ */
+const vacancySchema = z
+  .object({
+    title: z.string().trim().min(3, "El título debe tener al menos 3 caracteres.").max(160),
+    slug: z.string().trim().max(160).optional().default(""),
+    department: z.string().trim().max(120).default(""),
+    city: z.string().trim().min(2, "Escribe la ciudad.").max(120),
+    region: z.string().trim().min(2, "Escribe el estado.").max(120),
+    postalCode: z
+      .string()
+      .trim()
+      .max(12)
+      .default("")
+      .refine((value) => value === "" || /^\d{5}$/.test(value), "El código postal lleva 5 dígitos."),
+    workMode: z.enum(WORK_MODES, { error: "Elige una modalidad válida." }),
+    employmentType: z.enum(EMPLOYMENT_TYPES, { error: "Elige una jornada válida." }),
+    salaryMin: salaryAmountSchema,
+    salaryMax: salaryAmountSchema,
+    salaryPeriod: z.enum(SALARY_PERIODS, { error: "Elige un periodo de sueldo válido." }),
+    salaryRange: z.string().trim().max(120).default(""),
+    openings: z.coerce
+      .number()
+      .int()
+      .min(1, "Debe haber al menos una plaza.")
+      .max(999, "Son demasiadas plazas.")
+      .catch(1),
+    expiresAt: expirySchema,
+    summary: z.string().trim().min(10, "El resumen debe tener al menos 10 caracteres.").max(500),
+    description: z
+      .string()
+      .trim()
+      .min(10, "La descripción debe tener al menos 10 caracteres.")
+      .max(20000),
+    requirements: z.string().trim().max(5000).default(""),
+    benefits: z.string().trim().max(5000).default(""),
+    status: z.enum(VACANCY_STATUSES),
+  })
+  .refine(
+    (data) => data.salaryMin === null || data.salaryMax === null || data.salaryMax >= data.salaryMin,
+    "El sueldo máximo no puede ser menor que el mínimo.",
+  );
 
 const VACANCY_FIELDS = [
   "title",
   "slug",
   "department",
-  "location",
+  "city",
+  "region",
+  "postalCode",
+  "workMode",
   "employmentType",
+  "salaryMin",
+  "salaryMax",
+  "salaryPeriod",
   "salaryRange",
+  "openings",
+  "expiresAt",
   "summary",
   "description",
   "requirements",
@@ -171,22 +243,9 @@ const VACANCY_FIELDS = [
   "status",
 ] as const;
 
-function parseVacancyForm(formData: FormData) {
-  const parsed = vacancySchema.safeParse({
-    title: formData.get("title"),
-    slug: formData.get("slug") ?? "",
-    department: formData.get("department") ?? "",
-    location: formData.get("location"),
-    employmentType: formData.get("employmentType"),
-    salaryRange: formData.get("salaryRange") ?? "",
-    summary: formData.get("summary"),
-    description: formData.get("description"),
-    requirements: formData.get("requirements") ?? "",
-    benefits: formData.get("benefits") ?? "",
-    status: formData.get("status"),
-  });
-  if (!parsed.success) return null;
+type ParsedVacancy = ReturnType<typeof toVacancyRow>;
 
+function toVacancyRow(data: z.output<typeof vacancySchema>) {
   const lines = (value: string) =>
     value
       .split("\n")
@@ -194,18 +253,49 @@ function parseVacancyForm(formData: FormData) {
       .filter(Boolean);
 
   return {
-    ...parsed.data,
-    salaryRange: parsed.data.salaryRange || null,
-    requirements: lines(parsed.data.requirements),
-    benefits: lines(parsed.data.benefits),
+    ...data,
+    salaryRange: data.salaryRange || null,
+    requirements: lines(data.requirements),
+    benefits: lines(data.benefits),
   };
 }
 
-function invalidVacancyForm(formData: FormData): ActionState {
-  return {
-    error: "Revisa los campos del formulario.",
-    values: formValues(formData, VACANCY_FIELDS),
-  };
+function parseVacancyForm(
+  formData: FormData,
+): { ok: true; data: ParsedVacancy } | { ok: false; message: string } {
+  const parsed = vacancySchema.safeParse({
+    title: formData.get("title"),
+    slug: formData.get("slug") ?? "",
+    department: formData.get("department") ?? "",
+    city: formData.get("city"),
+    region: formData.get("region"),
+    postalCode: formData.get("postalCode") ?? "",
+    workMode: formData.get("workMode"),
+    employmentType: formData.get("employmentType"),
+    salaryMin: formData.get("salaryMin") ?? "",
+    salaryMax: formData.get("salaryMax") ?? "",
+    salaryPeriod: formData.get("salaryPeriod"),
+    salaryRange: formData.get("salaryRange") ?? "",
+    openings: formData.get("openings") ?? "1",
+    expiresAt: formData.get("expiresAt") ?? "",
+    summary: formData.get("summary"),
+    description: formData.get("description"),
+    requirements: formData.get("requirements") ?? "",
+    benefits: formData.get("benefits") ?? "",
+    status: formData.get("status"),
+  });
+
+  if (!parsed.success) {
+    return {
+      ok: false,
+      message: parsed.error.issues[0]?.message ?? "Revisa los campos del formulario.",
+    };
+  }
+  return { ok: true, data: toVacancyRow(parsed.data) };
+}
+
+function invalidVacancyForm(formData: FormData, message: string): ActionState {
+  return { error: message, values: formValues(formData, VACANCY_FIELDS) };
 }
 
 function revalidateJobBoard() {
@@ -220,8 +310,9 @@ export async function createVacancyAction(
 ): Promise<ActionState> {
   await requireArea("rrhh");
 
-  const data = parseVacancyForm(formData);
-  if (!data) return invalidVacancyForm(formData);
+  const parsed = parseVacancyForm(formData);
+  if (!parsed.ok) return invalidVacancyForm(formData, parsed.message);
+  const data = parsed.data;
 
   const slug = await ensureUniqueSlug(slugify(data.slug || data.title));
   await createVacancy({
@@ -241,8 +332,9 @@ export async function updateVacancyAction(
 ): Promise<ActionState> {
   await requireArea("rrhh");
 
-  const data = parseVacancyForm(formData);
-  if (!data) return invalidVacancyForm(formData);
+  const parsed = parseVacancyForm(formData);
+  if (!parsed.ok) return invalidVacancyForm(formData, parsed.message);
+  const data = parsed.data;
 
   const current = await getVacancyById(id);
   if (!current) return { error: "La vacante ya no existe." };

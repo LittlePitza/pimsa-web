@@ -6,7 +6,9 @@ import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import type { Vacancy } from "@/db/schema";
+import { employmentTypeLabels, workModeLabels } from "@/lib/labels";
 import { slugify } from "@/lib/utils";
+import { vacancyLocation, vacancySalaryLabel } from "@/lib/vacancy";
 
 /**
  * Open vacancies — the first thing on the page, because it is the only
@@ -41,6 +43,8 @@ function groupByArea(vacancies: Vacancy[]): { area: string; items: Vacancy[] }[]
 }
 
 function JobRow({ vacancy }: { vacancy: Vacancy }) {
+  const salary = vacancySalaryLabel(vacancy);
+
   return (
     <Link
       href={`/vacantes/${vacancy.slug}`}
@@ -59,15 +63,14 @@ function JobRow({ vacancy }: { vacancy: Vacancy }) {
         <ul className="text-ink-muted mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs tracking-wider uppercase">
           <li className="flex items-center gap-2">
             <MapPin aria-hidden className="size-3.5" strokeWidth={1.5} />
-            {vacancy.location}
+            {vacancyLocation(vacancy)}
+            {vacancy.workMode !== "onsite" ? ` · ${workModeLabels[vacancy.workMode]}` : ""}
           </li>
           <li className="flex items-center gap-2">
             <Clock aria-hidden className="size-3.5" strokeWidth={1.5} />
-            {vacancy.employmentType}
+            {employmentTypeLabels[vacancy.employmentType]}
           </li>
-          {vacancy.salaryRange ? (
-            <li className="text-green-600 font-medium">{vacancy.salaryRange}</li>
-          ) : null}
+          {salary ? <li className="text-green-600 font-medium">{salary}</li> : null}
         </ul>
       </div>
 

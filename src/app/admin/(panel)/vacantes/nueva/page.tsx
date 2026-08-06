@@ -1,5 +1,6 @@
 import { createVacancyAction } from "@/app/admin/actions";
 import { VacancyForm } from "@/components/admin/vacancy-form";
+import { company } from "@/content/company";
 import { requireArea } from "@/lib/auth";
 
 export default async function NewVacancyPage() {
@@ -16,9 +17,18 @@ export default async function NewVacancyPage() {
             title: "",
             slug: "",
             department: "",
-            location: "Apaseo el Grande, Guanajuato",
-            employmentType: "Tiempo completo",
+            // Most hiring is at the plant, so it starts there.
+            city: company.address.municipality,
+            region: company.address.state,
+            postalCode: "",
+            workMode: "onsite",
+            employmentType: "FULL_TIME",
+            salaryMin: "",
+            salaryMax: "",
+            salaryPeriod: "MONTH",
             salaryRange: "",
+            openings: "1",
+            expiresAt: "",
             summary: "",
             description: "",
             requirements: "",

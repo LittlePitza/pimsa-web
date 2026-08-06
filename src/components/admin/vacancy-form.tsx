@@ -4,16 +4,30 @@ import { useActionState } from "react";
 import type { ActionState } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { InputField, SelectField, TextareaField } from "@/components/ui/field";
-import { VACANCY_STATUSES } from "@/lib/enums";
-import { vacancyStatusLabels } from "@/lib/labels";
+import { EMPLOYMENT_TYPES, SALARY_PERIODS, VACANCY_STATUSES, WORK_MODES } from "@/lib/enums";
+import {
+  employmentTypeLabels,
+  salaryPeriodLabels,
+  vacancyStatusLabels,
+  workModeLabels,
+} from "@/lib/labels";
 
 export interface VacancyFormValues {
   title: string;
   slug: string;
   department: string;
-  location: string;
-  employmentType: string;
+  city: string;
+  region: string;
+  postalCode: string;
+  workMode: (typeof WORK_MODES)[number];
+  employmentType: (typeof EMPLOYMENT_TYPES)[number];
+  salaryMin: string;
+  salaryMax: string;
+  salaryPeriod: (typeof SALARY_PERIODS)[number];
   salaryRange: string;
+  openings: string;
+  /** YYYY-MM-DD for <input type="date">. */
+  expiresAt: string;
   summary: string;
   description: string;
   /** One item per line in the textarea. */
@@ -23,6 +37,18 @@ export interface VacancyFormValues {
 }
 
 const initialState: ActionState = {};
+
+/** Mono section rule, so eighteen fields read as four short blocks. */
+function FormSection({ title, hint }: { title: string; hint?: string }) {
+  return (
+    <div className="border-line border-t pt-6">
+      <p className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+        {title}
+      </p>
+      {hint ? <p className="text-ink-muted mt-2 text-sm">{hint}</p> : null}
+    </div>
+  );
+}
 
 /** Create/edit vacancy form; receives a (bound) server action. */
 export function VacancyForm({
@@ -61,29 +87,18 @@ export function VacancyForm({
           defaultValue={current.department}
           placeholder="Producción"
         />
-        <InputField
-          id="location"
-          label="Ubicación"
-          required
-          maxLength={160}
-          defaultValue={current.location}
-        />
-        <InputField
+        <SelectField
           id="employmentType"
           label="Jornada"
           required
-          maxLength={60}
           defaultValue={current.employmentType}
-        />
-      </div>
-      <div className="grid gap-6 sm:grid-cols-2">
-        <InputField
-          id="salaryRange"
-          label="Sueldo (opcional, visible)"
-          maxLength={120}
-          defaultValue={current.salaryRange}
-          placeholder="$12,000 – $15,000 mensuales"
-        />
+        >
+          {EMPLOYMENT_TYPES.map((type) => (
+            <option key={type} value={type}>
+              {employmentTypeLabels[type]}
+            </option>
+          ))}
+        </SelectField>
         <SelectField id="status" label="Estado" required defaultValue={current.status}>
           {VACANCY_STATUSES.map((status) => (
             <option key={status} value={status}>
@@ -92,6 +107,102 @@ export function VacancyForm({
           ))}
         </SelectField>
       </div>
+
+      <FormSection
+        title="Ubicación"
+        hint="Ciudad y estado se publican por separado porque las bolsas de trabajo filtran por ellos: es lo que decide a quién le aparece la vacante."
+      />
+      <div className="grid gap-6 sm:grid-cols-3">
+        <InputField id="city" label="Ciudad" required maxLength={120} defaultValue={current.city} />
+        <InputField
+          id="region"
+          label="Estado"
+          required
+          maxLength={120}
+          defaultValue={current.region}
+        />
+        <InputField
+          id="postalCode"
+          label="Código postal (opcional)"
+          maxLength={5}
+          inputMode="numeric"
+          pattern="\d{5}"
+          defaultValue={current.postalCode}
+          placeholder="38160"
+        />
+      </div>
+      <div className="grid gap-6 sm:grid-cols-3">
+        <SelectField id="workMode" label="Modalidad" required defaultValue={current.workMode}>
+          {WORK_MODES.map((mode) => (
+            <option key={mode} value={mode}>
+              {workModeLabels[mode]}
+            </option>
+          ))}
+        </SelectField>
+        <InputField
+          id="openings"
+          label="Plazas disponibles"
+          required
+          type="number"
+          min={1}
+          max={999}
+          inputMode="numeric"
+          defaultValue={current.openings}
+        />
+        <InputField
+          id="expiresAt"
+          label="Cierra el (opcional)"
+          type="date"
+          defaultValue={current.expiresAt}
+        />
+      </div>
+
+      <FormSection
+        title="Sueldo"
+        hint="Captura los montos siempre que puedas: son los que llegan estructurados a Google y a las bolsas, y una vacante sin sueldo se filtra fuera de la mayoría de las búsquedas. El texto libre solo se usa cuando no hay montos."
+      />
+      <div className="grid gap-6 sm:grid-cols-3">
+        <InputField
+          id="salaryMin"
+          label="Sueldo mínimo"
+          inputMode="numeric"
+          maxLength={12}
+          defaultValue={current.salaryMin}
+          placeholder="12000"
+        />
+        <InputField
+          id="salaryMax"
+          label="Sueldo máximo"
+          inputMode="numeric"
+          maxLength={12}
+          defaultValue={current.salaryMax}
+          placeholder="15000"
+        />
+        <SelectField
+          id="salaryPeriod"
+          label="Periodo"
+          required
+          defaultValue={current.salaryPeriod}
+        >
+          {SALARY_PERIODS.map((period) => (
+            <option key={period} value={period}>
+              {salaryPeriodLabels[period]}
+            </option>
+          ))}
+        </SelectField>
+      </div>
+      <InputField
+        id="salaryRange"
+        label="Texto de sueldo (solo si no capturas montos)"
+        maxLength={120}
+        defaultValue={current.salaryRange}
+        placeholder="Sueldo a tratar según experiencia"
+      />
+
+      <FormSection
+        title="Contenido"
+        hint="Las bolsas publican la descripción, los requisitos y lo que ofreces — nada más. Lo que no esté aquí, el candidato no lo ve fuera de este sitio."
+      />
       <TextareaField
         id="summary"
         label="Resumen (listado y buscadores)"

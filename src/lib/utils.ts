@@ -29,3 +29,12 @@ export function formatDate(date: Date | null): string {
     timeZone: "America/Mexico_City",
   }).format(date);
 }
+
+/** Same as formatDate for dates where the time of day carries no meaning. */
+export function formatDay(date: Date | null): string {
+  if (!date) return "—";
+  return new Intl.DateTimeFormat("es-MX", {
+    dateStyle: "medium",
+    timeZone: "America/Mexico_City",
+  }).format(date);
+}
