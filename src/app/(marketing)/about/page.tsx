@@ -17,13 +17,13 @@ import warehouseHall from "../../../../public/media/corporate/almacen-nave.jpg";
 
 const breadcrumbs = [
   { name: "Inicio", path: "/" },
-  { name: "Nosotros", path: "/nosotros" },
+  { name: "Nosotros", path: "/about" },
 ];
 
 export const metadata: Metadata = buildMetadata({
   title: "Nosotros — recicladora de plásticos de ingeniería",
   description: `Producimos polímeros de ingeniería reciclados desde ${company.foundedYear} en el Bajío, con entrega a todo México. ISO 9001:2015 y registros IMMEX y DUNS.`,
-  path: "/nosotros",
+  path: "/about",
   keywords: [
     "empresa recicladora de plásticos Querétaro",
     "empresa recicladora de plásticos Guanajuato",

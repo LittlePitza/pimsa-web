@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   ...buildMetadata({
     title: "Aviso de privacidad",
     description: `Aviso de privacidad de ${company.legalName} conforme a la LFPDPPP.`,
-    path: "/aviso-de-privacidad",
+    path: "/privacy",
   }),
   // TODO(marketing): remove noindex once the legal team delivers the final
   // LFPDPPP text (docs/marketing-material-request.md §3 — P1).
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
         title="Aviso de privacidad"
         breadcrumbs={[
           { name: "Inicio", path: "/" },
-          { name: "Aviso de privacidad", path: "/aviso-de-privacidad" },
+          { name: "Aviso de privacidad", path: "/privacy" },
         ]}
       />
 

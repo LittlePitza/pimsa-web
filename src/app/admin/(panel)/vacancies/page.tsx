@@ -19,7 +19,7 @@ export default async function AdminVacanciesPage() {
     <>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-display text-navy-500 text-2xl font-bold">Vacantes</h1>
-        <ButtonLink href="/admin/vacantes/nueva" size="sm">
+        <ButtonLink href="/admin/vacancies/new" size="sm">
           Nueva vacante
         </ButtonLink>
       </div>
@@ -27,8 +27,8 @@ export default async function AdminVacanciesPage() {
 
       <p className="border-line bg-surface text-ink-muted mt-6 rounded-md border p-4 text-sm">
         Feed para bolsas de trabajo:{" "}
-        <a href="/vacantes.xml" className="font-mono break-all text-blue-600 underline">
-          {absoluteUrl("/vacantes.xml")}
+        <a href="/jobs.xml" className="font-mono break-all text-blue-600 underline">
+          {absoluteUrl("/jobs.xml")}
         </a>
         <br />
         Entrega esta dirección a Computrabajo, OCC o Indeed y publican solas todas las vacantes en
@@ -41,7 +41,7 @@ export default async function AdminVacanciesPage() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-3">
                 <Link
-                  href={`/admin/vacantes/${vacancy.id}`}
+                  href={`/admin/vacancies/${vacancy.id}`}
                   className="text-navy-500 font-display font-semibold hover:text-blue-600"
                 >
                   {vacancy.title}
@@ -56,7 +56,7 @@ export default async function AdminVacanciesPage() {
                 </Badge>
               </div>
               <p className="text-ink-muted mt-1 text-sm">
-                {vacancy.department || "Sin área"} · /vacantes/{vacancy.slug} · Actualizada{" "}
+                {vacancy.department || "Sin área"} · /jobs/{vacancy.slug} · Actualizada{" "}
                 {formatDate(vacancy.updatedAt)}
                 {/* An expired posting still reads "Publicada" here but has already
                     dropped off every board — worth saying out loud. */}
@@ -92,7 +92,7 @@ export default async function AdminVacanciesPage() {
                 </form>
               )}
               <Link
-                href={`/admin/vacantes/${vacancy.id}`}
+                href={`/admin/vacancies/${vacancy.id}`}
                 className="text-navy-500 hover:bg-navy-500/10 rounded-sm px-3 py-1.5 text-sm font-medium"
               >
                 Editar

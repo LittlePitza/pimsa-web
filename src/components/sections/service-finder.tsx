@@ -37,7 +37,7 @@ export function ServiceFinder({ index = "01" }: { index?: string }) {
             return (
               <Reveal key={entry.slug} as="li" delay={i * 60}>
                 <Link
-                  href={`/servicios/${service.slug}`}
+                  href={`/services/${service.slug}`}
                   className="group border-line flex h-full flex-col justify-between gap-6 border-t py-6 transition-colors hover:border-blue-600 md:pr-8"
                 >
                   <p className="text-ink text-lead max-w-[38ch] text-balance">

@@ -4,7 +4,7 @@ import { absoluteUrl, SITE_NAME } from "@/lib/site";
 interface PageSeo {
   title: string;
   description: string;
-  /** Route path starting with "/", e.g. "/servicios/polimeros". */
+  /** Route path starting with "/", e.g. "/services/polimeros". */
   path: string;
   keywords?: string[];
 }

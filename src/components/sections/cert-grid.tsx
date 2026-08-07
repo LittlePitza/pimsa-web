@@ -161,7 +161,7 @@ export function CertGrid({ index = "07" }: { index?: string }) {
           <p className="text-ink-muted max-w-2xl text-sm">
             ¿Tu empresa requiere un formato específico para alta o evaluación de proveedor?
           </p>
-          <ButtonLink href="/contacto" variant="outline">
+          <ButtonLink href="/contact" variant="outline">
             Solicitar documentación
           </ButtonLink>
         </div>

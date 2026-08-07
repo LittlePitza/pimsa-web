@@ -36,7 +36,7 @@ export function ServiceRows({ index }: { index?: string }) {
             <li key={service.slug} className="border-line border-b">
               <Reveal delay={i * 60}>
                 <Link
-                  href={`/servicios/${service.slug}`}
+                  href={`/services/${service.slug}`}
                   className="group grid gap-x-8 gap-y-5 py-8 md:grid-cols-[auto_1fr_11rem_auto] md:items-center md:py-10"
                 >
                   {/* Phones get number and photo side by side; the number alone

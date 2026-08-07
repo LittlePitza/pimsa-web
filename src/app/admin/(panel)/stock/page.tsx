@@ -17,7 +17,7 @@ export default async function AdminStockPage() {
     <>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-display text-navy-500 text-2xl font-bold">Stock</h1>
-        <ButtonLink href="/admin/stock/nuevo" size="sm">
+        <ButtonLink href="/admin/stock/new" size="sm">
           Nuevo material
         </ButtonLink>
       </div>

@@ -39,7 +39,7 @@ export function FaqSection({
 
         {showAllLink ? (
           <div className="mt-10">
-            <ButtonLink href="/preguntas-frecuentes" variant="outline">
+            <ButtonLink href="/faq" variant="outline">
               Ver todas las preguntas
             </ButtonLink>
           </div>

@@ -25,7 +25,7 @@ export default async function EditVacancyPage({ params }: Props) {
   return (
     <>
       <h1 className="font-display text-navy-500 text-2xl font-bold">Editar vacante</h1>
-      <p className="text-ink-muted mt-2 font-mono text-xs">/vacantes/{vacancy.slug}</p>
+      <p className="text-ink-muted mt-2 font-mono text-xs">/jobs/{vacancy.slug}</p>
       <div className="mt-8">
         <VacancyForm
           action={updateVacancyAction.bind(null, vacancy.id)}

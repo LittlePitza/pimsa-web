@@ -50,14 +50,14 @@ board need a database** — see [Database setup](#database-setup).
 | Route | Page |
 | --- | --- |
 | `/` | Home — hero, process loop, services, stats, certifications, FAQ teaser |
-| `/nosotros` | Company history, certifications, team |
-| `/servicios` | Services hub |
-| `/servicios/[slug]` | Polímeros · Molienda y peletizado · Recolección de scrap · Contenedores |
+| `/about` | Company history, certifications, team |
+| `/services` | Services hub |
+| `/services/[slug]` | Polímeros · Molienda y peletizado · Recolección de scrap · Contenedores |
 | `/stock` | Filterable catalog of available recycled material |
-| `/vacantes` · `/vacantes/[slug]` | Job board — apply with CV (PDF/Word, ≤ 5 MB) |
-| `/contacto` | Contact form + NAP + map |
-| `/preguntas-frecuentes` | FAQ accordion (`FAQPage` JSON-LD) |
-| `/aviso-de-privacidad` | Privacy notice (LFPDPPP) |
+| `/jobs` · `/jobs/[slug]` | Job board — apply with CV (PDF/Word, ≤ 5 MB) |
+| `/contact` | Contact form + NAP + map |
+| `/faq` | FAQ accordion (`FAQPage` JSON-LD) |
+| `/privacy` | Privacy notice (LFPDPPP) |
 
 SEO files are generated at the app root: `sitemap.ts`, `robots.ts`, `manifest.ts`,
 `opengraph-image.tsx`, `icon.svg`, `apple-icon.png`.
@@ -73,11 +73,11 @@ SEO files are generated at the app root: `sitemap.ts`, `robots.ts`, `manifest.ts
 | `/admin/marketing` | Marketing area overview | Marketing |
 | `/admin/leads` | Contact-form leads with UTM source | Marketing |
 | `/admin/stock` · `/nuevo` · `/[id]` | Stock catalog CRUD | Marketing |
-| `/admin/rrhh` | HR area overview | RRHH |
-| `/admin/vacantes` · `/nueva` · `/[id]` | Vacancy CRUD and publishing | RRHH |
-| `/admin/postulaciones` | Applications — status workflow + CV download | RRHH |
-| `/admin/configuracion` | Email centre — recipients, test sends and delivery log | Both |
-| `/admin/cuentas` | Account management — **super-admins only** | Super-admin |
+| `/admin/hr` | HR area overview | RRHH |
+| `/admin/vacancies` · `/nueva` · `/[id]` | Vacancy CRUD and publishing | RRHH |
+| `/admin/applications` | Applications — status workflow + CV download | RRHH |
+| `/admin/settings` | Email centre — recipients, test sends and delivery log | Both |
+| `/admin/accounts` | Account management — **super-admins only** | Super-admin |
 
 The panel is `noindex, nofollow` and every page is guarded server-side.
 
@@ -110,7 +110,7 @@ The panel is `noindex, nofollow` and every page is guarded server-side.
   preflight would have stopped.
 - **Super-admins** (from `SUPER_ADMIN_EMAILS`, default `sistemas@plasticospimsa.com`)
   always keep the whole panel and manage users, areas and passwords from
-  `/admin/cuentas`.
+  `/admin/accounts`.
 
 Create a user (password comes from `ADMIN_PASSWORD` or a hidden prompt — never argv):
 
@@ -120,13 +120,13 @@ npm run admin:create -- correo@plasticospimsa.com "Nombre" marketing
 
 ## Email
 
-Everything about outgoing mail is configured from **`/admin/configuracion`** and
+Everything about outgoing mail is configured from **`/admin/settings`** and
 applies immediately — no redeploy. The `SMTP_*` and `*_EMAIL_TO` variables are the
 fallback the site uses before the panel is configured, and if the settings rows are
 ever lost.
 
 **Two different things are called "the contact email", so keep them apart.** The
-address the site *shows* the public — footer, `/contacto`, privacy notice,
+address the site *shows* the public — footer, `/contact`, privacy notice,
 `LocalBusiness` JSON-LD — is `contacto@plasticospimsa.com` and lives in
 [src/content/company.ts](./src/content/company.ts) as part of the NAP. Where a
 submitted form is *delivered* is a separate, per-flow setting in the panel: leads
@@ -196,7 +196,7 @@ All documented in [.env.example](./.env.example). Set them in hPanel for product
 | `SUPER_ADMIN_EMAILS` | No | Comma-separated super-admins |
 | `NEXT_PUBLIC_SITE_URL` | Production | Canonical URL — metadata, sitemap, JSON-LD |
 | `NEXT_PUBLIC_GTM_ID` | No | GTM container; loads only after cookie consent |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | No | Sending mailbox — **fallback** for `/admin/configuracion` |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | No | Sending mailbox — **fallback** for `/admin/settings` |
 | `CONTACT_EMAIL_TO` | No | Lead recipients (Marketing) — fallback |
 | `APPLICATIONS_EMAIL_TO` | No | Application recipients — RRHH only, CVs never go to the general inbox — fallback |
 | `CONTACT_EMAIL_FROM` | No | Sender address on outgoing mail — fallback |

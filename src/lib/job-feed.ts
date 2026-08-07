@@ -11,7 +11,7 @@ import type { EmploymentType, WorkMode } from "@/lib/enums";
 import type { Vacancy } from "@/db/schema";
 
 /**
- * The XML behind /vacantes.xml — one URL to hand to every job board.
+ * The XML behind /jobs.xml — one URL to hand to every job board.
  *
  * The format is Indeed's `<source>/<job>` feed, which is the de-facto standard
  * the Latin American boards (Computrabajo, OCC, Bumeran) and the aggregators
@@ -20,7 +20,7 @@ import type { Vacancy } from "@/db/schema";
  * is a phone call, not code.
  *
  * `<url>` points at our own vacancy page on purpose: the candidate lands on
- * the form in this site and the application arrives in /admin/postulaciones,
+ * the form in this site and the application arrives in /admin/applications,
  * instead of being captured inside a board's own inbox.
  *
  * Kept out of the route handler so it can be exercised without a database.
@@ -67,7 +67,7 @@ function jobEntry(vacancy: Vacancy): string {
     field("title", vacancy.title) +
     field("date", vacancyDatePosted(vacancy).toUTCString()) +
     field("expirationdate", vacancyValidThrough(vacancy).toUTCString()) +
-    field("url", absoluteUrl(`/vacantes/${vacancy.slug}`)) +
+    field("url", absoluteUrl(`/jobs/${vacancy.slug}`)) +
     field("company", company.name) +
     field("sourcename", company.name) +
     field("city", vacancy.city) +

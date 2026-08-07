@@ -7,7 +7,7 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://plasticosp
 
 export const SITE_NAME = "Plásticos PIMSA";
 
-/** Absolute URL for a path ("/servicios" → "https://…/servicios"). */
+/** Absolute URL for a path ("/services" → "https://…/services"). */
 export function absoluteUrl(path: string): string {
   return `${SITE_URL}${path === "/" ? "" : path}`;
 }

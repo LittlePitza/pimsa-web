@@ -18,7 +18,7 @@ export const revalidate = 60;
 export const metadata: Metadata = buildMetadata({
   title: "Bolsa de trabajo — Vacantes en PIMSA",
   description: `Vacantes en Plásticos PIMSA, ${company.address.municipality}, ${company.address.state}: producción, mantenimiento, laboratorio, logística, administración, comercial y sistemas. Postúlate en línea con tu CV.`,
-  path: "/vacantes",
+  path: "/jobs",
   keywords: [
     "bolsa de trabajo Apaseo el Grande",
     "vacantes Apaseo el Grande",
@@ -33,7 +33,7 @@ export const metadata: Metadata = buildMetadata({
  * Job board, built for the candidate instead of the buyer.
  *
  * The previous version was a bare list whose only escape hatch — "no veo mi
- * vacante" — pointed at /contacto, the SALES form: no CV upload, delivered to
+ * vacante" — pointed at /contact, the SALES form: no CV upload, delivered to
  * the commercial inbox, invisible to RRHH. That is fixed at the root here;
  * every path on this page now files a real application.
  *
@@ -52,7 +52,7 @@ export default async function VacanciesPage() {
         openCount={vacancies.length}
         breadcrumbs={[
           { name: "Inicio", path: "/" },
-          { name: "Bolsa de trabajo", path: "/vacantes" },
+          { name: "Bolsa de trabajo", path: "/jobs" },
         ]}
       />
 

@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildMetadata({
     title: service.metaTitle,
     description: service.metaDescription,
-    path: `/servicios/${service.slug}`,
+    path: `/services/${service.slug}`,
     keywords: service.keywords,
   });
 }
@@ -86,8 +86,8 @@ export default async function ServicePage({ params }: Props) {
         intro={service.tagline}
         breadcrumbs={[
           { name: "Inicio", path: "/" },
-          { name: "Servicios", path: "/servicios" },
-          { name: service.name, path: `/servicios/${service.slug}` },
+          { name: "Servicios", path: "/services" },
+          { name: service.name, path: `/services/${service.slug}` },
         ]}
       />
 
@@ -316,7 +316,7 @@ export default async function ServicePage({ params }: Props) {
               {related.map((relatedService) => (
                 <Link
                   key={relatedService.slug}
-                  href={`/servicios/${relatedService.slug}`}
+                  href={`/services/${relatedService.slug}`}
                   className="group border-line bg-surface shadow-card hover:shadow-lift flex items-center justify-between gap-4 rounded-md border p-6 transition-[translate,box-shadow] duration-150 hover:-translate-y-0.5"
                 >
                   <span>

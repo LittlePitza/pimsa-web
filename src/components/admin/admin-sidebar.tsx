@@ -41,11 +41,11 @@ const iconFor: Record<string, LucideIcon> = {
   "/admin/marketing": Megaphone,
   "/admin/leads": Inbox,
   "/admin/stock": Package,
-  "/admin/rrhh": Briefcase,
-  "/admin/vacantes": ClipboardList,
-  "/admin/postulaciones": FileText,
-  "/admin/configuracion": Mail,
-  "/admin/cuentas": UserCog,
+  "/admin/hr": Briefcase,
+  "/admin/vacancies": ClipboardList,
+  "/admin/applications": FileText,
+  "/admin/settings": Mail,
+  "/admin/accounts": UserCog,
 };
 
 /**
@@ -77,10 +77,9 @@ function buildGroups(role: AdminRole, canManageAccounts: boolean): NavGroup[] {
     key: "config",
     title: "Administración",
     items: [
-      // The URL stays /configuracion (bookmarks, muscle memory); the label
-      // says what the screen actually holds.
-      { label: "Correo", href: "/admin/configuracion" },
-      ...(canManageAccounts ? [{ label: "Cuentas", href: "/admin/cuentas" }] : []),
+      // The label says what the screen actually holds (only email today).
+      { label: "Correo", href: "/admin/settings" },
+      ...(canManageAccounts ? [{ label: "Cuentas", href: "/admin/accounts" }] : []),
     ],
   });
 

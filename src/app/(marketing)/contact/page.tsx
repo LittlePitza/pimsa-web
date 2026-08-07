@@ -13,7 +13,7 @@ import { buildMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildMetadata({
   title: "Contacto y cotizaciones",
   description: `Cotiza recolección de scrap, molienda, peletizado o compra de polímeros reciclados. ${fullAddress()}. WhatsApp ${company.whatsappDisplay}.`,
-  path: "/contacto",
+  path: "/contact",
   keywords: ["contacto recicladora Apaseo el Grande", "cotizar reciclaje de plástico"],
 });
 
@@ -32,7 +32,7 @@ export default function ContactPage() {
         intro="Cuéntanos qué scrap generas o qué polímero necesitas. Te respondemos en horario hábil, normalmente el mismo día."
         breadcrumbs={[
           { name: "Inicio", path: "/" },
-          { name: "Contacto", path: "/contacto" },
+          { name: "Contacto", path: "/contact" },
         ]}
       />
 

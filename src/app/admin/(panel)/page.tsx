@@ -100,8 +100,8 @@ export default async function AdminDashboardPage() {
           <p className="text-ink-muted mt-1 text-sm">Toda la operación del sitio de un vistazo.</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <QuickAction href="/admin/vacantes/nueva">Nueva vacante</QuickAction>
-          <QuickAction href="/admin/stock/nuevo">Nuevo material</QuickAction>
+          <QuickAction href="/admin/vacancies/new">Nueva vacante</QuickAction>
+          <QuickAction href="/admin/stock/new">Nuevo material</QuickAction>
         </div>
       </div>
 
@@ -119,14 +119,14 @@ export default async function AdminDashboardPage() {
           label="Postulaciones nuevas"
           value={newApplications}
           hint={`${applicationCounts.total} en total`}
-          href="/admin/postulaciones"
+          href="/admin/applications"
           tone="blue"
           icon={FileText}
         />
         <StatCard
           label="Vacantes abiertas"
           value={openVacancies}
-          href="/admin/vacantes"
+          href="/admin/vacancies"
           tone="navy"
           icon={Briefcase}
         />
@@ -177,7 +177,7 @@ export default async function AdminDashboardPage() {
         </Link>
 
         <Link
-          href="/admin/rrhh"
+          href="/admin/hr"
           className="group border-line bg-surface shadow-card hover:shadow-lift block rounded-md border p-6 transition-shadow"
         >
           <div className="flex items-center justify-between gap-4">
@@ -253,7 +253,7 @@ export default async function AdminDashboardPage() {
         <ChartCard
           title="Últimas postulaciones"
           action={
-            <Link href="/admin/postulaciones" className="text-sm font-medium text-blue-600">
+            <Link href="/admin/applications" className="text-sm font-medium text-blue-600">
               Ver todas
             </Link>
           }

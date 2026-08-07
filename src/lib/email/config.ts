@@ -119,7 +119,7 @@ function readString(map: SettingsMap, key: string): string {
  * to the general inbox, applications carry a candidate's CV and belong to
  * RRHH only. An unset applications address yields no recipients, which makes
  * the notification skip — the application is still stored and readable in
- * /admin/postulaciones, so nothing is lost and no CV reaches the wrong inbox.
+ * /admin/applications, so nothing is lost and no CV reaches the wrong inbox.
  */
 export function envRecipients(flow: NotificationFlow): string[] {
   const raw = flow === "leads" ? process.env.CONTACT_EMAIL_TO : process.env.APPLICATIONS_EMAIL_TO;

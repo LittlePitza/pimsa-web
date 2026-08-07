@@ -60,7 +60,7 @@ const jsonColumn = <TData>(name: string) =>
   })(name);
 
 /**
- * Vacancies double as the source for the job boards: /vacantes.xml and the
+ * Vacancies double as the source for the job boards: /jobs.xml and the
  * JobPosting JSON-LD are generated from these rows, which is why the place,
  * the pay and the closing date are stored as discrete values instead of the
  * free text a person would type. Google, Indeed and Computrabajo match

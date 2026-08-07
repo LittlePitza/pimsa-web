@@ -3,7 +3,7 @@ import { salaryPeriodLabels } from "@/lib/labels";
 import type { Vacancy } from "@/db/schema";
 
 /**
- * One vacancy, three audiences: the candidate reading /vacantes/[slug], the
+ * One vacancy, three audiences: the candidate reading /jobs/[slug], the
  * JobPosting JSON-LD Google Jobs indexes, and the XML feed Indeed and the
  * Latin American boards pull from. Every derived value they share is built
  * here so a listing can never advertise a salary, a city or a closing date

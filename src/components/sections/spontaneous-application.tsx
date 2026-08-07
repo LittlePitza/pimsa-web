@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
  * Spontaneous application — the path for someone whose profile doesn't match
  * any open vacancy.
  *
- * This used to point at /contacto, which posts to the leads endpoint: the
+ * This used to point at /contact, which posts to the leads endpoint: the
  * candidate's message landed in the commercial inbox, there was nowhere to
  * attach a CV, and RRHH never saw it. Now it files a real application through
  * the same endpoint as every vacancy, and the panel lists it as "Postulación

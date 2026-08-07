@@ -223,14 +223,14 @@ export function applicationNotification(application: ApplicationPayload): EmailM
       title: `${application.name} · ${vacancy}`,
       fields,
       body: { label: "Mensaje del candidato", content: application.message },
-      cta: { label: "Ver en el panel", href: `${SITE_URL}/admin/postulaciones` },
+      cta: { label: "Ver en el panel", href: `${SITE_URL}/admin/applications` },
       footnote,
     }),
     text: plain({
       title: "Nueva postulación",
       fields,
       body: { label: "Mensaje del candidato", content: application.message },
-      footnote: `${footnote}\n${SITE_URL}/admin/postulaciones`,
+      footnote: `${footnote}\n${SITE_URL}/admin/applications`,
     }),
   };
 }

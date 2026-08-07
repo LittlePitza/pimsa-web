@@ -161,7 +161,7 @@ export function Header() {
 
         <div className="flex items-center gap-3">
           <ButtonLink
-            href="/contacto"
+            href="/contact"
             size="sm"
             variant={overHero ? "accent" : "primary"}
             className="hidden sm:inline-flex"
@@ -221,7 +221,7 @@ export function Header() {
               </li>
             ))}
           </ul>
-          <ButtonLink href="/contacto" className="mt-5 w-full">
+          <ButtonLink href="/contact" className="mt-5 w-full">
             Solicitar cotización
           </ButtonLink>
         </nav>

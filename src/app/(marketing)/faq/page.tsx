@@ -11,7 +11,7 @@ export const metadata: Metadata = buildMetadata({
   title: "Preguntas frecuentes sobre reciclaje de plásticos",
   description:
     "Respuestas a las dudas más comunes: qué materiales compramos, cobertura de recolección, certificaciones, presentaciones de venta y cómo cotizar.",
-  path: "/preguntas-frecuentes",
+  path: "/faq",
 });
 
 export default function FaqPage() {
@@ -25,7 +25,7 @@ export default function FaqPage() {
         intro="Todo lo que necesitas saber antes de vender tu scrap o comprar material reciclado. ¿No encuentras tu respuesta? Escríbenos."
         breadcrumbs={[
           { name: "Inicio", path: "/" },
-          { name: "Preguntas frecuentes", path: "/preguntas-frecuentes" },
+          { name: "Preguntas frecuentes", path: "/faq" },
         ]}
       />
 

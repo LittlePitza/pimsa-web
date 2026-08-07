@@ -64,12 +64,31 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     /**
-     * 301 map from the old WordPress URLs — critical to keep existing
-     * rankings (PLAN.md §6). TODO: complete this list after exporting the
-     * current site's URL inventory (needs WP admin access, see
-     * docs/marketing-material-request.md §7).
+     * Permanent redirects from the original Spanish route names, kept for
+     * indexed URLs, job-board feeds and saved bookmarks. Order matters: the
+     * more specific sources must come before their :path* catch-alls.
+     *
+     * TODO: extend with the 301 map from the old WordPress URLs — critical
+     * to keep existing rankings (PLAN.md §6). Needs the URL inventory from
+     * WP admin, see docs/marketing-material-request.md §7.
      */
-    return [];
+    return [
+      { source: "/media/servicios/:path*", destination: "/media/services/:path*", permanent: true },
+      { source: "/contacto", destination: "/contact", permanent: true },
+      { source: "/nosotros", destination: "/about", permanent: true },
+      { source: "/preguntas-frecuentes", destination: "/faq", permanent: true },
+      { source: "/aviso-de-privacidad", destination: "/privacy", permanent: true },
+      { source: "/servicios/:path*", destination: "/services/:path*", permanent: true },
+      { source: "/vacantes.xml", destination: "/jobs.xml", permanent: true },
+      { source: "/vacantes/:path*", destination: "/jobs/:path*", permanent: true },
+      { source: "/admin/cuentas", destination: "/admin/accounts", permanent: true },
+      { source: "/admin/configuracion", destination: "/admin/settings", permanent: true },
+      { source: "/admin/postulaciones", destination: "/admin/applications", permanent: true },
+      { source: "/admin/rrhh", destination: "/admin/hr", permanent: true },
+      { source: "/admin/vacantes/nueva", destination: "/admin/vacancies/new", permanent: true },
+      { source: "/admin/vacantes/:path*", destination: "/admin/vacancies/:path*", permanent: true },
+      { source: "/admin/stock/nuevo", destination: "/admin/stock/new", permanent: true },
+    ];
   },
 };
 

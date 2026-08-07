@@ -33,10 +33,10 @@ export function Hero() {
               PP, POM y otras resinas listas para regresar a producción.
             </p>
             <div className="mt-7 flex flex-wrap gap-3 md:mt-10 md:gap-4">
-              <ButtonLink href="/contacto" variant="accent" size="lg">
+              <ButtonLink href="/contact" variant="accent" size="lg">
                 Solicitar cotización
               </ButtonLink>
-              <ButtonLink href="/servicios/polimeros" variant="outline-light" size="lg">
+              <ButtonLink href="/services/polimeros" variant="outline-light" size="lg">
                 Ver materiales
               </ButtonLink>
             </div>

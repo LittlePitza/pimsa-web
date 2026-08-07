@@ -13,7 +13,7 @@ export const metadata: Metadata = buildMetadata({
   title: "Servicios de reciclaje industrial de plásticos",
   description:
     "Polímeros de ingeniería reciclados, molienda y peletizado a maquila, recolección de scrap con permisos ambientales y contenedores colapsables industriales.",
-  path: "/servicios",
+  path: "/services",
   keywords: [
     "servicios de reciclaje industrial",
     "reciclaje de plásticos para empresas",
@@ -44,7 +44,7 @@ export default function ServicesPage() {
         intro="Cuatro servicios integrados: recolectamos tu scrap, lo transformamos y lo devolvemos a la cadena productiva como materia prima recuperada con calidad documentada."
         breadcrumbs={[
           { name: "Inicio", path: "/" },
-          { name: "Servicios", path: "/servicios" },
+          { name: "Servicios", path: "/services" },
         ]}
       />
 

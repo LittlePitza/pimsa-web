@@ -57,13 +57,13 @@ export default async function HrDashboardPage() {
         <StatCard
           label="Vacantes publicadas"
           value={openVacancies}
-          href="/admin/vacantes"
+          href="/admin/vacancies"
           tone="navy"
         />
         <StatCard
           label="Postulaciones sin revisar"
           value={counts.byStatus.new}
-          href="/admin/postulaciones"
+          href="/admin/applications"
           tone="blue"
         />
         <StatCard label="En proceso" value={inProcess} tone="navy" />
@@ -97,7 +97,7 @@ export default async function HrDashboardPage() {
         <ChartCard
           title="Últimas postulaciones"
           action={
-            <Link href="/admin/postulaciones" className="text-sm font-medium text-blue-600">
+            <Link href="/admin/applications" className="text-sm font-medium text-blue-600">
               Ver todas
             </Link>
           }

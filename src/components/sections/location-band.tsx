@@ -73,7 +73,7 @@ export function LocationBand({ index = "07" }: { index?: string }) {
             </Reveal>
 
             <div className="mt-8">
-              <ButtonLink href="/contacto" variant="outline">
+              <ButtonLink href="/contact" variant="outline">
                 Agendar una visita
               </ButtonLink>
             </div>

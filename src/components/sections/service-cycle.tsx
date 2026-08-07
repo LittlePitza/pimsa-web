@@ -62,7 +62,7 @@ export function ServiceCycle({ index = "03" }: { index?: string }) {
             return (
               <Reveal key={stage.slug} as="li" delay={i * 80}>
                 <Link
-                  href={`/servicios/${service.slug}`}
+                  href={`/services/${service.slug}`}
                   className="group flex h-full flex-col border-t border-blue-400/30 pt-6 transition-colors hover:border-green-300 md:pr-8"
                 >
                   <p className="font-mono text-xs tracking-[0.16em] text-green-300 uppercase">
@@ -99,7 +99,7 @@ export function ServiceCycle({ index = "03" }: { index?: string }) {
                 ida y de vuelta.
               </p>
               <Link
-                href={`/servicios/${containers.slug}`}
+                href={`/services/${containers.slug}`}
                 className="hover:text-paper group inline-flex shrink-0 items-center gap-2 text-sm font-medium text-green-300 transition-colors"
               >
                 {containers.name}

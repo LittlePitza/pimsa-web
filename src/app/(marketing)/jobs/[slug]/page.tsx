@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildMetadata({
     title: `${vacancy.title} — Vacante`,
     description: vacancy.summary,
-    path: `/vacantes/${vacancy.slug}`,
+    path: `/jobs/${vacancy.slug}`,
   });
 }
 
@@ -67,8 +67,8 @@ export default async function VacancyPage({ params }: Props) {
         intro={vacancy.summary}
         breadcrumbs={[
           { name: "Inicio", path: "/" },
-          { name: "Bolsa de trabajo", path: "/vacantes" },
-          { name: vacancy.title, path: `/vacantes/${vacancy.slug}` },
+          { name: "Bolsa de trabajo", path: "/jobs" },
+          { name: vacancy.title, path: `/jobs/${vacancy.slug}` },
         ]}
       />
 
@@ -159,11 +159,11 @@ export default async function VacancyPage({ params }: Props) {
         <Container>
           <p className="text-ink-muted max-w-[68ch]">
             ¿Esta vacante no es para ti?{" "}
-            <Link href="/vacantes" className="text-blue-600 underline">
+            <Link href="/jobs" className="text-blue-600 underline">
               Vuelve a la bolsa de trabajo
             </Link>{" "}
             o{" "}
-            <Link href="/vacantes#postulacion-general" className="text-blue-600 underline">
+            <Link href="/jobs#postulacion-general" className="text-blue-600 underline">
               déjanos tu CV
             </Link>{" "}
             para futuras oportunidades.

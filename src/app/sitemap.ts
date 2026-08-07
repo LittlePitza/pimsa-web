@@ -14,16 +14,16 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: absoluteUrl("/"), changeFrequency: "weekly", priority: 1 },
-    { url: absoluteUrl("/servicios"), changeFrequency: "monthly", priority: 0.9 },
+    { url: absoluteUrl("/services"), changeFrequency: "monthly", priority: 0.9 },
     { url: absoluteUrl("/stock"), changeFrequency: "weekly", priority: 0.8 },
-    { url: absoluteUrl("/vacantes"), changeFrequency: "weekly", priority: 0.7 },
-    { url: absoluteUrl("/nosotros"), changeFrequency: "monthly", priority: 0.7 },
-    { url: absoluteUrl("/contacto"), changeFrequency: "yearly", priority: 0.8 },
-    { url: absoluteUrl("/preguntas-frecuentes"), changeFrequency: "monthly", priority: 0.6 },
+    { url: absoluteUrl("/jobs"), changeFrequency: "weekly", priority: 0.7 },
+    { url: absoluteUrl("/about"), changeFrequency: "monthly", priority: 0.7 },
+    { url: absoluteUrl("/contact"), changeFrequency: "yearly", priority: 0.8 },
+    { url: absoluteUrl("/faq"), changeFrequency: "monthly", priority: 0.6 },
   ];
 
   const serviceRoutes: MetadataRoute.Sitemap = services.map((service) => ({
-    url: absoluteUrl(`/servicios/${service.slug}`),
+    url: absoluteUrl(`/services/${service.slug}`),
     changeFrequency: "monthly",
     priority: 0.9,
   }));
@@ -36,7 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   const vacancyRoutes: MetadataRoute.Sitemap = vacancies.map((vacancy) => ({
-    url: absoluteUrl(`/vacantes/${vacancy.slug}`),
+    url: absoluteUrl(`/jobs/${vacancy.slug}`),
     lastModified: vacancy.publishedAt ?? vacancy.createdAt,
     changeFrequency: "weekly",
     priority: 0.6,

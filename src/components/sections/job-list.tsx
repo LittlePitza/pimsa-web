@@ -47,7 +47,7 @@ function JobRow({ vacancy }: { vacancy: Vacancy }) {
 
   return (
     <Link
-      href={`/vacantes/${vacancy.slug}`}
+      href={`/jobs/${vacancy.slug}`}
       className="group grid items-center gap-x-8 gap-y-4 py-7 md:grid-cols-[1fr_auto] md:py-8"
     >
       <div className="min-w-0">

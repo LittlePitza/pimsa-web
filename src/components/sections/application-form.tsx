@@ -161,7 +161,7 @@ export function ApplicationForm({
         <p className="text-ink-muted mt-4 text-xs">
           Tus datos se usan únicamente para este proceso de reclutamiento conforme a nuestro{" "}
           <Link
-            href="/aviso-de-privacidad"
+            href="/privacy"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 underline"
