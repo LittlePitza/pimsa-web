@@ -22,10 +22,10 @@ cp .env.example .env.local   # fill in only what you need
 npm run dev                  # http://localhost:3000
 ```
 
-The **public site runs with zero configuration**: without `SMTP_*` the contact form
-logs leads to the console instead of sending email, and without `NEXT_PUBLIC_GTM_ID`
-analytics stay off. The **admin panel and job board need a database** — see
-[Database setup](#database-setup).
+The **public site runs with zero configuration**: without SMTP the contact form still
+accepts submissions (they are stored, and the panel's log records that nothing was
+sent), and without `NEXT_PUBLIC_GTM_ID` analytics stay off. The **admin panel and job
+board need a database** — see [Database setup](#database-setup).
 
 ## Scripts
 
@@ -76,7 +76,7 @@ SEO files are generated at the app root: `sitemap.ts`, `robots.ts`, `manifest.ts
 | `/admin/rrhh` | HR area overview | RRHH |
 | `/admin/vacantes` · `/nueva` · `/[id]` | Vacancy CRUD and publishing | RRHH |
 | `/admin/postulaciones` | Applications — status workflow + CV download | RRHH |
-| `/admin/configuracion` | Site settings — each area sees only its own email flow | Both |
+| `/admin/configuracion` | Email centre — recipients, test sends and delivery log | Both |
 | `/admin/cuentas` | Account management — **super-admins only** | Super-admin |
 
 The panel is `noindex, nofollow` and every page is guarded server-side.
@@ -118,6 +118,37 @@ Create a user (password comes from `ADMIN_PASSWORD` or a hidden prompt — never
 npm run admin:create -- correo@plasticospimsa.com "Nombre" marketing
 ```
 
+## Email
+
+Everything about outgoing mail is configured from **`/admin/configuracion`** and
+applies immediately — no redeploy. The `SMTP_*` and `*_EMAIL_TO` variables are the
+fallback the site uses before the panel is configured, and if the settings rows are
+ever lost.
+
+The screen is read top to bottom:
+
+1. **Estado del servicio** — SMTP account in use, last successful send, failures in
+   the last 24 h, and a live **Probar conexión** that authenticates without sending.
+2. **Avisos por formulario** — per flow (leads · applications): on/off, `To`, `CC`,
+   `BCC`, a subject tag for inbox rules, and an optional acknowledgement to whoever
+   submitted the form. Recipients render as chips so pasted lists are visibly parsed.
+3. **Probar el envío** — sends the *real* template to the saved recipients or to any
+   address typed in, so a mailbox can be verified before it goes live.
+4. **Bitácora** — every attempt: sent, failed **or skipped**, with the reason.
+
+Scoping follows the rest of the panel: Marketing configures the contact leads, RRHH
+the applications, and the **SMTP account is super-admin only** — it changes how the
+whole site sends, and it is the one screen that writes a password to the database
+(AES-256-GCM, keyed from `AUTH_SECRET`, never rendered back).
+
+Code: [src/lib/email/](./src/lib/email) — `config.ts` resolves panel → env → default,
+`send.ts` is the single door every message goes through, `templates.ts` holds the HTML
+and plain-text bodies.
+
+**Delivery is best-effort by design.** A lead or application is stored before anything
+is emailed, so a bounced SMTP call never costs the enquiry — which is exactly why the
+log exists: without it, a failed delivery leaves no trace anyone can act on.
+
 ## Database setup
 
 MySQL on Hostinger, accessed with **Drizzle ORM + `mysql2`** (pure JS — no native
@@ -158,8 +189,13 @@ All documented in [.env.example](./.env.example). Set them in hPanel for product
 | `SUPER_ADMIN_EMAILS` | No | Comma-separated super-admins |
 | `NEXT_PUBLIC_SITE_URL` | Production | Canonical URL — metadata, sitemap, JSON-LD |
 | `NEXT_PUBLIC_GTM_ID` | No | GTM container; loads only after cookie consent |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | No | Lead email delivery |
-| `CONTACT_EMAIL_TO` / `CONTACT_EMAIL_FROM` | No | Lead recipients and sender |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | No | Sending mailbox — **fallback** for `/admin/configuracion` |
+| `CONTACT_EMAIL_TO` | No | Lead recipients (`contacto@`) — fallback |
+| `APPLICATIONS_EMAIL_TO` | No | Application recipients — RRHH only, CVs never go to the general inbox — fallback |
+| `CONTACT_EMAIL_FROM` | No | Sender address on outgoing mail — fallback |
+
+Every `SMTP_*` / `*_EMAIL_*` variable above is a **fallback**. Email is configured
+from the panel — see [Email](#email).
 
 Generate `AUTH_SECRET`:
 

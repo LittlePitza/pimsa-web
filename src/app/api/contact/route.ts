@@ -1,10 +1,10 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { insertLeadSafe } from "@/db/queries/leads";
-import { createMailTransport, mailFrom } from "@/lib/mailer";
+import { acknowledgeSubmission, notifyFlow } from "@/lib/email/send";
+import { acknowledgement, leadNotification } from "@/lib/email/templates";
 import { rateLimit } from "@/lib/rate-limit";
 import { clientIp, isCrossOrigin } from "@/lib/request";
-import { getEmailRecipients } from "@/lib/settings";
 import { UTM_KEYS } from "@/lib/utm";
 
 export const runtime = "nodejs";
@@ -82,63 +82,46 @@ export async function POST(request: NextRequest) {
     ip,
   });
 
-  // Recipients: configurable from /admin/configuracion, env as fallback.
-  const recipients = await getEmailRecipients("leads");
-  const transporter = createMailTransport();
+  const notification = leadNotification({
+    name: lead.name,
+    company: lead.company,
+    email: lead.email,
+    phone: lead.phone,
+    service: lead.service,
+    message: lead.message,
+    utm: lead.utm,
+    ip,
+  });
 
-  const utmLines = Object.entries(lead.utm).map(([key, value]) => `${key}: ${value}`);
-  const emailText = [
-    `Nombre:   ${lead.name}`,
-    `Empresa:  ${lead.company || "—"}`,
-    `Correo:   ${lead.email}`,
-    `Teléfono: ${lead.phone || "—"}`,
-    `Servicio: ${lead.service || "—"}`,
-    "",
-    "Mensaje:",
-    lead.message,
-    "",
-    "— Origen —",
-    ...(utmLines.length > 0 ? utmLines : ["Directo / sin campaña"]),
-    `IP: ${ip}`,
-  ].join("\n");
+  /**
+   * The lead is already in the database, so delivery no longer decides the
+   * visitor's answer — it moves to after() and the form confirms immediately.
+   * The one case that still fails loudly is losing the record *and* having no
+   * way to send it: then nothing at all captured the enquiry, and telling
+   * someone "gracias" would be a lie. Development is exempt — a laptop with
+   * neither database nor SMTP still needs a working form to build against.
+   */
+  if (!stored && process.env.NODE_ENV === "production") {
+    const result = await notifyFlow("leads", notification, { replyTo: lead.email });
+    if (result.status === "sent") return NextResponse.json({ ok: true });
 
-  if (!transporter || !recipients) {
-    if (process.env.NODE_ENV !== "production") {
-      // Local development without SMTP: log the lead and succeed.
-      console.info("[contact] SMTP not configured — lead logged:\n" + emailText);
-      return NextResponse.json({ ok: true });
-    }
-    if (stored) {
-      // No email channel, but the lead is visible in /admin/leads.
-      console.warn("[contact] SMTP not configured — lead stored in DB only");
-      return NextResponse.json({ ok: true });
-    }
-    console.error("[contact] SMTP env vars missing and DB insert failed");
-    return NextResponse.json(
-      { error: "El formulario no está disponible por el momento. Escríbenos por WhatsApp." },
-      { status: 503 },
-    );
-  }
-
-  try {
-    await transporter.sendMail({
-      from: mailFrom(),
-      to: recipients,
-      replyTo: lead.email,
-      subject: `Nuevo lead del sitio web — ${lead.name}${lead.service ? ` · ${lead.service}` : ""}`,
-      text: emailText,
-    });
-
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    console.error("[contact] Email delivery failed:", error);
-    if (stored) {
-      // Email bounced but the lead is safe in /admin/leads.
-      return NextResponse.json({ ok: true });
-    }
+    console.error(`[contact] Lead lost — DB insert failed and email ${result.status}`);
     return NextResponse.json(
       { error: "No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp." },
       { status: 502 },
     );
   }
+
+  // Recipients, CC/BCC and the on-off switch come from /admin/configuracion;
+  // every attempt lands in the panel's email log, delivered or not.
+  after(async () => {
+    await notifyFlow("leads", notification, { replyTo: lead.email });
+    await acknowledgeSubmission(
+      "leads",
+      lead.email,
+      acknowledgement("leads", lead.name, lead.service),
+    );
+  });
+
+  return NextResponse.json({ ok: true });
 }

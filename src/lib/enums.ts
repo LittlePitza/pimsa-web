@@ -56,3 +56,30 @@ export type StockAvailability = (typeof STOCK_AVAILABILITY)[number];
  */
 export const ADMIN_ROLES = ["admin", "marketing", "rrhh"] as const;
 export type AdminRole = (typeof ADMIN_ROLES)[number];
+
+/**
+ * The site's two outgoing email flows — which is to say, whose data the
+ * message carries. Every logged send is attributed to one of them, and that
+ * attribution is what scopes the delivery log by area: Marketing reads the
+ * `leads` rows, RRHH the `applications` rows, and neither sees the other's.
+ */
+export const NOTIFICATION_FLOWS = ["leads", "applications"] as const;
+export type NotificationFlow = (typeof NOTIFICATION_FLOWS)[number];
+
+/**
+ * What kind of message it was, which is independent of whose flow it belongs
+ * to. Kept as its own column rather than folded into the flow: an
+ * acknowledgement to a candidate is still RRHH's data, and collapsing the two
+ * into one enum is what would let a Marketing account read it.
+ */
+export const EMAIL_KINDS = ["notification", "acknowledgement", "test"] as const;
+export type EmailKind = (typeof EMAIL_KINDS)[number];
+
+/**
+ * Outcome of a send attempt. `skipped` is a first-class result, not an error:
+ * a flow with notifications turned off — or with no recipients captured —
+ * deliberately sends nothing, and the log has to say so rather than leave a
+ * silence that reads like a failure.
+ */
+export const EMAIL_STATUSES = ["sent", "failed", "skipped"] as const;
+export type EmailStatus = (typeof EMAIL_STATUSES)[number];

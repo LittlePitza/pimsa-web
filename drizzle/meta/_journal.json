@@ -36,6 +36,13 @@
       "when": 1786047120066,
       "tag": "0004_drop_vacancy_location",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1786115674993,
+      "tag": "0005_email_log",
+      "breakpoints": true
     }
   ]
 }

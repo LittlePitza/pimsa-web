@@ -4,16 +4,36 @@ import { db } from "@/db";
 import { settings } from "@/db/schema";
 
 /**
- * Admin-editable settings (key-value) with environment fallbacks, so the
- * site keeps working before the panel is configured or on DB outages.
+ * Admin-editable key-value settings.
+ *
+ * Every reader here degrades instead of throwing: the settings table backs
+ * the contact form and the job board, and a DB hiccup must cost a fallback
+ * value, never a 500 on a public page. Writers are the opposite — they run
+ * from the panel, where a failure has an admin in front of it to see it.
+ *
+ * The typed views over these keys live in `@/lib/email/config`; this module
+ * only knows about strings.
  */
 
-export const SETTING_KEYS = {
-  /** Comma-separated recipients for contact-form leads. */
-  emailLeadsTo: "email_leads_to",
-  /** Comma-separated recipients for job applications. */
-  emailApplicationsTo: "email_applications_to",
-} as const;
+export type SettingsMap = ReadonlyMap<string, string>;
+
+const EMPTY: SettingsMap = new Map();
+
+/**
+ * Every setting in one query. The table holds a couple of dozen short rows,
+ * so reading it whole costs less than the round trips of fetching keys one at
+ * a time — and it lets a single send resolve its entire configuration
+ * (recipients, SMTP, toggles) without touching the database again.
+ */
+export async function loadSettings(): Promise<SettingsMap> {
+  try {
+    const rows = await db.select().from(settings);
+    return new Map(rows.map((row) => [row.key, row.value]));
+  } catch (error) {
+    console.error("[settings] read failed:", error);
+    return EMPTY;
+  }
+}
 
 export async function getSettingSafe(key: string): Promise<string | null> {
   try {
@@ -27,15 +47,18 @@ export async function getSettingSafe(key: string): Promise<string | null> {
 }
 
 export async function setSetting(key: string, value: string): Promise<void> {
-  await db
-    .insert(settings)
-    .values({ key, value })
-    .onDuplicateKeyUpdate({ set: { value } });
+  await db.insert(settings).values({ key, value }).onDuplicateKeyUpdate({ set: { value } });
 }
 
-/** Recipients for a given email flow: DB setting → env fallback. */
-export async function getEmailRecipients(kind: "leads" | "applications"): Promise<string> {
-  const key = kind === "leads" ? SETTING_KEYS.emailLeadsTo : SETTING_KEYS.emailApplicationsTo;
-  const fromDb = await getSettingSafe(key);
-  return fromDb ?? process.env.CONTACT_EMAIL_TO ?? "";
+/**
+ * Writes several keys. Deliberately one statement per key rather than a bulk
+ * upsert: the multi-row form needs `VALUES(col)` in its ON DUPLICATE clause,
+ * which MySQL 8.0.20 deprecated and MariaDB spells differently — not a
+ * portability bet worth taking to save a few milliseconds on a form the panel
+ * submits by hand.
+ */
+export async function setSettings(entries: Record<string, string>): Promise<void> {
+  for (const [key, value] of Object.entries(entries)) {
+    await setSetting(key, value);
+  }
 }
