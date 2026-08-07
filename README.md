@@ -125,6 +125,13 @@ applies immediately — no redeploy. The `SMTP_*` and `*_EMAIL_TO` variables are
 fallback the site uses before the panel is configured, and if the settings rows are
 ever lost.
 
+**Two different things are called "the contact email", so keep them apart.** The
+address the site *shows* the public — footer, `/contacto`, privacy notice,
+`LocalBusiness` JSON-LD — is `contacto@plasticospimsa.com` and lives in
+[src/content/company.ts](./src/content/company.ts) as part of the NAP. Where a
+submitted form is *delivered* is a separate, per-flow setting in the panel: leads
+go to Marketing, applications to RRHH. Changing one never changes the other.
+
 The screen is read top to bottom:
 
 1. **Estado del servicio** — SMTP account in use, last successful send, failures in
@@ -190,7 +197,7 @@ All documented in [.env.example](./.env.example). Set them in hPanel for product
 | `NEXT_PUBLIC_SITE_URL` | Production | Canonical URL — metadata, sitemap, JSON-LD |
 | `NEXT_PUBLIC_GTM_ID` | No | GTM container; loads only after cookie consent |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | No | Sending mailbox — **fallback** for `/admin/configuracion` |
-| `CONTACT_EMAIL_TO` | No | Lead recipients (`contacto@`) — fallback |
+| `CONTACT_EMAIL_TO` | No | Lead recipients (Marketing) — fallback |
 | `APPLICATIONS_EMAIL_TO` | No | Application recipients — RRHH only, CVs never go to the general inbox — fallback |
 | `CONTACT_EMAIL_FROM` | No | Sender address on outgoing mail — fallback |
 

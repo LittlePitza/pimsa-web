@@ -3,9 +3,12 @@ import type { Certification, Company, NavItem, SocialLink } from "@/types/conten
 /**
  * Company master data (single source of truth for NAP consistency — SEO).
  * Phone/WhatsApp confirmed 2026-07-29: 442 274 7546 (all messages route here).
- * Email confirmed 2026-08-07: contacto@plasticospimsa.com is the public inbox
- * and receives the contact-form leads. Job applications are the exception —
- * they carry a CV and go to RRHH (APPLICATIONS_EMAIL_TO). The 2023 corporate
+ * Email confirmed 2026-08-07: contacto@plasticospimsa.com is the address the
+ * site shows the public — footer, /contacto, privacy notice and the
+ * LocalBusiness JSON-LD all read it from here, so changing it changes the NAP
+ * everywhere at once. It is NOT where the forms deliver: those notifications
+ * are routed per flow from /admin/configuracion (leads to Marketing,
+ * applications to RRHH, since they carry a candidate's CV). The 2023 corporate
  * deck's hola@plasticospimsa.com is not in use; do not reintroduce it.
  * TODO(marketing): confirm hours and social URLs
  * (see docs/marketing-material-request.md §5).

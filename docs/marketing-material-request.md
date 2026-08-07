@@ -75,11 +75,14 @@ Los textos en Word o Google Docs; las imágenes en su resolución original (sin 
 ## 5. Datos de contacto oficiales (P1)
 
 - ~~Teléfono(s) oficial(es) y número de **WhatsApp Business** definitivo~~ — confirmado 2026-07-29: **+52 442 274 7546** (teléfono y WhatsApp)
-- ~~Correo(s) que recibirán los **leads del formulario**~~ — confirmado 2026-08-07: **contacto@plasticospimsa.com** recibe todo el correo del sitio, salvo las postulaciones.
-- **Correo de RRHH que recibirá las postulaciones** (llevan el CV del candidato, por eso no van al buzón general). Mientras no se defina, las postulaciones se siguen guardando en `/admin/postulaciones` pero no se envían por correo.
+- ~~Correo público que muestra el sitio~~ — confirmado 2026-08-07: **contacto@plasticospimsa.com**. Es el que aparece en el pie de página, en `/contacto`, en el aviso de privacidad y en el JSON-LD de Google.
+- ~~Correo(s) que recibirán los **leads del formulario**~~ — confirmado 2026-08-07: **marketing@plasticospimsa.com**. Es a propósito distinto del público: el sitio muestra `contacto@`, la notificación llega a quien trabaja el lead.
+- ~~Correo de RRHH que recibirá las postulaciones~~ — confirmado 2026-08-07: **gte.rh@plasticospimsa.com**. Van aparte porque llevan el CV del candidato.
 - Horario de atención
 - Dirección exacta validada + pin de Google Maps correcto
 - Enlaces oficiales de redes: Facebook, LinkedIn, Instagram, TikTok
+
+> Los tres correos se cambian desde `/admin/configuracion` sin redesplegar; las variables de entorno solo son el respaldo.
 
 ## 6. Cuentas y accesos de marketing digital (P2)
 
