@@ -48,7 +48,10 @@ export function vacancyDatePosted(vacancy: Vacancy): Date {
  * collecting applications for a job that was filled months ago.
  */
 export function vacancyValidThrough(vacancy: Vacancy): Date {
-  return vacancy.expiresAt ?? new Date(vacancyDatePosted(vacancy).getTime() + DEFAULT_VALID_DAYS * DAY_MS);
+  return (
+    vacancy.expiresAt ??
+    new Date(vacancyDatePosted(vacancy).getTime() + DEFAULT_VALID_DAYS * DAY_MS)
+  );
 }
 
 const pesos = new Intl.NumberFormat("es-MX", {

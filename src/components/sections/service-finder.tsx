@@ -38,7 +38,7 @@ export function ServiceFinder({ index = "01" }: { index?: string }) {
               <Reveal key={entry.slug} as="li" delay={i * 60}>
                 <Link
                   href={`/servicios/${service.slug}`}
-                  className="group border-line hover:border-blue-600 flex h-full flex-col justify-between gap-6 border-t py-6 transition-colors md:pr-8"
+                  className="group border-line flex h-full flex-col justify-between gap-6 border-t py-6 transition-colors hover:border-blue-600 md:pr-8"
                 >
                   <p className="text-ink text-lead max-w-[38ch] text-balance">
                     <span aria-hidden className="text-ink-muted/50 mr-2 font-mono text-sm">
@@ -48,16 +48,16 @@ export function ServiceFinder({ index = "01" }: { index?: string }) {
                   </p>
 
                   <p className="flex items-center gap-3">
-                    <span className="text-green-600 font-mono text-xs tracking-[0.16em] uppercase">
+                    <span className="font-mono text-xs tracking-[0.16em] text-green-600 uppercase">
                       {service.index}
                     </span>
-                    <span className="font-display text-navy-500 group-hover:text-blue-600 font-semibold transition-colors">
+                    <span className="font-display text-navy-500 font-semibold transition-colors group-hover:text-blue-600">
                       {service.name}
                     </span>
                     <ArrowRight
                       aria-hidden
                       strokeWidth={1.5}
-                      className="text-ink-muted group-hover:text-green-600 size-4 transition-transform duration-150 group-hover:translate-x-1"
+                      className="text-ink-muted size-4 transition-transform duration-150 group-hover:translate-x-1 group-hover:text-green-600"
                     />
                   </p>
                 </Link>

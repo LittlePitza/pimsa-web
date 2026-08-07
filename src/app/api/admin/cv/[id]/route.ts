@@ -6,10 +6,7 @@ import { canAccess } from "@/lib/roles";
 export const runtime = "nodejs";
 
 /** Streams a stored CV to RRHH (candidate data never leaves that area). */
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getAdminSession();
   if (!session) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });

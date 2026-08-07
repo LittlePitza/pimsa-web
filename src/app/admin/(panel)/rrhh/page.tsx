@@ -97,7 +97,7 @@ export default async function HrDashboardPage() {
         <ChartCard
           title="Últimas postulaciones"
           action={
-            <Link href="/admin/postulaciones" className="text-blue-600 text-sm font-medium">
+            <Link href="/admin/postulaciones" className="text-sm font-medium text-blue-600">
               Ver todas
             </Link>
           }

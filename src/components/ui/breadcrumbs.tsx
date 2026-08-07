@@ -9,7 +9,13 @@ export interface Crumb {
 }
 
 /** Breadcrumb trail with BreadcrumbList JSON-LD (PLAN.md §6). */
-export function Breadcrumbs({ items, tone = "light" }: { items: Crumb[]; tone?: "light" | "dark" }) {
+export function Breadcrumbs({
+  items,
+  tone = "light",
+}: {
+  items: Crumb[];
+  tone?: "light" | "dark";
+}) {
   const dark = tone === "dark";
 
   return (

@@ -204,9 +204,7 @@ export function jobPostingSchema(vacancy: Vacancy): JsonLdObject {
     // country a candidate may live in; dropping the location instead makes
     // Google treat the listing as incomplete.
     jobLocationType: remote ? "TELECOMMUTE" : undefined,
-    applicantLocationRequirements: remote
-      ? { "@type": "Country", name: "México" }
-      : undefined,
+    applicantLocationRequirements: remote ? { "@type": "Country", name: "México" } : undefined,
     baseSalary: baseSalaryNode(vacancy),
     occupationalCategory: vacancy.department || undefined,
     totalJobOpenings: vacancy.openings,

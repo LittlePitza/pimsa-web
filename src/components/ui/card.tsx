@@ -15,7 +15,7 @@ export function Card({
       className={cn(
         "bg-surface border-line shadow-card rounded-md border p-6",
         lift &&
-          "transition-[translate,box-shadow] duration-150 ease-out hover:-translate-y-0.5 hover:shadow-lift",
+          "hover:shadow-lift transition-[translate,box-shadow] duration-150 ease-out hover:-translate-y-0.5",
         className,
       )}
     >

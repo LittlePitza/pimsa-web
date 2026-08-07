@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "../styles/tokens.css";
 
+/* dark: utilities follow the panel's data-theme attribute (set on the admin
+ * root from a cookie), not the OS preference — night mode is a choice. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -104,6 +108,37 @@
   .admin-column {
     transform-origin: bottom center;
     animation: admin-grow-y var(--duration-base) var(--ease-brand) backwards;
+  }
+
+  /* Sidebar nav scroll: the scrollbar only matters mid-scroll — keep it a
+   * hairline that borrows the divider color instead of a heavy OS gutter. */
+  .admin-nav-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+
+  /* Drawer + overlay entrance. Exit is instant on purpose: the drawer is
+   * removed from the DOM on close, which is what keeps focus honest — an
+   * exit animation would mean keeping an interactive tree around after the
+   * user already dismissed it. */
+  @keyframes admin-drawer-in {
+    from {
+      translate: -100% 0;
+    }
+  }
+
+  .admin-drawer {
+    animation: admin-drawer-in var(--duration-base) var(--ease-brand);
+  }
+
+  @keyframes admin-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .admin-fade {
+    animation: admin-fade-in var(--duration-base) var(--ease-brand);
   }
 
   /* Loading placeholders. The pulse is what tells the eye "still working";

@@ -43,10 +43,10 @@ export function Timeline({ index = "02" }: { index?: string }) {
               >
                 <span
                   aria-hidden
-                  className="timeline-marker bg-green-500 absolute top-2 -left-[5px] size-2.5 rounded-full"
+                  className="timeline-marker absolute top-2 -left-[5px] size-2.5 rounded-full bg-green-500"
                 />
                 <Reveal delay={i * 60}>
-                  <p className="timeline-year text-green-600 font-mono text-sm font-medium tracking-[0.18em]">
+                  <p className="timeline-year font-mono text-sm font-medium tracking-[0.18em] text-green-600">
                     {milestone.year}
                   </p>
                   <h3 className="font-display text-navy-500 mt-2 text-xl font-semibold">

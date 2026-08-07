@@ -25,7 +25,13 @@ function LogoPaths({ paths, tone }: { paths: LogoPath[]; tone: "light" | "dark" 
  * Official PIMSA horizontal lockup: infinity-loop isotype + “pimsa” wordmark.
  * `tone="dark"` renders the negative version for navy backgrounds.
  */
-export function Logo({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) {
+export function Logo({
+  tone = "light",
+  className,
+}: {
+  tone?: "light" | "dark";
+  className?: string;
+}) {
   return (
     <svg
       viewBox="0 0 1461 311"

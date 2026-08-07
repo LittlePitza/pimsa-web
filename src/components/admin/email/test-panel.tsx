@@ -47,7 +47,7 @@ export function EmailTestPanel({ flows }: { flows: TestPanelFlow[] }) {
                 className={cn(
                   "cursor-pointer rounded-sm border px-4 py-2 text-sm transition-colors",
                   selected === entry.flow
-                    ? "border-navy-500 bg-navy-500 text-white"
+                    ? "border-navy-500 bg-navy-500 dark:text-navy-900 text-white"
                     : "border-line text-ink hover:border-navy-500",
                 )}
               >

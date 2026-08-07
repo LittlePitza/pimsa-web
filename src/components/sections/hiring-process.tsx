@@ -30,7 +30,7 @@ export function HiringProcess({ index = "03" }: { index?: string }) {
           {hiringSteps.map((step, i) => (
             <Reveal key={step.title} as="li" delay={i * 70}>
               <div className="border-line h-full border-t pt-6">
-                <p className="font-display text-green-600/25 text-5xl leading-none font-black tracking-[-0.05em]">
+                <p className="font-display text-5xl leading-none font-black tracking-[-0.05em] text-green-600/25">
                   {String(i + 1).padStart(2, "0")}
                 </p>
                 <h3 className="font-display text-navy-500 mt-4 text-lg font-semibold text-balance">

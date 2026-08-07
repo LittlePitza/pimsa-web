@@ -38,7 +38,7 @@ export function LocationBand({ index = "07" }: { index?: string }) {
                 <p className="flex items-start gap-3">
                   <MapPin
                     aria-hidden
-                    className="text-green-600 mt-1 size-5 shrink-0"
+                    className="mt-1 size-5 shrink-0 text-green-600"
                     strokeWidth={1.5}
                   />
                   <span className="text-ink">
@@ -82,11 +82,11 @@ export function LocationBand({ index = "07" }: { index?: string }) {
           <ul className="grid content-start gap-0">
             {locationHighlights.map((item, i) => (
               <Reveal key={item.label} delay={i * 70} as="li">
-                <div className="border-line border-t py-7 first:border-t-0 first:pt-0 lg:first:pt-7 lg:first:border-t">
+                <div className="border-line border-t py-7 first:border-t-0 first:pt-0 lg:first:border-t lg:first:pt-7">
                   <p className="font-mono text-xs tracking-[0.16em] text-green-600 uppercase">
                     {item.label}
                   </p>
-                  <p className="text-ink mt-3 max-w-[54ch] text-lead">{item.value}</p>
+                  <p className="text-ink text-lead mt-3 max-w-[54ch]">{item.value}</p>
                 </div>
               </Reveal>
             ))}

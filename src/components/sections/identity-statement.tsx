@@ -39,7 +39,7 @@ export function IdentityStatement({ index = "06" }: { index?: string }) {
             </Reveal>
 
             <Reveal delay={80}>
-              <p className="border-green-300/40 text-paper/70 mt-10 max-w-[60ch] border-l-2 pl-6 text-lead">
+              <p className="text-paper/70 text-lead mt-10 max-w-[60ch] border-l-2 border-green-300/40 pl-6">
                 {missionVision.vision}
               </p>
             </Reveal>
@@ -58,7 +58,7 @@ export function IdentityStatement({ index = "06" }: { index?: string }) {
                   >
                     <span
                       aria-hidden
-                      className="bg-green-300 size-1.5 shrink-0 translate-y-[-0.15em] rounded-full"
+                      className="size-1.5 shrink-0 translate-y-[-0.15em] rounded-full bg-green-300"
                     />
                     <span className="font-medium">{value}</span>
                   </li>

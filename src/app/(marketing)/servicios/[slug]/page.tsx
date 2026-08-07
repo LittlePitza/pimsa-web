@@ -213,21 +213,33 @@ export default async function ServicePage({ params }: Props) {
               tabIndex={0}
               role="region"
               aria-label="Tabla de modelos de contenedores"
-              className="border-line focus-visible:outline-blue-600 mt-12 overflow-x-auto border-t focus-visible:outline-2"
+              className="border-line mt-12 overflow-x-auto border-t focus-visible:outline-2 focus-visible:outline-blue-600"
             >
               <table className="w-full min-w-[36rem] text-left">
                 <thead>
                   <tr className="border-line border-b">
-                    <th scope="col" className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th
+                      scope="col"
+                      className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase"
+                    >
                       Clave
                     </th>
-                    <th scope="col" className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th
+                      scope="col"
+                      className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase"
+                    >
                       Medidas externas (in)
                     </th>
-                    <th scope="col" className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th
+                      scope="col"
+                      className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase"
+                    >
                       Material
                     </th>
-                    <th scope="col" className="text-ink-muted py-4 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th
+                      scope="col"
+                      className="text-ink-muted py-4 font-mono text-xs font-medium tracking-[0.18em] uppercase"
+                    >
                       Color
                     </th>
                   </tr>

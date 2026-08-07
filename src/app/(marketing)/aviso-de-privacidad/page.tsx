@@ -29,15 +29,15 @@ export default function PrivacyPage() {
 
       <section className="py-16 md:py-24">
         <Container className="max-w-3xl">
-          <div className="border-green-600 bg-surface shadow-card mb-10 rounded-md border-l-4 p-5">
+          <div className="bg-surface shadow-card mb-10 rounded-md border-l-4 border-green-600 p-5">
             <p className="text-ink text-sm">
-              <strong>Documento en revisión.</strong> Este texto es una estructura base; el aviso
-              de privacidad definitivo conforme a la LFPDPPP será publicado antes del lanzamiento
-              del sitio.
+              <strong>Documento en revisión.</strong> Este texto es una estructura base; el aviso de
+              privacidad definitivo conforme a la LFPDPPP será publicado antes del lanzamiento del
+              sitio.
             </p>
           </div>
 
-          <div className="space-y-8 [&_h2]:font-display [&_h2]:text-navy-500 [&_h2]:text-xl [&_h2]:font-semibold [&_p]:text-ink-muted [&_p]:mt-3">
+          <div className="[&_h2]:font-display [&_h2]:text-navy-500 [&_p]:text-ink-muted space-y-8 [&_h2]:text-xl [&_h2]:font-semibold [&_p]:mt-3">
             <div>
               <h2>1. Responsable de los datos personales</h2>
               <p>
@@ -48,16 +48,15 @@ export default function PrivacyPage() {
             <div>
               <h2>2. Datos que recabamos</h2>
               <p>
-                Recabamos los datos de contacto que nos compartes a través del formulario del
-                sitio, WhatsApp, teléfono o correo: nombre, empresa, correo electrónico y
-                teléfono.
+                Recabamos los datos de contacto que nos compartes a través del formulario del sitio,
+                WhatsApp, teléfono o correo: nombre, empresa, correo electrónico y teléfono.
               </p>
             </div>
             <div>
               <h2>3. Finalidades del tratamiento</h2>
               <p>
-                Utilizamos tus datos para atender tus solicitudes de información y cotización,
-                dar seguimiento comercial y, en su caso, formalizar la relación de negocio.
+                Utilizamos tus datos para atender tus solicitudes de información y cotización, dar
+                seguimiento comercial y, en su caso, formalizar la relación de negocio.
               </p>
             </div>
             <div>

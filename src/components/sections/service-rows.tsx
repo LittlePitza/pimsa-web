@@ -44,7 +44,7 @@ export function ServiceRows({ index }: { index?: string }) {
                   <div className="flex items-center gap-5 md:contents">
                     <span
                       aria-hidden
-                      className="font-display text-h1 text-line group-hover:text-green-500 shrink-0 font-bold transition-colors duration-150"
+                      className="font-display text-h1 text-line shrink-0 font-bold transition-colors duration-150 group-hover:text-green-500"
                     >
                       {service.index}
                     </span>
@@ -64,10 +64,10 @@ export function ServiceRows({ index }: { index?: string }) {
                     {/* h3 under the section's own h2: the service names are the
                         catalogue's outline, nested inside it rather than
                         competing with it. */}
-                    <h3 className="font-display text-h3 text-navy-500 group-hover:text-blue-600 font-semibold transition-colors">
+                    <h3 className="font-display text-h3 text-navy-500 font-semibold transition-colors group-hover:text-blue-600">
                       {service.name}
                     </h3>
-                    <p className="text-green-600 mt-1 font-mono text-xs tracking-[0.14em] uppercase">
+                    <p className="mt-1 font-mono text-xs tracking-[0.14em] text-green-600 uppercase">
                       {service.tagline}
                     </p>
                     <p className="text-ink-muted mt-3 max-w-[62ch]">{service.summary}</p>
@@ -76,7 +76,7 @@ export function ServiceRows({ index }: { index?: string }) {
                   <ArrowRight
                     aria-hidden
                     strokeWidth={1.5}
-                    className="text-ink-muted group-hover:text-green-600 hidden size-7 transition-[translate,color] duration-150 group-hover:translate-x-2 md:block"
+                    className="text-ink-muted hidden size-7 transition-[translate,color] duration-150 group-hover:translate-x-2 group-hover:text-green-600 md:block"
                   />
                 </Link>
               </Reveal>

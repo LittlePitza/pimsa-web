@@ -20,7 +20,7 @@ export default function AdminError({
 
   return (
     <div className="border-line bg-surface shadow-card mx-auto mt-12 max-w-xl rounded-md border p-8">
-      <p className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+      <p className="font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
         Error del panel
       </p>
       <h1 className="font-display text-navy-500 mt-3 text-2xl font-bold">

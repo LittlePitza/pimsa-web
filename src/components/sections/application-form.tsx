@@ -60,9 +60,7 @@ export function ApplicationForm({
       trackEvent("job_application_submit", { vacancy: vacancySlug || "general" });
     } catch (error) {
       setStatus("error");
-      setErrorMessage(
-        error instanceof Error ? error.message : "No pudimos enviar tu postulación.",
-      );
+      setErrorMessage(error instanceof Error ? error.message : "No pudimos enviar tu postulación.");
     }
   }
 
@@ -72,11 +70,9 @@ export function ApplicationForm({
         ref={successRef}
         tabIndex={-1}
         role="status"
-        className="border-green-600 bg-surface shadow-card rounded-md border-l-4 p-8 focus:outline-none"
+        className="bg-surface shadow-card rounded-md border-l-4 border-green-600 p-8 focus:outline-none"
       >
-        <h3 className="font-display text-navy-500 text-xl font-semibold">
-          ¡Postulación recibida!
-        </h3>
+        <h3 className="font-display text-navy-500 text-xl font-semibold">¡Postulación recibida!</h3>
         <p className="text-ink-muted mt-3">
           {vacancyTitle
             ? `Gracias por tu interés en la vacante de ${vacancyTitle}.`
@@ -90,8 +86,21 @@ export function ApplicationForm({
   return (
     <form onSubmit={handleSubmit} className="grid gap-6">
       <div className="grid gap-6 sm:grid-cols-2">
-        <InputField id="name" label="Nombre completo" autoComplete="name" required maxLength={120} />
-        <InputField id="phone" label="Teléfono" type="tel" autoComplete="tel" required maxLength={30} />
+        <InputField
+          id="name"
+          label="Nombre completo"
+          autoComplete="name"
+          required
+          maxLength={120}
+        />
+        <InputField
+          id="phone"
+          label="Teléfono"
+          type="tel"
+          autoComplete="tel"
+          required
+          maxLength={30}
+        />
       </div>
       <InputField
         id="email"
@@ -126,7 +135,7 @@ export function ApplicationForm({
           type="file"
           required
           accept={CV_ACCEPT}
-          className="border-line bg-surface text-ink file:bg-navy-500 file:text-white w-full cursor-pointer rounded-sm border px-4 py-2.5 text-sm file:mr-4 file:cursor-pointer file:rounded-sm file:border-0 file:px-4 file:py-2 file:text-sm file:font-medium"
+          className="border-line bg-surface text-ink file:bg-navy-500 w-full cursor-pointer rounded-sm border px-4 py-2.5 text-sm file:mr-4 file:cursor-pointer file:rounded-sm file:border-0 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
         />
       </div>
 
@@ -137,7 +146,10 @@ export function ApplicationForm({
       </div>
 
       {status === "error" ? (
-        <p role="alert" className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <p
+          role="alert"
+          className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+        >
           {errorMessage}
         </p>
       ) : null}
