@@ -35,7 +35,7 @@ export const areaLabels: Record<Area, string> = {
 /** Landing page per area — where login, the logo and every bounce point. */
 const areaHome: Record<Area, string> = {
   marketing: "/admin/marketing",
-  rrhh: "/admin/rrhh",
+  rrhh: "/admin/hr",
 };
 
 /**
@@ -75,9 +75,9 @@ export const areaLinks: Record<Area, { label: string; href: string; hub?: boolea
     { label: "Stock", href: "/admin/stock" },
   ],
   rrhh: [
-    { label: "RRHH", href: "/admin/rrhh", hub: true },
-    { label: "Vacantes", href: "/admin/vacantes" },
-    { label: "Postulaciones", href: "/admin/postulaciones" },
+    { label: "RRHH", href: "/admin/hr", hub: true },
+    { label: "Vacantes", href: "/admin/vacancies" },
+    { label: "Postulaciones", href: "/admin/applications" },
   ],
 };
 

@@ -63,11 +63,11 @@ Cuatro páginas del sitio no tienen ninguna fotografía. Se ven planas.
 
 | # | Toma | Encuadre | Dónde va |
 | --- | --- | --- | --- |
-| B1 | Recepción / acceso de visitas, con el rótulo PIMSA legible y cielo | 16/10 | `/contacto` — hoy es solo texto y un mapa |
+| B1 | Recepción / acceso de visitas, con el rótulo PIMSA legible y cielo | 16/10 | `/contact` — hoy es solo texto y un mapa |
 | B2 | Estiba de producto terminado etiquetado, pasillo en fuga | 16/10 | `/stock` — hoy es solo la tabla |
-| B3 | Muestrario: 6–8 charolas o bolsas de resina distinta, cenital sobre mesa oscura | 3/2 | `/preguntas-frecuentes` y ficha de stock |
+| B3 | Muestrario: 6–8 charolas o bolsas de resina distinta, cenital sobre mesa oscura | 3/2 | `/faq` y ficha de stock |
 | B4 | **Toma de portada**: planta o proceso que aguante texto encima a la izquierda | 1200×630 exacto | Imagen que sale al compartir el enlace en WhatsApp y LinkedIn. Hoy es un fondo azul plano |
-| B5 | Dos tomas de la línea de peletizado con gente operando | 3/2 y 4/3 | `/servicios/polimeros` — su galería está **vacía** en el código |
+| B5 | Dos tomas de la línea de peletizado con gente operando | 3/2 y 4/3 | `/services/polimeros` — su galería está **vacía** en el código |
 
 B4 es la de mayor retorno por esfuerzo: es la que ve un prospecto antes de
 entrar al sitio, y hoy no existe.
@@ -108,8 +108,8 @@ La foto se queda.
 | --- | --- | --- | --- | --- |
 | D1 | **Loop de proceso** — sin audio, sin cortes: hilos entrando a la tina, o pellet cayendo del ciclón | 6–10 s en bucle | 1920×1080 H.264, ≤ 3 MB | Debajo del hero, en `ProcessLoop`. Arranca solo cuando entra en pantalla |
 | D2 | **Recorrido de planta** — un plano continuo caminando: recepción → molienda → peletizado → almacén | 45–60 s | 1920×1080, con audio ambiente | Nosotros, sustituye a `PlantShowcase` o lo acompaña. Es el video que pide un auditor |
-| D3 | **Molienda en operación** | 8–12 s bucle | 1920×1080, ≤ 3 MB | `/servicios/molienda-peletizado` |
-| D4 | **Contenedor colapsando** — el mismo contenedor abierto y plegado, cámara fija | 5–8 s bucle | 1920×1080, ≤ 2 MB | `/servicios/contenedores`. Vende el producto mejor que cualquier foto |
+| D3 | **Molienda en operación** | 8–12 s bucle | 1920×1080, ≤ 3 MB | `/services/molienda-peletizado` |
+| D4 | **Contenedor colapsando** — el mismo contenedor abierto y plegado, cámara fija | 5–8 s bucle | 1920×1080, ≤ 2 MB | `/services/contenedores`. Vende el producto mejor que cualquier foto |
 | D5 | Dron: vuelta lenta sobre la planta | 15–20 s | 1920×1080 | Nosotros, banda de ubicación |
 
 Para cada video hace falta también **un fotograma de póster en JPG** — es lo

@@ -26,8 +26,7 @@ export function StockCatalog({ items }: { items: StockItem[] }) {
   if (items.length === 0) {
     return (
       <p className="text-ink-muted">
-        El inventario se está actualizando. Contáctanos para consultar disponibilidad de
-        materiales.
+        El inventario se está actualizando. Contáctanos para consultar disponibilidad de materiales.
       </p>
     );
   }
@@ -64,19 +63,23 @@ export function StockCatalog({ items }: { items: StockItem[] }) {
           <li key={item.id}>
             <Card lift className="h-full">
               <div className="flex items-start justify-between gap-3">
-                <h2 className="font-display text-navy-500 text-lg font-semibold">{item.material}</h2>
+                <h2 className="font-display text-navy-500 text-lg font-semibold">
+                  {item.material}
+                </h2>
                 <Badge>{item.form}</Badge>
               </div>
               <dl className="mt-4 space-y-2 text-sm">
                 <div className="flex justify-between gap-4">
-                  <dt className="text-ink-muted font-mono text-xs tracking-wider uppercase">Color</dt>
+                  <dt className="text-ink-muted font-mono text-xs tracking-wider uppercase">
+                    Color
+                  </dt>
                   <dd className="text-ink">{item.color || "—"}</dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt className="text-ink-muted font-mono text-xs tracking-wider uppercase">
                     Disponibilidad
                   </dt>
-                  <dd className="text-green-600 font-medium">{item.availability}</dd>
+                  <dd className="font-medium text-green-600">{item.availability}</dd>
                 </div>
               </dl>
               {item.notes ? <p className="text-ink-muted mt-3 text-sm">{item.notes}</p> : null}

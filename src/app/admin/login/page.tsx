@@ -40,7 +40,10 @@ export default function AdminLoginPage() {
               required
             />
             {state.error ? (
-              <p role="alert" className="rounded-sm border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+              <p
+                role="alert"
+                className="rounded-sm border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+              >
                 {state.error}
               </p>
             ) : null}

@@ -57,7 +57,9 @@ export function ButtonLink({
   const classes = buttonClasses({ variant, size }, className);
 
   if (external) {
-    return <a href={href} className={classes} rel="noopener noreferrer" target="_blank" {...props} />;
+    return (
+      <a href={href} className={classes} rel="noopener noreferrer" target="_blank" {...props} />
+    );
   }
   return <Link href={href} className={classes} {...props} />;
 }

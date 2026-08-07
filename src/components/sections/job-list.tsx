@@ -47,12 +47,12 @@ function JobRow({ vacancy }: { vacancy: Vacancy }) {
 
   return (
     <Link
-      href={`/vacantes/${vacancy.slug}`}
+      href={`/jobs/${vacancy.slug}`}
       className="group grid items-center gap-x-8 gap-y-4 py-7 md:grid-cols-[1fr_auto] md:py-8"
     >
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-3">
-          <h4 className="font-display text-navy-500 group-hover:text-blue-600 text-xl font-semibold transition-colors md:text-2xl">
+          <h4 className="font-display text-navy-500 text-xl font-semibold transition-colors group-hover:text-blue-600 md:text-2xl">
             {vacancy.title}
           </h4>
           {vacancy.department ? <Badge>{vacancy.department}</Badge> : null}
@@ -70,11 +70,11 @@ function JobRow({ vacancy }: { vacancy: Vacancy }) {
             <Clock aria-hidden className="size-3.5" strokeWidth={1.5} />
             {employmentTypeLabels[vacancy.employmentType]}
           </li>
-          {salary ? <li className="text-green-600 font-medium">{salary}</li> : null}
+          {salary ? <li className="font-medium text-green-600">{salary}</li> : null}
         </ul>
       </div>
 
-      <span className="text-blue-600 inline-flex items-center gap-2 text-sm font-medium">
+      <span className="inline-flex items-center gap-2 text-sm font-medium text-blue-600">
         Ver y postularme
         <ArrowRight
           aria-hidden
@@ -121,7 +121,7 @@ export function JobList({ vacancies, index = "01" }: { vacancies: Vacancy[]; ind
                 <li key={group.area}>
                   <a
                     href={`#area-${slugify(group.area)}`}
-                    className="border-line text-ink hover:border-blue-600 hover:text-blue-600 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm transition-colors"
+                    className="border-line text-ink inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm transition-colors hover:border-blue-600 hover:text-blue-600"
                   >
                     {group.area}
                     <span className="text-ink-muted font-mono text-xs">{group.items.length}</span>
@@ -138,8 +138,7 @@ export function JobList({ vacancies, index = "01" }: { vacancies: Vacancy[]; ind
                       {group.area}
                     </h3>
                     <span className="text-ink-muted font-mono text-xs">
-                      {group.items.length}{" "}
-                      {group.items.length === 1 ? "posición" : "posiciones"}
+                      {group.items.length} {group.items.length === 1 ? "posición" : "posiciones"}
                     </span>
                   </div>
                   <ul>
@@ -161,7 +160,12 @@ export function JobList({ vacancies, index = "01" }: { vacancies: Vacancy[]; ind
         ) : (
           <ul className="border-line mt-10 border-t md:mt-14">
             {vacancies.map((vacancy, i) => (
-              <Reveal key={vacancy.id} as="li" delay={i * 60} className="border-line block border-b">
+              <Reveal
+                key={vacancy.id}
+                as="li"
+                delay={i * 60}
+                className="border-line block border-b"
+              >
                 <JobRow vacancy={vacancy} />
               </Reveal>
             ))}

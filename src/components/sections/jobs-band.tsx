@@ -17,7 +17,7 @@ export function JobsBand() {
             línea.
           </p>
         </div>
-        <ButtonLink href="/vacantes" variant="accent" size="lg" className="shrink-0">
+        <ButtonLink href="/jobs" variant="accent" size="lg" className="shrink-0">
           Ver vacantes
         </ButtonLink>
       </Container>

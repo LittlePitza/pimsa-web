@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildMetadata({
     title: `${vacancy.title} — Vacante`,
     description: vacancy.summary,
-    path: `/vacantes/${vacancy.slug}`,
+    path: `/jobs/${vacancy.slug}`,
   });
 }
 
@@ -67,8 +67,8 @@ export default async function VacancyPage({ params }: Props) {
         intro={vacancy.summary}
         breadcrumbs={[
           { name: "Inicio", path: "/" },
-          { name: "Bolsa de trabajo", path: "/vacantes" },
-          { name: vacancy.title, path: `/vacantes/${vacancy.slug}` },
+          { name: "Bolsa de trabajo", path: "/jobs" },
+          { name: vacancy.title, path: `/jobs/${vacancy.slug}` },
         ]}
       />
 
@@ -91,7 +91,11 @@ export default async function VacancyPage({ params }: Props) {
             <ul className="mt-4 space-y-3">
               {vacancy.requirements.map((requirement) => (
                 <li key={requirement} className="flex items-start gap-3">
-                  <Check aria-hidden strokeWidth={2} className="text-green-600 mt-1 size-5 shrink-0" />
+                  <Check
+                    aria-hidden
+                    strokeWidth={2}
+                    className="mt-1 size-5 shrink-0 text-green-600"
+                  />
                   <span className="text-ink">{requirement}</span>
                 </li>
               ))}
@@ -101,7 +105,11 @@ export default async function VacancyPage({ params }: Props) {
             <ul className="mt-4 space-y-3">
               {vacancy.benefits.map((benefit) => (
                 <li key={benefit} className="flex items-start gap-3">
-                  <Check aria-hidden strokeWidth={2} className="text-green-600 mt-1 size-5 shrink-0" />
+                  <Check
+                    aria-hidden
+                    strokeWidth={2}
+                    className="mt-1 size-5 shrink-0 text-green-600"
+                  />
                   <span className="text-ink">{benefit}</span>
                 </li>
               ))}
@@ -110,7 +118,7 @@ export default async function VacancyPage({ params }: Props) {
 
           <aside className="lg:pl-4">
             <div className="border-line bg-surface shadow-card rounded-md border">
-              <p className="border-line text-green-600 border-b p-5 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+              <p className="border-line border-b p-5 font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
                 Datos de la vacante
               </p>
               <dl>
@@ -136,8 +144,8 @@ export default async function VacancyPage({ params }: Props) {
         <Container className="max-w-3xl">
           <h2 className="font-display text-h2 text-navy-500 font-semibold">Postúlate</h2>
           <p className="text-ink-muted mt-4">
-            Llena el formulario y adjunta tu CV (PDF o Word, máximo {MAX_CV_LABEL}). Tu
-            postulación llega directo a Recursos Humanos.
+            Llena el formulario y adjunta tu CV (PDF o Word, máximo {MAX_CV_LABEL}). Tu postulación
+            llega directo a Recursos Humanos.
           </p>
           <div className="mt-10">
             <ApplicationForm vacancySlug={vacancy.slug} vacancyTitle={vacancy.title} />
@@ -151,11 +159,11 @@ export default async function VacancyPage({ params }: Props) {
         <Container>
           <p className="text-ink-muted max-w-[68ch]">
             ¿Esta vacante no es para ti?{" "}
-            <Link href="/vacantes" className="text-blue-600 underline">
+            <Link href="/jobs" className="text-blue-600 underline">
               Vuelve a la bolsa de trabajo
             </Link>{" "}
             o{" "}
-            <Link href="/vacantes#postulacion-general" className="text-blue-600 underline">
+            <Link href="/jobs#postulacion-general" className="text-blue-600 underline">
               déjanos tu CV
             </Link>{" "}
             para futuras oportunidades.

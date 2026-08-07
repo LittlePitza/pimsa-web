@@ -3,9 +3,12 @@ import type { Certification, Company, NavItem, SocialLink } from "@/types/conten
 /**
  * Company master data (single source of truth for NAP consistency — SEO).
  * Phone/WhatsApp confirmed 2026-07-29: 442 274 7546 (all messages route here).
- * Email confirmed 2026-08-07: contacto@plasticospimsa.com is the public inbox
- * and receives the contact-form leads. Job applications are the exception —
- * they carry a CV and go to RRHH (APPLICATIONS_EMAIL_TO). The 2023 corporate
+ * Email confirmed 2026-08-07: contacto@plasticospimsa.com is the address the
+ * site shows the public — footer, /contact, privacy notice and the
+ * LocalBusiness JSON-LD all read it from here, so changing it changes the NAP
+ * everywhere at once. It is NOT where the forms deliver: those notifications
+ * are routed per flow from /admin/settings (leads to Marketing,
+ * applications to RRHH, since they carry a candidate's CV). The 2023 corporate
  * deck's hola@plasticospimsa.com is not in use; do not reintroduce it.
  * TODO(marketing): confirm hours and social URLs
  * (see docs/marketing-material-request.md §5).
@@ -75,25 +78,25 @@ export const certifications: Certification[] = [
  */
 export const mainNav: NavItem[] = [
   { label: "Inicio", href: "/" },
-  { label: "Nosotros", href: "/nosotros" },
+  { label: "Nosotros", href: "/about" },
   {
     label: "Servicios",
-    href: "/servicios",
+    href: "/services",
     children: [
-      { label: "Polímeros de ingeniería", href: "/servicios/polimeros" },
-      { label: "Molienda y peletizado", href: "/servicios/molienda-peletizado" },
-      { label: "Recolección de scrap", href: "/servicios/recoleccion-scrap" },
-      { label: "Contenedores colapsables", href: "/servicios/contenedores" },
+      { label: "Polímeros de ingeniería", href: "/services/polimeros" },
+      { label: "Molienda y peletizado", href: "/services/molienda-peletizado" },
+      { label: "Recolección de scrap", href: "/services/recoleccion-scrap" },
+      { label: "Contenedores colapsables", href: "/services/contenedores" },
     ],
   },
   { label: "Stock", href: "/stock" },
-  { label: "Bolsa de trabajo", href: "/vacantes" },
-  { label: "FAQ", href: "/preguntas-frecuentes" },
-  { label: "Contacto", href: "/contacto" },
+  { label: "Bolsa de trabajo", href: "/jobs" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Contacto", href: "/contact" },
 ];
 
 /** Footer-only links. */
-export const legalNav: NavItem[] = [{ label: "Aviso de privacidad", href: "/aviso-de-privacidad" }];
+export const legalNav: NavItem[] = [{ label: "Aviso de privacidad", href: "/privacy" }];
 
 export function whatsappUrl(message?: string): string {
   const base = `https://wa.me/${company.whatsapp}`;

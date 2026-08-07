@@ -4,12 +4,12 @@ import { CardRail } from "@/components/ui/card-rail";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { cn } from "@/lib/utils";
-import materialAbs from "../../../public/media/servicios/material-abs.jpg";
-import materialPa from "../../../public/media/servicios/material-pa.jpg";
-import materialPbt from "../../../public/media/servicios/material-pbt.jpg";
-import materialPc from "../../../public/media/servicios/material-pc.jpg";
-import materialPmma from "../../../public/media/servicios/material-pmma.jpg";
-import materialPom from "../../../public/media/servicios/material-pom.jpg";
+import materialAbs from "../../../public/media/services/material-abs.jpg";
+import materialPa from "../../../public/media/services/material-pa.jpg";
+import materialPbt from "../../../public/media/services/material-pbt.jpg";
+import materialPc from "../../../public/media/services/material-pc.jpg";
+import materialPmma from "../../../public/media/services/material-pmma.jpg";
+import materialPom from "../../../public/media/services/material-pom.jpg";
 
 const materials = [
   {
@@ -163,7 +163,7 @@ export function MaterialAtlas() {
         </CardRail>
 
         <div className="mt-8 flex justify-end">
-          <ButtonLink href="/servicios/polimeros" variant="primary">
+          <ButtonLink href="/services/polimeros" variant="primary">
             Explorar el portafolio
           </ButtonLink>
         </div>

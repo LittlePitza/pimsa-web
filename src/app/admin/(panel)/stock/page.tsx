@@ -17,7 +17,7 @@ export default async function AdminStockPage() {
     <>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-display text-navy-500 text-2xl font-bold">Stock</h1>
-        <ButtonLink href="/admin/stock/nuevo" size="sm">
+        <ButtonLink href="/admin/stock/new" size="sm">
           Nuevo material
         </ButtonLink>
       </div>
@@ -37,7 +37,7 @@ export default async function AdminStockPage() {
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href={`/admin/stock/${item.id}`}
-                  className="text-navy-500 hover:text-blue-600 font-display font-semibold"
+                  className="text-navy-500 font-display font-semibold hover:text-blue-600"
                 >
                   {item.material}
                 </Link>
@@ -80,7 +80,7 @@ export default async function AdminStockPage() {
               <form action={deleteStockItemAction.bind(null, item.id)}>
                 <ConfirmButton
                   message={`¿Eliminar "${item.material} ${item.form}" del catálogo?`}
-                  className="text-red-700 hover:bg-red-50 rounded-sm px-3 py-1.5 text-sm font-medium"
+                  className="rounded-sm px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50"
                 >
                   Eliminar
                 </ConfirmButton>

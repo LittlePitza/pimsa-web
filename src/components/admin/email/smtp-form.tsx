@@ -41,7 +41,7 @@ export function SmtpForm({
   return (
     <div className="grid max-w-2xl gap-6">
       {inheritedFromServer ? (
-        <p className="border-line rounded-sm border border-l-4 border-l-blue-600 bg-white p-4 text-sm">
+        <p className="border-line bg-surface rounded-sm border border-l-4 border-l-blue-600 p-4 text-sm">
           Estos datos vienen de las variables de entorno del servidor. Si guardas aquí, el panel
           toma el control y podrás cambiar el buzón sin volver a desplegar.
         </p>

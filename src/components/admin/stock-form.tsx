@@ -89,13 +89,16 @@ export function StockForm({
           type="checkbox"
           name="published"
           defaultChecked={current.published === "on"}
-          className="accent-green-600 size-4"
+          className="size-4 accent-green-600"
         />
         <span className="text-ink text-sm">Visible en el sitio público (/stock)</span>
       </label>
 
       {state.error ? (
-        <p role="alert" className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <p
+          role="alert"
+          className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+        >
           {state.error}
         </p>
       ) : null}

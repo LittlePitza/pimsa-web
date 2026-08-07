@@ -13,7 +13,11 @@ export const metadata: Metadata = buildMetadata({
   description:
     "Consulta la disponibilidad de polímeros de ingeniería reciclados: ABS, PC, PA, PP, HDPE y más, en molido o pellet. El inventario cambia constantemente — contáctanos.",
   path: "/stock",
-  keywords: ["venta de plástico reciclado", "stock de resinas recicladas", "plástico molido en venta"],
+  keywords: [
+    "venta de plástico reciclado",
+    "stock de resinas recicladas",
+    "plástico molido en venta",
+  ],
 });
 
 export default async function StockPage() {

@@ -13,16 +13,13 @@ import { cn, formatDate, formatDay } from "@/lib/utils";
 
 export default async function AdminVacanciesPage() {
   await requireArea("rrhh");
-  const [vacancies, total] = await Promise.all([
-    listVacancies(ADMIN_LIST_LIMIT),
-    countVacancies(),
-  ]);
+  const [vacancies, total] = await Promise.all([listVacancies(ADMIN_LIST_LIMIT), countVacancies()]);
 
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-display text-navy-500 text-2xl font-bold">Vacantes</h1>
-        <ButtonLink href="/admin/vacantes/nueva" size="sm">
+        <ButtonLink href="/admin/vacancies/new" size="sm">
           Nueva vacante
         </ButtonLink>
       </div>
@@ -30,12 +27,12 @@ export default async function AdminVacanciesPage() {
 
       <p className="border-line bg-surface text-ink-muted mt-6 rounded-md border p-4 text-sm">
         Feed para bolsas de trabajo:{" "}
-        <a href="/vacantes.xml" className="text-blue-600 font-mono break-all underline">
-          {absoluteUrl("/vacantes.xml")}
+        <a href="/jobs.xml" className="font-mono break-all text-blue-600 underline">
+          {absoluteUrl("/jobs.xml")}
         </a>
         <br />
-        Entrega esta dirección a Computrabajo, OCC o Indeed y publican solas todas las
-        vacantes en estado «Publicada». Google las toma directo de cada página.
+        Entrega esta dirección a Computrabajo, OCC o Indeed y publican solas todas las vacantes en
+        estado «Publicada». Google las toma directo de cada página.
       </p>
 
       <ul className="border-line bg-surface shadow-card mt-8 divide-y divide-(--color-line) rounded-md border">
@@ -44,8 +41,8 @@ export default async function AdminVacanciesPage() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-3">
                 <Link
-                  href={`/admin/vacantes/${vacancy.id}`}
-                  className="text-navy-500 hover:text-blue-600 font-display font-semibold"
+                  href={`/admin/vacancies/${vacancy.id}`}
+                  className="text-navy-500 font-display font-semibold hover:text-blue-600"
                 >
                   {vacancy.title}
                 </Link>
@@ -59,7 +56,7 @@ export default async function AdminVacanciesPage() {
                 </Badge>
               </div>
               <p className="text-ink-muted mt-1 text-sm">
-                {vacancy.department || "Sin área"} · /vacantes/{vacancy.slug} · Actualizada{" "}
+                {vacancy.department || "Sin área"} · /jobs/{vacancy.slug} · Actualizada{" "}
                 {formatDate(vacancy.updatedAt)}
                 {/* An expired posting still reads "Publicada" here but has already
                     dropped off every board — worth saying out loud. */}
@@ -78,7 +75,7 @@ export default async function AdminVacanciesPage() {
                   <input type="hidden" name="status" value="open" />
                   <button
                     type="submit"
-                    className="text-green-600 hover:bg-green-600/10 rounded-sm px-3 py-1.5 text-sm font-medium"
+                    className="rounded-sm px-3 py-1.5 text-sm font-medium text-green-600 hover:bg-green-600/10"
                   >
                     Publicar
                   </button>
@@ -95,7 +92,7 @@ export default async function AdminVacanciesPage() {
                 </form>
               )}
               <Link
-                href={`/admin/vacantes/${vacancy.id}`}
+                href={`/admin/vacancies/${vacancy.id}`}
                 className="text-navy-500 hover:bg-navy-500/10 rounded-sm px-3 py-1.5 text-sm font-medium"
               >
                 Editar
@@ -103,7 +100,7 @@ export default async function AdminVacanciesPage() {
               <form action={deleteVacancyAction.bind(null, vacancy.id)}>
                 <ConfirmButton
                   message={`¿Eliminar la vacante "${vacancy.title}"? Esta acción no se puede deshacer.`}
-                  className="text-red-700 hover:bg-red-50 rounded-sm px-3 py-1.5 text-sm font-medium"
+                  className="rounded-sm px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50"
                 >
                   Eliminar
                 </ConfirmButton>

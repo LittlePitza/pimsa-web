@@ -62,13 +62,13 @@ export function ServiceCycle({ index = "03" }: { index?: string }) {
             return (
               <Reveal key={stage.slug} as="li" delay={i * 80}>
                 <Link
-                  href={`/servicios/${service.slug}`}
+                  href={`/services/${service.slug}`}
                   className="group flex h-full flex-col border-t border-blue-400/30 pt-6 transition-colors hover:border-green-300 md:pr-8"
                 >
                   <p className="font-mono text-xs tracking-[0.16em] text-green-300 uppercase">
                     {stage.role}
                   </p>
-                  <h3 className="font-display text-paper group-hover:text-green-300 mt-3 text-xl font-semibold transition-colors">
+                  <h3 className="font-display text-paper mt-3 text-xl font-semibold transition-colors group-hover:text-green-300">
                     {service.name}
                   </h3>
                   <p className="text-paper/70 mt-2 max-w-[36ch] text-sm leading-6">
@@ -92,15 +92,15 @@ export function ServiceCycle({ index = "03" }: { index?: string }) {
           <Reveal delay={240}>
             <div className="mt-12 flex flex-col gap-4 border-t border-blue-400/30 pt-6 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-paper/70 max-w-[62ch] text-sm">
-                <span className="text-green-300 font-mono text-xs tracking-[0.16em] uppercase">
+                <span className="font-mono text-xs tracking-[0.16em] text-green-300 uppercase">
                   Y en ambos sentidos ·{" "}
                 </span>
-                Los contenedores colapsables son lo que mueve el material por todo el círculo,
-                de ida y de vuelta.
+                Los contenedores colapsables son lo que mueve el material por todo el círculo, de
+                ida y de vuelta.
               </p>
               <Link
-                href={`/servicios/${containers.slug}`}
-                className="text-green-300 hover:text-paper group inline-flex shrink-0 items-center gap-2 text-sm font-medium transition-colors"
+                href={`/services/${containers.slug}`}
+                className="hover:text-paper group inline-flex shrink-0 items-center gap-2 text-sm font-medium text-green-300 transition-colors"
               >
                 {containers.name}
                 <ArrowRight

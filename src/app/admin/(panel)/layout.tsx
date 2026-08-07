@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { cookies } from "next/headers";
 import { signOutAction } from "@/app/admin/actions";
-import { AdminNav } from "@/components/admin/admin-nav";
-import { Logo } from "@/components/layout/logo";
+import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { ADMIN_ROOT_ID, ADMIN_THEME_COOKIE } from "@/components/admin/theme-toggle";
 import { isSuperAdmin, requireAdmin } from "@/lib/auth";
 import { homeFor, roleLabels } from "@/lib/roles";
 
@@ -17,45 +17,25 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // Every "home" affordance points at the caller's own portal, so Marketing
   // and RRHH never bounce off the general panel they can't open.
   const home = homeFor(session.role);
+  // Rendered server-side from the cookie, so the chosen theme paints on the
+  // first frame — no light flash before hydration.
+  const theme = (await cookies()).get(ADMIN_THEME_COOKIE)?.value === "dark" ? "dark" : "light";
 
   return (
-    <div className="flex min-h-svh flex-col">
-      <header className="bg-surface border-line border-b">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-5">
-          <div className="flex items-center gap-8">
-            <Link href={home} aria-label="Panel — inicio">
-              <Logo />
-            </Link>
-            <nav aria-label="Navegación del panel" className="hidden md:block">
-              <AdminNav
-                variant="desktop"
-                role={session.role}
-                canManageAccounts={canManageAccounts}
-              />
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-ink-muted hidden text-right font-mono text-xs sm:block">
-              {session.email}
-              <span className="text-navy-500 block">{roleLabels[session.role]}</span>
-            </span>
-            <form action={signOutAction}>
-              <button
-                type="submit"
-                className="text-navy-500 hover:bg-navy-500/10 rounded-sm px-3 py-1.5 text-sm font-medium transition-colors"
-              >
-                Salir
-              </button>
-            </form>
-          </div>
-        </div>
-        {/* Mobile nav */}
-        <nav aria-label="Navegación del panel (móvil)" className="border-line border-t md:hidden">
-          <AdminNav variant="mobile" role={session.role} canManageAccounts={canManageAccounts} />
-        </nav>
-      </header>
-
-      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-5 py-10">{children}</main>
+    <div id={ADMIN_ROOT_ID} data-theme={theme} className="bg-paper text-ink min-h-svh lg:flex">
+      <AdminSidebar
+        role={session.role}
+        canManageAccounts={canManageAccounts}
+        email={session.email}
+        roleLabel={roleLabels[session.role]}
+        home={home}
+        signOutAction={signOutAction}
+      />
+      <div className="min-w-0 flex-1">
+        <main id="main" className="mx-auto w-full max-w-7xl px-5 py-8 lg:px-8 lg:py-10">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

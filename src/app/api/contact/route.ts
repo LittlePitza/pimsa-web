@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Recipients, CC/BCC and the on-off switch come from /admin/configuracion;
+  // Recipients, CC/BCC and the on-off switch come from /admin/settings;
   // every attempt lands in the panel's email log, delivered or not.
   after(async () => {
     await notifyFlow("leads", notification, { replyTo: lead.email });

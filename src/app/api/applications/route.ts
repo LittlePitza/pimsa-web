@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
   // Best-effort email notification to HR (application is already stored).
   // after() runs once the response is sent and keeps the work alive on any
   // host, without delaying the candidate's confirmation. Recipients, CC/BCC
-  // and the on-off switch come from /admin/configuracion, and every attempt
+  // and the on-off switch come from /admin/settings, and every attempt
   // is recorded in the panel's email log — sent, failed or skipped.
   after(async () => {
     const vacancyTitle = vacancy?.title ?? "";

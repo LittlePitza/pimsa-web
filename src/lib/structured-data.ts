@@ -86,7 +86,7 @@ export function serviceSchema(service: Service): JsonLdObject {
     "@type": "Service",
     name: service.name,
     description: service.metaDescription,
-    url: absoluteUrl(`/servicios/${service.slug}`),
+    url: absoluteUrl(`/services/${service.slug}`),
     image: absoluteUrl(service.figure.src),
     serviceType: service.name,
     areaServed: { "@type": "Country", name: "México" },
@@ -114,7 +114,7 @@ export function serviceListSchema(list: Service[]): JsonLdObject {
       position: i + 1,
       name: service.name,
       description: service.summary,
-      url: absoluteUrl(`/servicios/${service.slug}`),
+      url: absoluteUrl(`/services/${service.slug}`),
     })),
   };
 }
@@ -177,7 +177,7 @@ function vacancyAddress(vacancy: Vacancy): JsonLdObject {
  * Google Jobs eligibility for vacancy pages (JobPosting structured data).
  *
  * `directApply: true` is a claim Google checks: the URL must land on a form
- * the candidate can actually submit, which /vacantes/[slug] does. It is also
+ * the candidate can actually submit, which /jobs/[slug] does. It is also
  * what keeps the application in our own panel instead of a board's inbox.
  */
 export function jobPostingSchema(vacancy: Vacancy): JsonLdObject {
@@ -204,19 +204,17 @@ export function jobPostingSchema(vacancy: Vacancy): JsonLdObject {
     // country a candidate may live in; dropping the location instead makes
     // Google treat the listing as incomplete.
     jobLocationType: remote ? "TELECOMMUTE" : undefined,
-    applicantLocationRequirements: remote
-      ? { "@type": "Country", name: "México" }
-      : undefined,
+    applicantLocationRequirements: remote ? { "@type": "Country", name: "México" } : undefined,
     baseSalary: baseSalaryNode(vacancy),
     occupationalCategory: vacancy.department || undefined,
     totalJobOpenings: vacancy.openings,
     directApply: true,
-    url: absoluteUrl(`/vacantes/${vacancy.slug}`),
+    url: absoluteUrl(`/jobs/${vacancy.slug}`),
   };
 }
 
 /**
- * AboutPage node for /nosotros.
+ * AboutPage node for /about.
  *
  * `mainEntity` points at the Organization so Google reads the page as the
  * company's own description rather than a loose article, which is what makes
@@ -228,8 +226,8 @@ export function aboutPageSchema(images: string[]): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@type": "AboutPage",
-    "@id": `${SITE_URL}/nosotros#aboutpage`,
-    url: absoluteUrl("/nosotros"),
+    "@id": `${SITE_URL}/about#aboutpage`,
+    url: absoluteUrl("/about"),
     name: `Nosotros — ${company.name}`,
     description: company.description,
     inLanguage: "es-MX",

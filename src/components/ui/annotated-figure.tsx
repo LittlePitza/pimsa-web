@@ -73,7 +73,7 @@ export function AnnotatedFigure({
       </div>
       <figcaption className="text-ink-muted mt-3 flex items-baseline justify-between gap-4 font-mono text-xs tracking-[0.14em] uppercase">
         <span>{image.caption}</span>
-        {image.tag ? <span className="text-green-600 shrink-0">{image.tag}</span> : null}
+        {image.tag ? <span className="shrink-0 text-green-600">{image.tag}</span> : null}
       </figcaption>
     </figure>
   );

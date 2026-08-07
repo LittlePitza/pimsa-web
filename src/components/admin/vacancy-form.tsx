@@ -42,7 +42,7 @@ const initialState: ActionState = {};
 function FormSection({ title, hint }: { title: string; hint?: string }) {
   return (
     <div className="border-line border-t pt-6">
-      <p className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+      <p className="font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
         {title}
       </p>
       {hint ? <p className="text-ink-muted mt-2 text-sm">{hint}</p> : null}
@@ -70,7 +70,13 @@ export function VacancyForm({
   return (
     <form action={formAction} className="grid max-w-3xl gap-6">
       <div className="grid gap-6 sm:grid-cols-2">
-        <InputField id="title" label="Título" required maxLength={160} defaultValue={current.title} />
+        <InputField
+          id="title"
+          label="Título"
+          required
+          maxLength={160}
+          defaultValue={current.title}
+        />
         <InputField
           id="slug"
           label="Slug (URL, opcional)"
@@ -178,12 +184,7 @@ export function VacancyForm({
           defaultValue={current.salaryMax}
           placeholder="15000"
         />
-        <SelectField
-          id="salaryPeriod"
-          label="Periodo"
-          required
-          defaultValue={current.salaryPeriod}
-        >
+        <SelectField id="salaryPeriod" label="Periodo" required defaultValue={current.salaryPeriod}>
           {SALARY_PERIODS.map((period) => (
             <option key={period} value={period}>
               {salaryPeriodLabels[period]}
@@ -237,7 +238,10 @@ export function VacancyForm({
       </div>
 
       {state.error ? (
-        <p role="alert" className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <p
+          role="alert"
+          className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+        >
           {state.error}
         </p>
       ) : null}

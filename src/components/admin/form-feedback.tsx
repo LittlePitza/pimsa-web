@@ -22,7 +22,7 @@ export function FormFeedback({ state }: { state: ActionState }) {
     return (
       <p
         role="status"
-        className="border-line rounded-sm border border-l-4 border-l-green-600 bg-white p-4 text-sm"
+        className="border-line bg-surface rounded-sm border border-l-4 border-l-green-600 p-4 text-sm"
       >
         {state.success}
       </p>

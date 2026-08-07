@@ -70,3 +70,35 @@
   --duration-fast: 150ms;
   --duration-base: 300ms;
 }
+
+/* ── Panel night mode ────────────────────────────────────────────────────
+ * Scoped to the admin root's data-theme attribute — the public site never
+ * sees it. Pure token remap: components keep their classes and inherit the
+ * night palette wholesale. Values keep the same *roles* (ink stays the
+ * readable one, navy-500 stays "brand emphasis") at AA contrast on the
+ * dark surfaces.
+ */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-paper: #0e1b2e; /* page background = brand navy-900 */
+  --color-surface: #16273f; /* cards, sidebar */
+  --color-ink: #e8edf4;
+  --color-ink-muted: #93a4b8;
+  --color-line: #2a3b53;
+
+  --color-navy-500: #a9c2e4; /* headings, active nav, navy-tone values */
+  --color-blue-600: #82abdd; /* links, blue-tone values */
+  --color-green-600: #b0cd75; /* green text = brand green-300 */
+  --color-forest-800: #82c9a8;
+
+  /* Feedback (form errors) */
+  --color-red-50: #2f1418;
+  --color-red-200: #5c2430;
+  --color-red-600: #e5484d;
+  --color-red-700: #f08b8b;
+  --color-red-800: #f2a3a3;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 8px rgb(0 0 0 / 0.25);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.4);
+}

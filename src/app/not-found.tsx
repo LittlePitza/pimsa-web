@@ -19,7 +19,13 @@ export default function NotFound() {
       <main id="main" className="flex-1">
         <section className="flex min-h-[70svh] items-center pt-18">
           <Container className="py-24">
-            <svg viewBox="0 0 120 120" aria-hidden className="size-24" fill="none" strokeLinecap="round">
+            <svg
+              viewBox="0 0 120 120"
+              aria-hidden
+              className="size-24"
+              fill="none"
+              strokeLinecap="round"
+            >
               {/* Broken loop */}
               <path
                 d="M104 60a44 44 0 1 1-24-39.2"
@@ -38,7 +44,7 @@ export default function NotFound() {
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
               <ButtonLink href="/">Ir al inicio</ButtonLink>
-              <ButtonLink href="/servicios" variant="outline">
+              <ButtonLink href="/services" variant="outline">
                 Ver servicios
               </ButtonLink>
             </div>

@@ -64,17 +64,13 @@
       "compositePrimaryKeys": {
         "admin_users_id": {
           "name": "admin_users_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "admin_users_email_unique": {
           "name": "admin_users_email_unique",
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "checkConstraint": {}
@@ -131,12 +127,8 @@
           "name": "application_files_application_id_applications_id_fk",
           "tableFrom": "application_files",
           "tableTo": "applications",
-          "columnsFrom": [
-            "application_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["application_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -144,17 +136,13 @@
       "compositePrimaryKeys": {
         "application_files_id": {
           "name": "application_files_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "application_files_application_id_unique": {
           "name": "application_files_application_id_unique",
-          "columns": [
-            "application_id"
-          ]
+          "columns": ["application_id"]
         }
       },
       "checkConstraint": {}
@@ -236,12 +224,8 @@
           "name": "applications_vacancy_id_vacancies_id_fk",
           "tableFrom": "applications",
           "tableTo": "vacancies",
-          "columnsFrom": [
-            "vacancy_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["vacancy_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -249,9 +233,7 @@
       "compositePrimaryKeys": {
         "applications_id": {
           "name": "applications_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -349,9 +331,7 @@
       "compositePrimaryKeys": {
         "leads_id": {
           "name": "leads_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -389,9 +369,7 @@
       "compositePrimaryKeys": {
         "settings_key": {
           "name": "settings_key",
-          "columns": [
-            "key"
-          ]
+          "columns": ["key"]
         }
       },
       "uniqueConstraints": {},
@@ -476,9 +454,7 @@
       "compositePrimaryKeys": {
         "stock_items_id": {
           "name": "stock_items_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -606,17 +582,13 @@
       "compositePrimaryKeys": {
         "vacancies_id": {
           "name": "vacancies_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "vacancies_slug_unique": {
           "name": "vacancies_slug_unique",
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "checkConstraint": {}

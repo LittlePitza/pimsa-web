@@ -58,7 +58,7 @@ export default async function AdminLeadsPage() {
             </div>
 
             <details className="mt-4">
-              <summary className="text-blue-600 cursor-pointer text-sm font-medium">
+              <summary className="cursor-pointer text-sm font-medium text-blue-600">
                 Ver mensaje
               </summary>
               <p className="text-ink-muted mt-2 text-sm whitespace-pre-line">{lead.message}</p>

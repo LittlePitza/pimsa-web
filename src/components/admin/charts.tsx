@@ -1,10 +1,12 @@
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 import type { Bucket, MonthPoint } from "@/lib/metrics";
 import { cn } from "@/lib/utils";
 
 /**
  * Lightweight, server-rendered dashboard primitives (no client JS): KPI tiles,
- * horizontal bar lists, and a CSS bar chart. Colored per area via `tone`.
+ * horizontal bar lists, segmented distributions and a CSS bar chart. Colored
+ * per area via `tone`.
  */
 
 type Tone = "green" | "blue" | "navy";
@@ -21,31 +23,51 @@ const valueText: Record<Tone, string> = {
   navy: "text-navy-500",
 };
 
-/** KPI tile: big number + label, optionally a hint and a link. */
+const chipTone: Record<Tone, string> = {
+  green: "bg-green-500/10 text-green-600",
+  blue: "bg-blue-600/10 text-blue-600",
+  navy: "bg-navy-500/10 text-navy-500",
+};
+
+/** KPI tile: label + big number, optionally an icon chip, a hint and a link. */
 export function StatCard({
   label,
   value,
   hint,
   href,
   tone = "navy",
+  icon: Icon,
 }: {
   label: string;
   value: number | string;
   hint?: string;
   href?: string;
   tone?: Tone;
+  icon?: LucideIcon;
 }) {
   const body = (
     <>
-      <p className={cn("font-display text-4xl font-bold", valueText[tone])}>{value}</p>
-      <p className="text-ink-muted mt-2 font-mono text-xs tracking-wider uppercase">{label}</p>
-      {hint ? <p className="text-ink-muted mt-1 text-xs">{hint}</p> : null}
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-ink-muted font-mono text-xs tracking-wider uppercase">{label}</p>
+        {Icon ? (
+          <span
+            aria-hidden
+            className={cn("grid size-9 shrink-0 place-items-center rounded-md", chipTone[tone])}
+          >
+            <Icon className="size-4" strokeWidth={1.75} />
+          </span>
+        ) : null}
+      </div>
+      <p className={cn("font-display mt-2 text-3xl font-bold sm:text-4xl", valueText[tone])}>
+        {value}
+      </p>
+      {hint ? <p className="text-ink-muted mt-1.5 text-xs">{hint}</p> : null}
     </>
   );
 
   const className =
-    "border-line bg-surface shadow-card block rounded-md border p-6" +
-    (href ? " hover:shadow-lift transition-shadow" : "");
+    "border-line bg-surface shadow-card block rounded-md border p-5" +
+    (href ? " hover:shadow-lift hover:border-navy-500/20 transition-all" : "");
 
   return href ? (
     <Link href={href} className={className}>
@@ -53,6 +75,48 @@ export function StatCard({
     </Link>
   ) : (
     <div className={className}>{body}</div>
+  );
+}
+
+export interface Segment {
+  label: string;
+  value: number;
+  /** Tailwind bg-* class painting both the bar segment and its legend dot. */
+  className: string;
+}
+
+/**
+ * Proportional distribution: one bar split by status plus a legend with the
+ * exact counts, so the shape is scannable and the numbers are still there.
+ */
+export function SegmentBar({ segments }: { segments: Segment[] }) {
+  const total = segments.reduce((sum, segment) => sum + segment.value, 0);
+
+  return (
+    <div>
+      <div className="bg-line/60 flex h-2 overflow-hidden rounded-full">
+        {total > 0
+          ? segments
+              .filter((segment) => segment.value > 0)
+              .map((segment) => (
+                <span
+                  key={segment.label}
+                  className={segment.className}
+                  style={{ width: `${(segment.value / total) * 100}%` }}
+                />
+              ))
+          : null}
+      </div>
+      <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
+        {segments.map((segment) => (
+          <div key={segment.label} className="flex items-center gap-1.5">
+            <span aria-hidden className={cn("size-2 shrink-0 rounded-full", segment.className)} />
+            <dt className="text-ink-muted text-xs">{segment.label}</dt>
+            <dd className="text-ink font-mono text-xs">{segment.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   );
 }
 
@@ -72,7 +136,7 @@ export function ChartCard({
     <section className="border-line bg-surface shadow-card rounded-md border p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+          <h2 className="font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
             {title}
           </h2>
           {hint ? <p className="text-ink-muted mt-1 text-sm">{hint}</p> : null}

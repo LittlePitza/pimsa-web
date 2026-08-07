@@ -33,14 +33,17 @@ export interface AccountCardData {
 function Feedback({ state }: { state: ActionState }) {
   if (state.error) {
     return (
-      <p role="alert" className="rounded-sm border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+      <p
+        role="alert"
+        className="rounded-sm border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+      >
         {state.error}
       </p>
     );
   }
   if (state.success) {
     return (
-      <p role="status" className="border-green-600 rounded-sm border-l-4 bg-white p-3 text-sm">
+      <p role="status" className="bg-surface rounded-sm border-l-4 border-green-600 p-3 text-sm">
         {state.success}
       </p>
     );
@@ -73,7 +76,7 @@ export function AccountCard({ account }: { account: AccountCardData }) {
         </div>
         <div className="flex items-center gap-2">
           {account.isSuper ? (
-            <span className="border-green-600 text-green-600 rounded-full border px-2.5 py-0.5 font-mono text-xs tracking-wider uppercase">
+            <span className="rounded-full border border-green-600 px-2.5 py-0.5 font-mono text-xs tracking-wider text-green-600 uppercase">
               Super-admin
             </span>
           ) : (
@@ -90,7 +93,7 @@ export function AccountCard({ account }: { account: AccountCardData }) {
       <div className="mt-5 grid gap-6 border-t border-(--color-line) pt-5 lg:grid-cols-2">
         {/* Profile: name + email */}
         <form action={profileAction} className="grid gap-4">
-          <p className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+          <p className="font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
             Datos de la cuenta
           </p>
           <InputField
@@ -116,8 +119,7 @@ export function AccountCard({ account }: { account: AccountCardData }) {
             <>
               <input type="hidden" name="role" value="admin" />
               <p className="text-ink-muted text-xs">
-                Los super-administradores conservan el panel completo; su área no se puede
-                cambiar.
+                Los super-administradores conservan el panel completo; su área no se puede cambiar.
               </p>
             </>
           ) : (
@@ -149,7 +151,7 @@ export function AccountCard({ account }: { account: AccountCardData }) {
 
         {/* Password reset */}
         <form action={passwordAction} className="grid gap-4">
-          <p className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+          <p className="font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
             Cambiar contraseña
           </p>
           <InputField

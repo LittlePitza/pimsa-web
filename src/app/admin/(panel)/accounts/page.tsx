@@ -32,7 +32,7 @@ export default async function AccountsPage() {
       </p>
 
       <section className="border-line bg-surface shadow-card mt-8 rounded-md border p-6">
-        <h2 className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+        <h2 className="font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
           Nueva cuenta
         </h2>
         <p className="text-ink-muted mt-2 text-sm">
@@ -44,7 +44,7 @@ export default async function AccountsPage() {
       </section>
 
       <section className="mt-10">
-        <h2 className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+        <h2 className="font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
           Cuentas registradas ({accounts.length})
         </h2>
         <ul className="mt-5 space-y-5">

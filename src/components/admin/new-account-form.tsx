@@ -64,7 +64,7 @@ export function NewAccountForm() {
       {state.success ? (
         <p
           role="status"
-          className="border-green-600 rounded-sm border-l-4 bg-white p-3 text-sm sm:col-span-2"
+          className="bg-surface rounded-sm border-l-4 border-green-600 p-3 text-sm sm:col-span-2"
         >
           {state.success}
         </p>

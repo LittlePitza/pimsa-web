@@ -27,7 +27,7 @@ export function ConsentBanner() {
     >
       <p className="text-ink text-sm">
         Usamos cookies para medir el uso del sitio y mejorar tu experiencia. Consulta nuestro{" "}
-        <Link href="/aviso-de-privacidad" className="text-blue-600 underline">
+        <Link href="/privacy" className="text-blue-600 underline">
           aviso de privacidad
         </Link>
         .

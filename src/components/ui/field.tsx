@@ -7,7 +7,15 @@ const inputClasses =
   "placeholder:text-ink-muted/80 transition-colors duration-150 " +
   "focus:border-blue-600 focus:outline-none aria-invalid:border-red-600";
 
-function FieldLabel({ htmlFor, children, required }: { htmlFor: string; children: React.ReactNode; required?: boolean }) {
+function FieldLabel({
+  htmlFor,
+  children,
+  required,
+}: {
+  htmlFor: string;
+  children: React.ReactNode;
+  required?: boolean;
+}) {
   return (
     <label
       htmlFor={htmlFor}

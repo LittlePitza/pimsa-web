@@ -127,7 +127,7 @@ export function ContactForm({ serviceNames }: { serviceNames: readonly string[] 
         <p className="text-ink-muted mt-4 text-xs">
           Al enviar aceptas nuestro{" "}
           <Link
-            href="/aviso-de-privacidad"
+            href="/privacy"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 underline"

@@ -315,8 +315,8 @@ function invalidVacancyForm(formData: FormData, message: string): ActionState {
 }
 
 function revalidateJobBoard() {
-  revalidatePath("/vacantes");
-  revalidatePath("/vacantes/[slug]", "page");
+  revalidatePath("/jobs");
+  revalidatePath("/jobs/[slug]", "page");
   revalidatePath("/sitemap.xml");
 }
 
@@ -338,7 +338,7 @@ export async function createVacancyAction(
   });
 
   revalidateJobBoard();
-  redirect("/admin/vacantes");
+  redirect("/admin/vacancies");
 }
 
 export async function updateVacancyAction(
@@ -363,7 +363,7 @@ export async function updateVacancyAction(
   await updateVacancy(id, { ...data, slug, publishedAt });
 
   revalidateJobBoard();
-  redirect("/admin/vacantes");
+  redirect("/admin/vacancies");
 }
 
 export async function setVacancyStatusAction(id: number, formData: FormData): Promise<void> {
@@ -372,14 +372,14 @@ export async function setVacancyStatusAction(id: number, formData: FormData): Pr
   if (!status.success) return; // manipulated input — ignore instead of throwing
   await setVacancyStatus(id, status.data);
   revalidateJobBoard();
-  revalidatePath("/admin/vacantes");
+  revalidatePath("/admin/vacancies");
 }
 
 export async function deleteVacancyAction(id: number): Promise<void> {
   await requireArea("rrhh");
   await deleteVacancy(id);
   revalidateJobBoard();
-  revalidatePath("/admin/vacantes");
+  revalidatePath("/admin/vacancies");
 }
 
 // ── Applications ─────────────────────────────────────────────────────────
@@ -389,7 +389,7 @@ export async function setApplicationStatusAction(id: number, formData: FormData)
   const status = z.enum(APPLICATION_STATUSES).safeParse(formData.get("status"));
   if (!status.success) return;
   await setApplicationStatus(id, status.data);
-  revalidatePath("/admin/postulaciones");
+  revalidatePath("/admin/applications");
 }
 
 // ── Stock ────────────────────────────────────────────────────────────────
@@ -538,7 +538,7 @@ export async function saveEmailFlowAction(
     [keys.acknowledge]: checkbox(formData, "acknowledge"),
   });
 
-  revalidatePath("/admin/configuracion");
+  revalidatePath("/admin/settings");
   return { success: `Guardado. ${flowLabels[flow]} — configuración aplicada de inmediato.` };
 }
 
@@ -599,7 +599,7 @@ export async function saveSmtpAction(_prev: ActionState, formData: FormData): Pr
     ...(password ? { [SETTING_KEYS.smtpPassword]: encryptSecret(password) } : {}),
   });
 
-  revalidatePath("/admin/configuracion");
+  revalidatePath("/admin/settings");
   return { success: "Cuenta de envío guardada. Prueba la conexión para confirmarla." };
 }
 
@@ -623,7 +623,7 @@ export async function resetSmtpAction(): Promise<void> {
     [SETTING_KEYS.fromAddress]: "",
     [SETTING_KEYS.fromName]: "",
   });
-  revalidatePath("/admin/configuracion");
+  revalidatePath("/admin/settings");
 }
 
 /**
@@ -700,7 +700,7 @@ export async function sendTestEmailAction(
     recipients,
   );
 
-  revalidatePath("/admin/configuracion");
+  revalidatePath("/admin/settings");
 
   if (result.status === "sent") {
     return {
@@ -767,7 +767,7 @@ export async function createAccountAction(
     role: isSuperAdmin(parsed.data.email) ? "admin" : parsed.data.role,
   });
 
-  revalidatePath("/admin/cuentas");
+  revalidatePath("/admin/accounts");
   return {
     success: `Cuenta creada para ${parsed.data.email.toLowerCase()} — ${roleLabels[parsed.data.role]}.`,
   };
@@ -810,7 +810,7 @@ export async function updateAccountAction(
     // Super-admins can't be boxed into one area — they manage the accounts.
     role: isSuperAdmin(parsed.data.email) ? "admin" : parsed.data.role,
   });
-  revalidatePath("/admin/cuentas");
+  revalidatePath("/admin/accounts");
   return { success: `Cuenta actualizada — ${roleLabels[parsed.data.role]}.` };
 }
 
@@ -832,7 +832,7 @@ export async function resetAccountPasswordAction(
   const passwordHash = await bcrypt.hash(parsed.data, 12);
   await updateAdminPassword(id, passwordHash);
 
-  revalidatePath("/admin/cuentas");
+  revalidatePath("/admin/accounts");
   return { success: `Contraseña actualizada para ${account.email}.` };
 }
 
@@ -847,5 +847,5 @@ export async function deleteAccountAction(id: number): Promise<void> {
   if (!account || isSuperAdmin(account.email)) return;
 
   await deleteAdmin(id);
-  revalidatePath("/admin/cuentas");
+  revalidatePath("/admin/accounts");
 }

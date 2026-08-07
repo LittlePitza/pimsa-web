@@ -48,7 +48,7 @@ export default async function AdminApplicationsPage() {
                 {application.cvFileId ? (
                   <a
                     href={`/api/admin/cv/${application.cvFileId}`}
-                    className="border-navy-500 text-navy-500 hover:bg-navy-500 rounded-sm border px-3 py-1.5 text-sm font-medium transition-colors hover:text-white"
+                    className="border-navy-500 text-navy-500 hover:bg-navy-500 dark:hover:text-navy-900 rounded-sm border px-3 py-1.5 text-sm font-medium transition-colors hover:text-white"
                   >
                     Descargar CV
                   </a>
@@ -68,7 +68,7 @@ export default async function AdminApplicationsPage() {
             </div>
 
             <details className="mt-4">
-              <summary className="text-blue-600 cursor-pointer text-sm font-medium">
+              <summary className="cursor-pointer text-sm font-medium text-blue-600">
                 Ver mensaje
               </summary>
               <p className="text-ink-muted mt-2 text-sm whitespace-pre-line">

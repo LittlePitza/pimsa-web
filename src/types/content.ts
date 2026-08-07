@@ -49,7 +49,7 @@ export interface ProcessStep {
 
 /** Editorially annotated photo (DESIGN.md §4.5): mono caption + optional tag. */
 export interface ServiceImage {
-  /** Path under /public, e.g. "/media/servicios/molienda-molino.jpg". */
+  /** Path under /public, e.g. "/media/services/molienda-molino.jpg". */
   src: string;
   alt: string;
   /** Mono caption, e.g. "Fig. 02 — Alimentación del molino". */

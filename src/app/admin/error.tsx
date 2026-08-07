@@ -27,7 +27,7 @@ export default function AdminShellError({
 
   return (
     <div className="border-line bg-surface shadow-card mx-auto mt-12 max-w-xl rounded-md border p-8">
-      <p className="text-green-600 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+      <p className="font-mono text-xs font-medium tracking-[0.18em] text-green-600 uppercase">
         Error del panel
       </p>
       <h1 className="font-display text-navy-500 mt-3 text-2xl font-bold">
@@ -35,8 +35,8 @@ export default function AdminShellError({
       </h1>
       <p className="text-ink-muted mt-3 text-sm">
         Casi siempre es la conexión con la base de datos. Reintenta; si persiste, revisa las
-        variables de entorno del servidor (DATABASE_URL, AUTH_SECRET) y que las migraciones
-        estén aplicadas.
+        variables de entorno del servidor (DATABASE_URL, AUTH_SECRET) y que las migraciones estén
+        aplicadas.
       </p>
       {error.digest ? (
         <p className="text-ink-muted mt-4 font-mono text-xs">

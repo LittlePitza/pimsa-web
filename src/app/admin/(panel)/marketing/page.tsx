@@ -76,10 +76,7 @@ export default async function MarketingDashboardPage() {
         </ChartCard>
 
         <ChartCard title="Embudo de leads" hint="Por estado · histórico completo">
-          <BarList
-            items={statusBuckets(counts, LEAD_STATUSES, leadStatusLabels)}
-            tone="green"
-          />
+          <BarList items={statusBuckets(counts, LEAD_STATUSES, leadStatusLabels)} tone="green" />
         </ChartCard>
 
         <ChartCard
@@ -101,7 +98,7 @@ export default async function MarketingDashboardPage() {
         <ChartCard
           title="Últimos leads"
           action={
-            <Link href="/admin/leads" className="text-blue-600 text-sm font-medium">
+            <Link href="/admin/leads" className="text-sm font-medium text-blue-600">
               Ver todos
             </Link>
           }
@@ -132,7 +129,7 @@ export default async function MarketingDashboardPage() {
         <ChartCard
           title="Catálogo de stock"
           action={
-            <Link href="/admin/stock" className="text-blue-600 text-sm font-medium">
+            <Link href="/admin/stock" className="text-sm font-medium text-blue-600">
               Administrar
             </Link>
           }

@@ -20,7 +20,7 @@ export function CtaBand({
           <h2 className="font-display text-h2 text-paper mt-4 font-semibold">{title}</h2>
           <p className="text-paper/75 text-lead mt-5">{intro}</p>
           <div className="mt-9 flex flex-wrap gap-4">
-            <ButtonLink href="/contacto" variant="accent" size="lg">
+            <ButtonLink href="/contact" variant="accent" size="lg">
               Solicitar cotización
             </ButtonLink>
             <ButtonLink href={whatsappUrl()} variant="outline-light" size="lg">

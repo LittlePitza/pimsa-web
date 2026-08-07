@@ -15,7 +15,7 @@ const millingCapacityLabel = formatInteger(millingCapacityTonsPerYear);
 const pelletizingCapacityLabel = formatInteger(pelletizingCapacityTonsPerYear);
 
 /**
- * Service catalog — drives /servicios hub, the four detail pages,
+ * Service catalog — drives /services hub, the four detail pages,
  * home sections, sitemap entries and Service JSON-LD.
  * TODO(marketing): replace placeholder capacities/coverage with validated
  * figures (docs/marketing-material-request.md §3).
@@ -109,7 +109,7 @@ export const services: Service[] = [
       "Apoyo a tus metas de economía circular y sustentabilidad",
     ],
     figure: {
-      src: "/media/servicios/polimeros-pellets.jpg",
+      src: "/media/services/polimeros-pellets.jpg",
       alt: "Pellets de polímero reciclado color natural sobre fondo negro",
       caption: "Fig. 01 — Pellet reciclado",
       tag: "Producto terminado",
@@ -120,42 +120,42 @@ export const services: Service[] = [
         code: "POM",
         name: "Acetal",
         form: "Pellet",
-        src: "/media/servicios/material-pom.jpg",
+        src: "/media/services/material-pom.jpg",
         alt: "Pellets negros de acetal POM reciclado",
       },
       {
         code: "PC",
         name: "Policarbonato",
         form: "Molido",
-        src: "/media/servicios/material-pc.jpg",
+        src: "/media/services/material-pc.jpg",
         alt: "Molido cristal de policarbonato reciclado",
       },
       {
         code: "ABS",
         name: "Acrilonitrilo butadieno estireno",
         form: "Molido",
-        src: "/media/servicios/material-abs.jpg",
+        src: "/media/services/material-abs.jpg",
         alt: "Molido gris de ABS reciclado",
       },
       {
         code: "PA6",
         name: "Poliamida (nylon)",
         form: "Molido",
-        src: "/media/servicios/material-pa.jpg",
+        src: "/media/services/material-pa.jpg",
         alt: "Molido natural de poliamida reciclada",
       },
       {
         code: "PMMA",
         name: "Acrílico",
         form: "Molido",
-        src: "/media/servicios/material-pmma.jpg",
+        src: "/media/services/material-pmma.jpg",
         alt: "Molido rojo de acrílico PMMA reciclado",
       },
       {
         code: "PBT",
         name: "Poliéster",
         form: "Pellet",
-        src: "/media/servicios/material-pbt.jpg",
+        src: "/media/services/material-pbt.jpg",
         alt: "Pellets negros de PBT reciclado",
       },
     ],
@@ -220,20 +220,20 @@ export const services: Service[] = [
       "Trazabilidad completa de tu material",
     ],
     figure: {
-      src: "/media/servicios/molienda-molino.jpg",
+      src: "/media/services/molienda-molino.jpg",
       alt: "Scrap plástico negro frente al molino en la planta de PIMSA",
       caption: "Fig. 01 — Área de molienda",
       tag: "Planta La Estancia",
     },
     gallery: [
       {
-        src: "/media/servicios/molienda-alimentacion.jpg",
+        src: "/media/services/molienda-alimentacion.jpg",
         alt: "Operador alimentando el molino con scrap plástico",
         caption: "Fig. 02 — Alimentación del molino",
         tag: "Molienda",
       },
       {
-        src: "/media/servicios/molienda-criba.jpg",
+        src: "/media/services/molienda-criba.jpg",
         alt: "Pellet reciclado sobre la malla de cribado",
         caption: "Fig. 03 — Cribado de pellet",
         tag: "Control de calidad",
@@ -300,20 +300,20 @@ export const services: Service[] = [
       "Ahorro en mano de obra dedicada al manejo de residuos",
     ],
     figure: {
-      src: "/media/servicios/recoleccion-gaylords.jpg",
+      src: "/media/services/recoleccion-gaylords.jpg",
       alt: "Gaylords de scrap plástico recolectado y clasificado en el patio de PIMSA",
       caption: "Fig. 01 — Scrap recolectado",
       tag: "Clasificado por resina",
     },
     gallery: [
       {
-        src: "/media/servicios/recoleccion-scrap.jpg",
+        src: "/media/services/recoleccion-scrap.jpg",
         alt: "Contenedor industrial lleno de scrap plástico recolectado",
         caption: "Fig. 02 — Scrap post-industrial",
         tag: "Colada · Piezas",
       },
       {
-        src: "/media/servicios/recoleccion-patio.jpg",
+        src: "/media/services/recoleccion-patio.jpg",
         alt: "Patio de PIMSA con súper sacos de material recuperado",
         caption: "Fig. 03 — Patio de recepción",
         tag: "Súper sacos",
@@ -377,20 +377,20 @@ export const services: Service[] = [
       "Higiénico y 100% reciclable al final de su vida",
     ],
     figure: {
-      src: "/media/servicios/contenedores-frontal.jpg",
+      src: "/media/services/contenedores-frontal.jpg",
       alt: "Contenedor colapsable negro de HDPE en el patio de PIMSA",
       caption: "Fig. 01 — Contenedor armado",
       tag: "HDPE · Grado industrial",
     },
     gallery: [
       {
-        src: "/media/servicios/contenedores-colapsado.jpg",
+        src: "/media/services/contenedores-colapsado.jpg",
         alt: "Contenedor colapsable plegado mostrando la reducción de volumen",
         caption: "Fig. 02 — Contenedor plegado",
         tag: "−70% volumen",
       },
       {
-        src: "/media/servicios/contenedores-stack.jpg",
+        src: "/media/services/contenedores-stack.jpg",
         alt: "Torres de contenedores colapsables apilados en inventario",
         caption: "Fig. 03 — Inventario en patio",
         tag: "Apilables",

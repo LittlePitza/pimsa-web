@@ -38,7 +38,7 @@ export function ServicesBento() {
                 )}
               >
                 <Link
-                  href={`/servicios/${service.slug}`}
+                  href={`/services/${service.slug}`}
                   className="group border-line shadow-card hover:shadow-lift block h-full overflow-hidden rounded-sm border bg-white transition-[translate,box-shadow] duration-150 hover:-translate-y-0.5"
                 >
                   <div className="flex h-full flex-col">

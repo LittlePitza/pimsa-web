@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildMetadata({
     title: service.metaTitle,
     description: service.metaDescription,
-    path: `/servicios/${service.slug}`,
+    path: `/services/${service.slug}`,
     keywords: service.keywords,
   });
 }
@@ -86,8 +86,8 @@ export default async function ServicePage({ params }: Props) {
         intro={service.tagline}
         breadcrumbs={[
           { name: "Inicio", path: "/" },
-          { name: "Servicios", path: "/servicios" },
-          { name: service.name, path: `/servicios/${service.slug}` },
+          { name: "Servicios", path: "/services" },
+          { name: service.name, path: `/services/${service.slug}` },
         ]}
       />
 
@@ -213,21 +213,33 @@ export default async function ServicePage({ params }: Props) {
               tabIndex={0}
               role="region"
               aria-label="Tabla de modelos de contenedores"
-              className="border-line focus-visible:outline-blue-600 mt-12 overflow-x-auto border-t focus-visible:outline-2"
+              className="border-line mt-12 overflow-x-auto border-t focus-visible:outline-2 focus-visible:outline-blue-600"
             >
               <table className="w-full min-w-[36rem] text-left">
                 <thead>
                   <tr className="border-line border-b">
-                    <th scope="col" className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th
+                      scope="col"
+                      className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase"
+                    >
                       Clave
                     </th>
-                    <th scope="col" className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th
+                      scope="col"
+                      className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase"
+                    >
                       Medidas externas (in)
                     </th>
-                    <th scope="col" className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th
+                      scope="col"
+                      className="text-ink-muted py-4 pr-6 font-mono text-xs font-medium tracking-[0.18em] uppercase"
+                    >
                       Material
                     </th>
-                    <th scope="col" className="text-ink-muted py-4 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+                    <th
+                      scope="col"
+                      className="text-ink-muted py-4 font-mono text-xs font-medium tracking-[0.18em] uppercase"
+                    >
                       Color
                     </th>
                   </tr>
@@ -304,7 +316,7 @@ export default async function ServicePage({ params }: Props) {
               {related.map((relatedService) => (
                 <Link
                   key={relatedService.slug}
-                  href={`/servicios/${relatedService.slug}`}
+                  href={`/services/${relatedService.slug}`}
                   className="group border-line bg-surface shadow-card hover:shadow-lift flex items-center justify-between gap-4 rounded-md border p-6 transition-[translate,box-shadow] duration-150 hover:-translate-y-0.5"
                 >
                   <span>

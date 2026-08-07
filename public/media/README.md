@@ -17,7 +17,7 @@ repeated. See [docs/fotografia-plan.md](../../docs/fotografia-plan.md).
 
 "Another name" includes **another frame of the same scene**: `scrap-recuperado`
 lasted exactly one commit because it was, two shots apart, the same photograph
-as `servicios/molienda-molino`. Compare by opening both, never by filename.
+as `services/molienda-molino`. Compare by opening both, never by filename.
 
 The second rule is harder to check and matters more: **the photograph has to be
 a photograph.** Much of the archive is record-keeping — someone raised a camera
@@ -56,7 +56,7 @@ Institutional and process photography, selected from the internal library
 | `operador-molino.jpg` | Vacantes · WorkAtPimsa |
 | `fachada-planta.jpg` | Vacantes · WorkLocation + JSON-LD LocalBusiness |
 
-## servicios/
+## services/
 
 Service-page photography and the studio resin close-ups, referenced by path
 from `src/content/services.ts`. Still at their original 1600 px — they predate
