@@ -49,15 +49,12 @@ pimsa-web/
 │   ├── app/                 # App Router
 │   │   ├── (marketing)/     # Public site route group
 │   │   │   ├── page.tsx             # Home
-│   │   │   ├── nosotros/            # About us
-│   │   │   ├── servicios/           # Services hub
-│   │   │   │   ├── polimeros/
-│   │   │   │   ├── molienda-peletizado/
-│   │   │   │   ├── recoleccion-scrap/
-│   │   │   │   └── contenedores/
+│   │   │   ├── about/               # About us
+│   │   │   ├── services/            # Services hub
+│   │   │   │   └── [slug]/          # polimeros · molienda-peletizado · recoleccion-scrap · contenedores
 │   │   │   ├── stock/               # Plastic stock (future: dynamic catalog)
-│   │   │   ├── contacto/
-│   │   │   └── preguntas-frecuentes/
+│   │   │   ├── contact/
+│   │   │   └── faq/
 │   │   ├── api/             # Route handlers (contact form, etc.)
 │   │   ├── layout.tsx       # Root layout (fonts, analytics, consent)
 │   │   ├── sitemap.ts       # Auto-generated sitemap
@@ -91,15 +88,15 @@ pimsa-web/
 | Route | Page | Primary SEO intent (Spanish keywords) |
 |---|---|---|
 | `/` | Home | reciclaje de plásticos de ingeniería, economía circular México |
-| `/nosotros` | About / history / certifications | empresa recicladora de plásticos Guanajuato |
-| `/servicios` | Services hub | servicios de reciclaje industrial |
-| `/servicios/polimeros` | Engineering polymers | polímeros de ingeniería reciclados, resinas |
-| `/servicios/molienda-peletizado` | Grinding & pelletizing | molienda y peletizado de plástico, maquila |
-| `/servicios/recoleccion-scrap` | Scrap collection | recolección de scrap plástico industrial |
-| `/servicios/contenedores` | Collapsible containers | contenedores colapsables industriales |
+| `/about` | About / history / certifications | empresa recicladora de plásticos Guanajuato |
+| `/services` | Services hub | servicios de reciclaje industrial |
+| `/services/polimeros` | Engineering polymers | polímeros de ingeniería reciclados, resinas |
+| `/services/molienda-peletizado` | Grinding & pelletizing | molienda y peletizado de plástico, maquila |
+| `/services/recoleccion-scrap` | Scrap collection | recolección de scrap plástico industrial |
+| `/services/contenedores` | Collapsible containers | contenedores colapsables industriales |
 | `/stock` | Plastic stock | venta de plástico reciclado / disponibilidad |
-| `/contacto` | Contact + form + map | contacto recicladora Apaseo el Grande |
-| `/preguntas-frecuentes` | FAQ | long-tail questions (also FAQ schema) |
+| `/contact` | Contact + form + map | contacto recicladora Apaseo el Grande |
+| `/faq` | FAQ | long-tail questions (also FAQ schema) |
 | Legal | Privacy notice (LFPDPPP), cookies | compliance |
 
 Each service page: problem → process → benefits → certifications → CTA (quote/WhatsApp). Strong internal linking between services, stock, and contact.

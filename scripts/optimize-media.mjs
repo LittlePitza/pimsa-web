@@ -51,43 +51,43 @@ const QUALITY = 82;
  */
 const MEDIA = [
   // Home · ProcessLoop — the four documented stages
-  ["corporate/entrada-scrap.jpg", "recoleccion/scrap-cromado.jpg"],
-  ["corporate/molienda-molido.jpg", "molienda/molido-montana.jpg"],
-  ["corporate/peletizado-tina.jpg", "peletizado/tina-hilos.jpg"],
-  ["corporate/laboratorio-flama.jpg", "laboratorio/prueba-flama.jpg"],
+  ["corporate/entrada-scrap.jpg", "collection/scrap-cromado.jpg"],
+  ["corporate/molienda-molido.jpg", "grinding/molido-montana.jpg"],
+  ["corporate/peletizado-tina.jpg", "pelletizing/tina-hilos.jpg"],
+  ["corporate/laboratorio-flama.jpg", "lab/prueba-flama.jpg"],
 
   // Home · StatsBand + CircularityManifesto
-  ["corporate/almacen-pasillo.jpg", "planta/almacen-pasillo.jpg"],
+  ["corporate/almacen-pasillo.jpg", "plant/almacen-pasillo.jpg"],
   // The scrap pile that lived here was, two frames apart, the same photograph
-  // as servicios/molienda-molino.jpg. This is the recovered material itself,
+  // as services/molienda-molino.jpg. This is the recovered material itself,
   // in someone's hand — the whole argument of the section in one frame.
   ["corporate/pellet-mano.jpg", "_NIKON/DSC_0172.JPG"],
 
   // Nosotros · PlantShowcase (entrada -> transformación -> verificación -> salida)
-  ["corporate/patio-recepcion.jpg", "planta/patio-sacos.jpg"],
-  ["corporate/peletizado-extrusor.jpg", "peletizado/linea-peletizado.jpg"],
+  ["corporate/patio-recepcion.jpg", "plant/patio-sacos.jpg"],
+  ["corporate/peletizado-extrusor.jpg", "pelletizing/linea-peletizado.jpg"],
   // A benchtop scale on a cluttered desk was standing in for "verificación".
   // This is product being checked by hand as it comes off the screen.
   ["corporate/inspeccion-pellet.jpg", "_NIKON/DSC_0166.JPG"],
-  ["corporate/producto-terminado.jpg", "logistica/producto-terminado.jpg"],
+  ["corporate/producto-terminado.jpg", "logistics/producto-terminado.jpg"],
 
   // Nosotros · StatsBand (distinta a la de Home a propósito)
-  ["corporate/almacen-nave.jpg", "planta/almacen-nave.jpg"],
+  ["corporate/almacen-nave.jpg", "plant/almacen-nave.jpg"],
 
   // Vacantes · JobsHero, WorkAtPimsa, WorkLocation
   // The mill-hall frame would suit this better but the library only holds it
   // as a 589x332 web export. This is the Vegil warehouse — no other published
   // photograph comes from that plant, so it does not echo anything.
-  ["corporate/nave-produccion.jpg", "planta/almacen-vegil.jpg"],
-  ["corporate/operador-molino.jpg", "molienda/molino-alimentacion-2.jpg"],
+  ["corporate/nave-produccion.jpg", "plant/almacen-vegil.jpg"],
+  ["corporate/operador-molino.jpg", "grinding/molino-alimentacion-2.jpg"],
   // The three head-on façade frames in the library are 1280x960 web exports;
   // this is the only full-resolution exterior, and the approach from the road
   // is the view a candidate actually arrives to.
-  ["corporate/fachada-planta.jpg", "planta/perimetro-reja.jpg"],
+  ["corporate/fachada-planta.jpg", "plant/perimetro-reja.jpg"],
 
   // Servicios · relevos de las dos fotos que mostraban rostros
-  ["servicios/recoleccion-gaylords.jpg", "planta/patio-gaylords.jpg"],
-  ["servicios/molienda-criba.jpg", "peletizado/pellet-criba.jpg"],
+  ["services/recoleccion-gaylords.jpg", "plant/patio-gaylords.jpg"],
+  ["services/molienda-criba.jpg", "pelletizing/pellet-criba.jpg"],
 ];
 
 /**
@@ -140,6 +140,6 @@ for (const rel of RECOMPRESS) {
 }
 
 console.log(
-  `\n${MEDIA.length + RECOMPRESS.length} archivos · ${kb(totalBefore)} -> ${kb(totalAfter)} ` +
-    `(-${Math.round((1 - totalAfter / totalBefore) * 100)}%)${check ? "  [--check: nada escrito]" : ""}`,
+  `\n${MEDIA.length + RECOMPRESS.length} files · ${kb(totalBefore)} -> ${kb(totalAfter)} ` +
+    `(-${Math.round((1 - totalAfter / totalBefore) * 100)}%)${check ? "  [--check: dry run]" : ""}`,
 );

@@ -19,7 +19,7 @@ cubrir 3 páginas y 8 secciones, y varias se repiten 3 o 4 veces:
 | `corporate/planta-la-estancia.jpg` | **4** | Home (stats) · Nosotros (stats) · Vacantes (hero) · Vacantes (ubicación) · + JSON-LD |
 | `corporate/scrap-industrial.jpg` | **3** | Home (proceso, "Materia de entrada") · Home (manifiesto circular) · Nosotros (Fig. 01) |
 | `corporate/laboratorio-calidad.jpg` | **2** | Home (proceso, "Laboratorio") · Nosotros (Fig. 03) |
-| `servicios/molienda-alimentacion.jpg` | **2** | Home (proceso, "Reducción de tamaño") · Servicio molienda (galería) |
+| `services/molienda-alimentacion.jpg` | **2** | Home (proceso, "Reducción de tamaño") · Servicio molienda (galería) |
 | `corporate/logistica-unidad.jpg` | 1 | Nosotros (Fig. 04) |
 
 El caso más visible es la **Home**: `ProcessLoop` usa 4 imágenes, y 3 de ellas
@@ -83,27 +83,27 @@ cada archivo a su original en OneDrive):
 
 | Carpeta | Fotos | Para qué |
 | --- | --- | --- |
-| `planta/` | 13 | Fachada, perímetro, naves de almacén, patio con super sacos |
-| `peletizado/` | 12 | Extrusor, hilos, criba, descarga de pellet, envasado |
-| `molienda/` | 10 | Alimentación de molino, molido a granel, nave de molinos |
-| `contenedores/` | 8 | Producto en todos sus ángulos + patios de estiba |
-| `laboratorio/` | 8 | Balanza, índice de fluidez, tensión, mufla, **prueba de flama** |
-| `logistica/` | 7 | Camiones PIMSA, montacargas con operador, producto terminado |
-| `materiales/` | 7 | Purgas de estudio (rojo, blanco, negro, crema) |
-| `recoleccion/` | 4 | Scrap cromado y micas rojas en contenedor |
-| `separacion/` | 4 | Separación e inspección manual — **servicio que hoy no tiene ni una foto** |
-| `equipo/` | 4 | Gente trabajando con uniforme y casco |
+| `plant/` | 13 | Fachada, perímetro, naves de almacén, patio con super sacos |
+| `pelletizing/` | 12 | Extrusor, hilos, criba, descarga de pellet, envasado |
+| `grinding/` | 10 | Alimentación de molino, molido a granel, nave de molinos |
+| `containers/` | 8 | Producto en todos sus ángulos + patios de estiba |
+| `lab/` | 8 | Balanza, índice de fluidez, tensión, mufla, **prueba de flama** |
+| `logistics/` | 7 | Camiones PIMSA, montacargas con operador, producto terminado |
+| `materials/` | 7 | Purgas de estudio (rojo, blanco, negro, crema) |
+| `collection/` | 4 | Scrap cromado y micas rojas en contenedor |
+| `sorting/` | 4 | Separación e inspección manual — **servicio que hoy no tiene ni una foto** |
+| `team/` | 4 | Gente trabajando con uniforme y casco |
 
 Tres hallazgos que valen por sí solos:
 
-- **`laboratorio/prueba-flama.jpg`** — la prueba de flama para identificar
+- **`lab/prueba-flama.jpg`** — la prueba de flama para identificar
   resina. Es la foto más distintiva de toda la librería y nadie la ha usado.
-- **`separacion/*`** — cubre el hueco del servicio de separación e inspección.
-- **`planta/almacen-pasillo.jpg`** — pasillo completo de gaylords estibados.
+- **`sorting/*`** — cubre el hueco del servicio de separación e inspección.
+- **`plant/almacen-pasillo.jpg`** — pasillo completo de gaylords estibados.
   Es la mejor prueba visual de capacidad que existe, y vale más que cualquier
   cifra en la sección de stats.
 
-**Advertencia sobre `planta/fachada-cielo.png`**: es preciosa pero es un export
+**Advertencia sobre `plant/fachada-cielo.png`**: es preciosa pero es un export
 web de 1076×960 con el logotipo degradado (el texto del rótulo salió ilegible,
 parece re-escalada). Úsese solo en tarjeta pequeña (≤1000 px) o pídase el
 original a Marketing.
@@ -114,7 +114,7 @@ original a Marketing.
 
 ### Fase 0 — Correcciones (antes que nada, ~30 min)
 
-1. Reemplazar `corporate/logistica-unidad.jpg` por `logistica/camion-frontal.jpg`
+1. Reemplazar `corporate/logistica-unidad.jpg` por `logistics/camion-frontal.jpg`
    (`DSC_1761`), que sale derecha y no tiene placa al frente.
 2. Optimizar las 5 fotos de `corporate/` a 2000 px de ancho y JPEG q80. Bajan
    de ~12 MB a ~1.5 MB en total.
@@ -127,21 +127,21 @@ Una foto, un lugar. Asignación propuesta:
 
 | Sección | Página | Hoy | Propuesta |
 | --- | --- | --- | --- |
-| `Hero` | Home | `peletizado-linea` | `peletizado/pellet-descarga-2.jpg` |
-| `ProcessLoop` — entrada | Home | `scrap-industrial` | `recoleccion/scrap-cromado.jpg` |
-| `ProcessLoop` — molienda | Home | `molienda-alimentacion` | `molienda/molido-montana.jpg` |
-| `ProcessLoop` — peletizado | Home | `peletizado-linea` | `peletizado/extrusor-hilos.jpg` |
-| `ProcessLoop` — laboratorio | Home | `laboratorio-calidad` | `laboratorio/prueba-flama.jpg` |
-| `StatsBand` | Home | `planta-la-estancia` | `planta/almacen-pasillo.jpg` |
-| `CircularityManifesto` | Home | `scrap-industrial` | `materiales/purga-negra.jpg` |
-| `PlantShowcase` Fig. 01 | Nosotros | `scrap-industrial` | `planta/patio-sacos.jpg` |
-| `PlantShowcase` Fig. 02 | Nosotros | `peletizado-linea` | `peletizado/linea-peletizado.jpg` |
-| `PlantShowcase` Fig. 03 | Nosotros | `laboratorio-calidad` | `laboratorio/tecnico-mufla.jpg` |
-| `PlantShowcase` Fig. 04 | Nosotros | `logistica-unidad` (girada) | `logistica/camion-frontal.jpg` |
-| `StatsBand` | Nosotros | `planta-la-estancia` | `planta/almacen-nave.jpg` |
-| `JobsHero` | Vacantes | `planta-la-estancia` | `equipo/equipo-tambores.jpg` |
-| `WorkAtPimsa` | Vacantes | `peletizado-linea` | `equipo/equipo-envasado.jpg` |
-| `WorkLocation` | Vacantes | `planta-la-estancia` | `planta/fachada-lateral.jpg` |
+| `Hero` | Home | `peletizado-linea` | `pelletizing/pellet-descarga-2.jpg` |
+| `ProcessLoop` — entrada | Home | `scrap-industrial` | `collection/scrap-cromado.jpg` |
+| `ProcessLoop` — molienda | Home | `molienda-alimentacion` | `grinding/molido-montana.jpg` |
+| `ProcessLoop` — peletizado | Home | `peletizado-linea` | `pelletizing/extrusor-hilos.jpg` |
+| `ProcessLoop` — laboratorio | Home | `laboratorio-calidad` | `lab/prueba-flama.jpg` |
+| `StatsBand` | Home | `planta-la-estancia` | `plant/almacen-pasillo.jpg` |
+| `CircularityManifesto` | Home | `scrap-industrial` | `materials/purga-negra.jpg` |
+| `PlantShowcase` Fig. 01 | Nosotros | `scrap-industrial` | `plant/patio-sacos.jpg` |
+| `PlantShowcase` Fig. 02 | Nosotros | `peletizado-linea` | `pelletizing/linea-peletizado.jpg` |
+| `PlantShowcase` Fig. 03 | Nosotros | `laboratorio-calidad` | `lab/tecnico-mufla.jpg` |
+| `PlantShowcase` Fig. 04 | Nosotros | `logistica-unidad` (girada) | `logistics/camion-frontal.jpg` |
+| `StatsBand` | Nosotros | `planta-la-estancia` | `plant/almacen-nave.jpg` |
+| `JobsHero` | Vacantes | `planta-la-estancia` | `team/equipo-tambores.jpg` |
+| `WorkAtPimsa` | Vacantes | `peletizado-linea` | `team/equipo-envasado.jpg` |
+| `WorkLocation` | Vacantes | `planta-la-estancia` | `plant/fachada-lateral.jpg` |
 
 Resultado: **15 slots, 15 fotos distintas.** Cero repeticiones entre páginas.
 
@@ -153,12 +153,12 @@ esta fase.
 ### Fase 2 — Servicios
 
 - **Separación e inspección**: hoy no existe como página con fotos. Con
-  `separacion/*` ya hay galería completa.
-- **Molienda**: sustituir la galería por `molienda/nave-molinos.jpg` +
-  `molienda/molino-alimentacion.jpg` + `molienda/molido-pala.jpg`.
-- **Recolección**: `recoleccion/scrap-cromado*.jpg` tienen mucho más color que
-  las actuales; `logistica/camion-caja.jpg` para el encabezado.
-- **Contenedores**: la galería actual es correcta, pero `contenedores/contenedores-estiba.jpg`
+  `sorting/*` ya hay galería completa.
+- **Molienda**: sustituir la galería por `grinding/nave-molinos.jpg` +
+  `grinding/molino-alimentacion.jpg` + `grinding/molido-pala.jpg`.
+- **Recolección**: `collection/scrap-cromado*.jpg` tienen mucho más color que
+  las actuales; `logistics/camion-caja.jpg` para el encabezado.
+- **Contenedores**: la galería actual es correcta, pero `containers/contenedores-estiba.jpg`
   y `contenedores-patio.jpg` comunican inventario mucho mejor.
 
 ### Fase 3 — Encargo a Marketing
