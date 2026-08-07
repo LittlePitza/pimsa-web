@@ -44,7 +44,9 @@ function buildGroups(
   groups.push({
     key: "config",
     items: [
-      { label: "Configuración", href: "/admin/configuracion" },
+      // The URL stays /configuracion (bookmarks, muscle memory); the label
+      // says what the screen actually holds.
+      { label: "Correo", href: "/admin/configuracion" },
       ...(canManageAccounts ? [{ label: "Cuentas", href: "/admin/cuentas" }] : []),
     ],
   });
@@ -73,18 +75,13 @@ export function AdminNav({
     <ul
       className={cn(
         "flex items-center",
-        variant === "desktop"
-          ? "gap-x-4"
-          : "flex-wrap gap-x-3 gap-y-2 px-4 py-3",
+        variant === "desktop" ? "gap-x-4" : "flex-wrap gap-x-3 gap-y-2 px-4 py-3",
       )}
     >
       {groups.map((group, groupIndex) => (
         <Fragment key={group.key}>
           {groupIndex > 0 ? (
-            <li
-              aria-hidden
-              className="bg-line hidden h-4 w-px shrink-0 md:block"
-            />
+            <li aria-hidden className="bg-line hidden h-4 w-px shrink-0 md:block" />
           ) : null}
           {group.items.map((item) => {
             const active = isActive(pathname, item.href);

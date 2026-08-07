@@ -3,10 +3,12 @@ import type { Certification, Company, NavItem, SocialLink } from "@/types/conten
 /**
  * Company master data (single source of truth for NAP consistency — SEO).
  * Phone/WhatsApp confirmed 2026-07-29: 442 274 7546 (all messages route here).
- * TODO(marketing): confirm email, hours and social URLs
- * (see docs/marketing-material-request.md §5). The 2023 corporate deck lists
- * hola@plasticospimsa.com, which differs from the current email below; do not
- * switch that lead channel until Marketing confirms it.
+ * Email confirmed 2026-08-07: contacto@plasticospimsa.com is the public inbox
+ * and receives the contact-form leads. Job applications are the exception —
+ * they carry a CV and go to RRHH (APPLICATIONS_EMAIL_TO). The 2023 corporate
+ * deck's hola@plasticospimsa.com is not in use; do not reintroduce it.
+ * TODO(marketing): confirm hours and social URLs
+ * (see docs/marketing-material-request.md §5).
  */
 export const company: Company = {
   name: "Plásticos PIMSA",

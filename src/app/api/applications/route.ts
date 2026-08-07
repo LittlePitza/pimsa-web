@@ -2,10 +2,10 @@ import { after, NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { createApplication } from "@/db/queries/applications";
 import { getOpenVacancyBySlug } from "@/db/queries/vacancies";
-import { createMailTransport, mailFrom } from "@/lib/mailer";
+import { acknowledgeSubmission, notifyFlow } from "@/lib/email/send";
+import { acknowledgement, applicationNotification } from "@/lib/email/templates";
 import { rateLimit } from "@/lib/rate-limit";
 import { clientIp, isCrossOrigin } from "@/lib/request";
-import { getEmailRecipients } from "@/lib/settings";
 import { ALLOWED_CV_EXTENSIONS, ALLOWED_CV_MIME_TYPES, MAX_CV_BYTES } from "@/lib/uploads";
 
 export const runtime = "nodejs";
@@ -132,44 +132,34 @@ export async function POST(request: NextRequest) {
 
   // Best-effort email notification to HR (application is already stored).
   // after() runs once the response is sent and keeps the work alive on any
-  // host, without delaying the candidate's confirmation.
-  after(() =>
-    notifyHr(vacancy?.title ?? "", fields, { fileName: cv.name, content: cvBuffer }).catch(
-      (error) => console.error("[applications] HR notification failed:", error),
-    ),
-  );
+  // host, without delaying the candidate's confirmation. Recipients, CC/BCC
+  // and the on-off switch come from /admin/configuracion, and every attempt
+  // is recorded in the panel's email log — sent, failed or skipped.
+  after(async () => {
+    const vacancyTitle = vacancy?.title ?? "";
+
+    await notifyFlow(
+      "applications",
+      applicationNotification({
+        vacancyTitle,
+        name: fields.name,
+        email: fields.email,
+        phone: fields.phone,
+        message: fields.message,
+        cvFileName: cv.name,
+      }),
+      {
+        replyTo: fields.email,
+        attachments: [{ filename: cv.name, content: cvBuffer }],
+      },
+    );
+
+    await acknowledgeSubmission(
+      "applications",
+      fields.email,
+      acknowledgement("applications", fields.name, vacancyTitle),
+    );
+  });
 
   return NextResponse.json({ ok: true });
-}
-
-async function notifyHr(
-  vacancyTitle: string,
-  fields: { name: string; email: string; phone: string; message: string },
-  cv: { fileName: string; content: Buffer },
-) {
-  // Recipients: configurable from /admin/configuracion, env as fallback.
-  const recipients = await getEmailRecipients("applications");
-  const transporter = createMailTransport();
-  if (!transporter || !recipients) return;
-
-  const label = vacancyTitle || "Postulación general";
-
-  await transporter.sendMail({
-    from: mailFrom(),
-    to: recipients,
-    replyTo: fields.email,
-    subject: `Nueva postulación — ${label} — ${fields.name}`,
-    text: [
-      `Vacante:  ${label}`,
-      `Nombre:   ${fields.name}`,
-      `Correo:   ${fields.email}`,
-      `Teléfono: ${fields.phone}`,
-      "",
-      "Mensaje:",
-      fields.message,
-      "",
-      "El CV también queda guardado en el panel de administración (/admin/postulaciones).",
-    ].join("\n"),
-    attachments: [{ filename: cv.fileName, content: cv.content }],
-  });
 }

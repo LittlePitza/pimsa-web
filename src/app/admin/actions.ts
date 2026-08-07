@@ -50,12 +50,26 @@ import {
   requireSuperAdmin,
   sessionCookieOptions,
 } from "@/lib/auth";
-import { createMailTransport, mailFrom } from "@/lib/mailer";
+import {
+  flowKeys,
+  flowLabels,
+  formatEmailList,
+  formatSender,
+  getEmailConfig,
+  hasStoredSmtpPassword,
+  parseEmailList,
+  SETTING_KEYS,
+  type NotificationFlow,
+} from "@/lib/email/config";
+import { canStoreSecrets, encryptSecret } from "@/lib/email/secret";
+import { sendTestEmail } from "@/lib/email/send";
+import { testMessage } from "@/lib/email/templates";
+import { verifyTransport } from "@/lib/email/transport";
 import { isRateLimited, rateLimit, recordAttempt } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { canAccess, homeFor, roleLabels } from "@/lib/roles";
 import { createSessionToken, SESSION_COOKIE } from "@/lib/session";
-import { getEmailRecipients, SETTING_KEYS, setSetting } from "@/lib/settings";
+import { setSettings } from "@/lib/settings";
 import { slugify } from "@/lib/utils";
 
 /**
@@ -81,10 +95,7 @@ function formValues(formData: FormData, keys: readonly string[]): Record<string,
 
 // ── Auth ─────────────────────────────────────────────────────────────────
 
-export async function signInAction(
-  _prev: ActionState,
-  formData: FormData,
-): Promise<ActionState> {
+export async function signInAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const email = String(formData.get("email") ?? "")
     .trim()
     .toLowerCase();
@@ -119,7 +130,8 @@ export async function signInAction(
 
   // Compare against a dummy hash when the user doesn't exist to keep
   // timing consistent (no user enumeration).
-  const hash = admin?.passwordHash ?? "$2a$12$C6UzMDM.H6dfI/f/IKcEeO6t2mPqXW1Uh3q0aX9x0e1a2b3c4d5e6";
+  const hash =
+    admin?.passwordHash ?? "$2a$12$C6UzMDM.H6dfI/f/IKcEeO6t2mPqXW1Uh3q0aX9x0e1a2b3c4d5e6";
   const valid = await bcrypt.compare(password, hash);
 
   if (!admin || !valid) {
@@ -192,7 +204,10 @@ const vacancySchema = z
       .trim()
       .max(12)
       .default("")
-      .refine((value) => value === "" || /^\d{5}$/.test(value), "El código postal lleva 5 dígitos."),
+      .refine(
+        (value) => value === "" || /^\d{5}$/.test(value),
+        "El código postal lleva 5 dígitos.",
+      ),
     workMode: z.enum(WORK_MODES, { error: "Elige una modalidad válida." }),
     employmentType: z.enum(EMPLOYMENT_TYPES, { error: "Elige una jornada válida." }),
     salaryMin: salaryAmountSchema,
@@ -217,7 +232,8 @@ const vacancySchema = z
     status: z.enum(VACANCY_STATUSES),
   })
   .refine(
-    (data) => data.salaryMin === null || data.salaryMax === null || data.salaryMax >= data.salaryMin,
+    (data) =>
+      data.salaryMin === null || data.salaryMax === null || data.salaryMax >= data.salaryMin,
     "El sueldo máximo no puede ser menor que el mínimo.",
   );
 
@@ -452,101 +468,246 @@ export async function deleteStockItemAction(id: number): Promise<void> {
   revalidateStock();
 }
 
-// ── Settings ─────────────────────────────────────────────────────────────
+// ── Email settings ───────────────────────────────────────────────────────
 
+/**
+ * A recipient list as typed. Commas, semicolons and line breaks all separate,
+ * because people paste these out of Outlook and out of each other's messages,
+ * and rejecting a semicolon teaches nothing except that the form is fussy.
+ */
 const emailListSchema = z
   .string()
   .trim()
-  .max(500)
+  .max(500, "La lista de correos es demasiado larga.")
   .refine(
-    (value) =>
-      value === "" ||
-      value.split(",").every((part) => z.email().safeParse(part.trim()).success),
+    (value) => parseEmailList(value).every((part) => z.email().safeParse(part).success),
     "Escribe correos válidos separados por comas.",
-  );
+  )
+  .refine((value) => parseEmailList(value).length <= 10, "Máximo 10 correos por campo.");
+
+/** Normalizes to the canonical "a@x.com, b@y.com" the settings table stores. */
+function normalizeEmailList(value: string): string {
+  return formatEmailList(parseEmailList(value));
+}
+
+const checkbox = (formData: FormData, name: string) => (formData.get(name) === "on" ? "1" : "0");
+
+/** The area that owns each notification flow — the gate on every action below. */
+const flowArea: Record<NotificationFlow, "marketing" | "rrhh"> = {
+  leads: "marketing",
+  applications: "rrhh",
+};
 
 /**
- * Saves only the recipient list the caller's area owns. Marketing owns the
- * contact-form leads, RRHH owns the job applications — a field the caller
- * doesn't own is ignored even if it arrives in the FormData.
+ * Saves one flow's delivery settings. The flow is bound server-side by the
+ * page, so the FormData can't ask to write the other area's configuration —
+ * and the area check still runs, because a bound argument is only as trusted
+ * as the request that carried it.
  */
-export async function saveEmailSettingsAction(
+export async function saveEmailFlowAction(
+  flow: NotificationFlow,
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const session = await requireAdmin();
-  const ownsLeads = canAccess(session.role, "marketing");
-  const ownsApplications = canAccess(session.role, "rrhh");
+  await requireArea(flowArea[flow]);
 
   const parsed = z
-    .object({ leadsTo: emailListSchema, applicationsTo: emailListSchema })
+    .object({
+      to: emailListSchema,
+      cc: emailListSchema,
+      bcc: emailListSchema,
+      subjectTag: z.string().trim().max(40, "La etiqueta del asunto es demasiado larga."),
+    })
     .safeParse({
-      leadsTo: ownsLeads ? (formData.get("leadsTo") ?? "") : "",
-      applicationsTo: ownsApplications ? (formData.get("applicationsTo") ?? "") : "",
+      to: formData.get("to") ?? "",
+      cc: formData.get("cc") ?? "",
+      bcc: formData.get("bcc") ?? "",
+      subjectTag: formData.get("subjectTag") ?? "",
     });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Revisa los correos capturados." };
   }
 
-  const normalize = (value: string) =>
-    value
-      .split(",")
-      .map((part) => part.trim().toLowerCase())
-      .filter(Boolean)
-      .join(", ");
-
-  if (ownsLeads) {
-    await setSetting(SETTING_KEYS.emailLeadsTo, normalize(parsed.data.leadsTo));
-  }
-  if (ownsApplications) {
-    await setSetting(SETTING_KEYS.emailApplicationsTo, normalize(parsed.data.applicationsTo));
-  }
+  const keys = flowKeys(flow);
+  await setSettings({
+    [keys.to]: normalizeEmailList(parsed.data.to),
+    [keys.cc]: normalizeEmailList(parsed.data.cc),
+    [keys.bcc]: normalizeEmailList(parsed.data.bcc),
+    [keys.subjectTag]: parsed.data.subjectTag,
+    [keys.enabled]: checkbox(formData, "enabled"),
+    [keys.acknowledge]: checkbox(formData, "acknowledge"),
+  });
 
   revalidatePath("/admin/configuracion");
-  return { success: "Configuración guardada." };
+  return { success: `Guardado. ${flowLabels[flow]} — configuración aplicada de inmediato.` };
 }
 
+const smtpSchema = z.object({
+  host: z.string().trim().min(3, "Escribe el servidor SMTP.").max(190),
+  port: z.coerce
+    .number()
+    .int("El puerto debe ser un número.")
+    .min(1, "Puerto inválido.")
+    .max(65535, "Puerto inválido."),
+  user: z.email("El usuario SMTP es la dirección completa del buzón.").max(190),
+  fromAddress: z.email("Escribe una dirección de remitente válida.").max(190),
+  fromName: z.string().trim().max(80),
+});
+
+/**
+ * SMTP credentials, restricted to super-admins: this is the one screen that
+ * writes a password to the database, and it changes how the whole site sends,
+ * not how one area receives.
+ */
+export async function saveSmtpAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  await requireSuperAdmin();
+
+  const parsed = smtpSchema.safeParse({
+    host: formData.get("host"),
+    port: formData.get("port") ?? "465",
+    user: String(formData.get("user") ?? "").trim(),
+    fromAddress: String(formData.get("fromAddress") ?? "").trim(),
+    fromName: formData.get("fromName") ?? "",
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Revisa los datos de la cuenta." };
+  }
+
+  if (!canStoreSecrets()) {
+    return {
+      error:
+        "AUTH_SECRET no está configurado en el servidor; sin él la contraseña no puede guardarse cifrada.",
+    };
+  }
+
+  /**
+   * A blank password means "leave it as it is" — the field is never populated
+   * on render, so requiring it would force whoever fixes a typo in the host
+   * to go find the mailbox password again.
+   */
+  const password = String(formData.get("password") ?? "");
+  if (!password && !(await hasStoredSmtpPassword())) {
+    return { error: "Captura la contraseña del buzón para guardar la cuenta de envío." };
+  }
+
+  await setSettings({
+    [SETTING_KEYS.smtpHost]: parsed.data.host,
+    [SETTING_KEYS.smtpPort]: String(parsed.data.port),
+    [SETTING_KEYS.smtpUser]: parsed.data.user.toLowerCase(),
+    [SETTING_KEYS.fromAddress]: parsed.data.fromAddress.toLowerCase(),
+    [SETTING_KEYS.fromName]: parsed.data.fromName,
+    ...(password ? { [SETTING_KEYS.smtpPassword]: encryptSecret(password) } : {}),
+  });
+
+  revalidatePath("/admin/configuracion");
+  return { success: "Cuenta de envío guardada. Prueba la conexión para confirmarla." };
+}
+
+/**
+ * Drops the stored account so the server's environment variables take over
+ * again. The way back from a mistake that would otherwise need database
+ * access to undo.
+ *
+ * Clears the sender too, not just the credentials: a leftover panel "From"
+ * would be paired with the environment's mailbox, and a sender that doesn't
+ * belong to the authenticating account is exactly what makes a receiving
+ * server file the message as spam.
+ */
+export async function resetSmtpAction(): Promise<void> {
+  await requireSuperAdmin();
+  await setSettings({
+    [SETTING_KEYS.smtpHost]: "",
+    [SETTING_KEYS.smtpPort]: "",
+    [SETTING_KEYS.smtpUser]: "",
+    [SETTING_KEYS.smtpPassword]: "",
+    [SETTING_KEYS.fromAddress]: "",
+    [SETTING_KEYS.fromName]: "",
+  });
+  revalidatePath("/admin/configuracion");
+}
+
+/**
+ * Opens and authenticates an SMTP connection without sending anything.
+ * Takes no arguments: useActionState calls it with the previous state and the
+ * FormData, and a connection test needs neither.
+ */
+export async function verifySmtpAction(): Promise<ActionState> {
+  await requireAdmin();
+
+  const { smtp } = await getEmailConfig();
+  const result = await verifyTransport(smtp);
+
+  return result.ok
+    ? { success: `Conexión correcta con ${smtp.host}:${smtp.port} como ${smtp.user}.` }
+    : { error: result.message };
+}
+
+/**
+ * Sends the real template for a flow, either to its configured recipients or
+ * to a single address typed into the form — so an address can be tried before
+ * it is committed to production.
+ */
 export async function sendTestEmailAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await requireAdmin();
 
-  const kind = formData.get("kind") === "applications" ? "applications" : "leads";
-  if (!canAccess(session.role, kind === "leads" ? "marketing" : "rrhh")) {
+  const flow: NotificationFlow = formData.get("flow") === "applications" ? "applications" : "leads";
+  if (!canAccess(session.role, flowArea[flow])) {
     return { error: "Ese flujo de correo pertenece a otra área." };
   }
 
-  const recipients = await getEmailRecipients(kind);
-  if (!recipients) {
-    return { error: "No hay destinatarios: captura correos arriba o configura CONTACT_EMAIL_TO." };
+  const override = String(formData.get("overrideTo") ?? "").trim();
+  if (override && !z.email().safeParse(override).success) {
+    return { error: "Escribe un correo válido para la prueba." };
   }
 
-  const transporter = createMailTransport();
-  if (!transporter) {
-    return { error: "SMTP sin configurar en el servidor (SMTP_HOST, SMTP_USER, SMTP_PASS)." };
+  /**
+   * The only authenticated action that sends mail to an address the caller
+   * types in. Nobody legitimately needs more than a handful of tests in a
+   * row, and an unbounded button is a way to spend the company's SMTP
+   * reputation — the budget is per account, so one careless session cannot
+   * lock out the rest of the panel.
+   */
+  if (!rateLimit(`admin-test-email:${session.userId}`, { limit: 10, windowMs: 10 * 60_000 })) {
+    return { error: "Demasiadas pruebas seguidas. Espera unos minutos e inténtalo de nuevo." };
   }
 
-  const label = kind === "leads" ? "leads de contacto" : "postulaciones (RH)";
-  try {
-    await transporter.sendMail({
-      from: mailFrom(),
-      to: recipients,
-      subject: `Correo de prueba — ${label} — Plásticos PIMSA`,
-      text: [
-        `Este es un correo de prueba enviado desde el panel de administración.`,
-        "",
-        `Flujo:          ${label}`,
-        `Destinatarios:  ${recipients}`,
-        "",
-        "Si lo recibiste, la configuración de correo funciona correctamente.",
-      ].join("\n"),
-    });
-    return { success: `Correo de prueba enviado a: ${recipients}` };
-  } catch (error) {
-    console.error("[settings] Test email failed:", error);
-    return { error: "El envío falló. Revisa las credenciales SMTP del servidor." };
+  const config = await getEmailConfig();
+  if (!config.smtp.complete) {
+    return {
+      error: "La cuenta de envío (SMTP) no está configurada; no se puede enviar la prueba.",
+    };
   }
+
+  const recipients = override ? [override.toLowerCase()] : config.flows[flow].to;
+  if (recipients.length === 0) {
+    return {
+      error: `No hay destinatarios para ${flowLabels[flow]}. Captúralos arriba o escribe un correo de prueba.`,
+    };
+  }
+
+  const result = await sendTestEmail(
+    flow,
+    testMessage({
+      flowLabel: flowLabels[flow],
+      recipients: formatEmailList(recipients),
+      sender: formatSender(config.smtp),
+      smtpHost: `${config.smtp.host}:${config.smtp.port}`,
+      triggeredBy: session.email,
+    }),
+    recipients,
+  );
+
+  revalidatePath("/admin/configuracion");
+
+  if (result.status === "sent") {
+    return {
+      success: `Enviado a ${result.recipients} en ${result.durationMs} ms. Revisa la bandeja (y la carpeta de spam la primera vez).`,
+    };
+  }
+  return { error: result.detail || "El envío falló. Revisa la cuenta de envío." };
 }
 
 // ── Leads ────────────────────────────────────────────────────────────────

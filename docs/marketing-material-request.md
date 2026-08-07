@@ -75,7 +75,8 @@ Los textos en Word o Google Docs; las imágenes en su resolución original (sin 
 ## 5. Datos de contacto oficiales (P1)
 
 - ~~Teléfono(s) oficial(es) y número de **WhatsApp Business** definitivo~~ — confirmado 2026-07-29: **+52 442 274 7546** (teléfono y WhatsApp)
-- Correo(s) que recibirán los **leads del formulario** (¿ventas? ¿varios? ¿por servicio?)
+- ~~Correo(s) que recibirán los **leads del formulario**~~ — confirmado 2026-08-07: **contacto@plasticospimsa.com** recibe todo el correo del sitio, salvo las postulaciones.
+- **Correo de RRHH que recibirá las postulaciones** (llevan el CV del candidato, por eso no van al buzón general). Mientras no se defina, las postulaciones se siguen guardando en `/admin/postulaciones` pero no se envían por correo.
 - Horario de atención
 - Dirección exacta validada + pin de Google Maps correcto
 - Enlaces oficiales de redes: Facebook, LinkedIn, Instagram, TikTok

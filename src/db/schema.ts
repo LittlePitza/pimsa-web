@@ -1,6 +1,7 @@
 import {
   boolean,
   customType,
+  index,
   int,
   mysqlEnum,
   mysqlTable,
@@ -11,8 +12,11 @@ import {
 import {
   ADMIN_ROLES,
   APPLICATION_STATUSES,
+  EMAIL_KINDS,
+  EMAIL_STATUSES,
   EMPLOYMENT_TYPES,
   LEAD_STATUSES,
+  NOTIFICATION_FLOWS,
   SALARY_PERIODS,
   STOCK_AVAILABILITY,
   STOCK_FORMS,
@@ -157,6 +161,41 @@ export const settings = mysqlTable("settings", {
   updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
 });
 
+/**
+ * Every outgoing send attempt, successful or not.
+ *
+ * Notifications are best-effort by design — a lead is stored before anyone
+ * tries to email it, so a bounced SMTP call never costs the company the
+ * enquiry. The cost of that choice is silence: without this table the only
+ * trace of a failed delivery is a line in the server log nobody reads, and
+ * "no llegó el correo" has no answer. Kept deliberately small (no bodies, no
+ * attachments) so it can be written on every send without growing unbounded.
+ *
+ * `flow` and `kind` are separate columns because they answer different
+ * questions: `flow` is whose data the message carries, and it is what scopes
+ * this table by area; `kind` is what the message was. An acknowledgement sent
+ * to a candidate is `applications` + `acknowledgement` — RRHH's row, readable
+ * by RRHH, however the panel chooses to label it.
+ */
+export const emailLog = mysqlTable(
+  "email_log",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    flow: mysqlEnum("flow", NOTIFICATION_FLOWS).notNull(),
+    kind: mysqlEnum("kind", EMAIL_KINDS).notNull().default("notification"),
+    status: mysqlEnum("status", EMAIL_STATUSES).notNull(),
+    recipients: varchar("recipients", { length: 500 }).notNull().default(""),
+    subject: varchar("subject", { length: 255 }).notNull().default(""),
+    /** Error message when failed, or the reason when skipped. */
+    detail: varchar("detail", { length: 500 }).notNull().default(""),
+    durationMs: int("duration_ms").notNull().default(0),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  // The panel only ever reads this newest-first, and the health strip counts
+  // a 24-hour window — both are index scans on this column alone.
+  (table) => [index("email_log_created_at_idx").on(table.createdAt)],
+);
+
 export const adminUsers = mysqlTable("admin_users", {
   id: int("id").autoincrement().primaryKey(),
   email: varchar("email", { length: 190 }).notNull().unique(),
@@ -174,7 +213,10 @@ export const adminUsers = mysqlTable("admin_users", {
 export type {
   AdminRole,
   ApplicationStatus,
+  EmailKind,
+  EmailStatus,
   LeadStatus,
+  NotificationFlow,
   StockAvailability,
   StockForm,
   VacancyStatus,
@@ -189,3 +231,5 @@ export type NewLead = typeof leads.$inferInsert;
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type StockItem = typeof stockItems.$inferSelect;
 export type NewStockItem = typeof stockItems.$inferInsert;
+export type EmailLogEntry = typeof emailLog.$inferSelect;
+export type NewEmailLogEntry = typeof emailLog.$inferInsert;
