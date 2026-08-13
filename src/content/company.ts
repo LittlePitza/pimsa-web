@@ -38,7 +38,7 @@ export const company: Company = {
   social: [
     // TODO(marketing): confirm official profile URLs before launch.
     { name: "Facebook", url: "https://www.facebook.com/plasticospimsa" },
-    { name: "LinkedIn", url: "https://www.linkedin.com/company/plasticos-pimsa" },
+    { name: "LinkedIn", url: "https://www.linkedin.com/company/plasticospimsa" },
     { name: "Instagram", url: "https://www.instagram.com/plasticospimsa" },
     { name: "TikTok", url: "https://www.tiktok.com/@plasticospimsa" },
   ] satisfies SocialLink[],

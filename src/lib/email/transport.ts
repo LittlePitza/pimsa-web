@@ -40,6 +40,17 @@ export function describeSmtpError(error: unknown): string {
   const code = (error as { code?: string } | null)?.code ?? "";
   const responseCode = (error as { responseCode?: number } | null)?.responseCode ?? 0;
 
+  // Microsoft 365 answers 535 both for a bad password and for a mailbox that is
+  // simply not allowed to use SMTP AUTH. Same code, opposite fixes: one is
+  // retyping a password, the other is an Exchange setting no amount of retyping
+  // will reach — so they must not share a message.
+  if (/SmtpClientAuthentication is disabled/i.test(raw)) {
+    const scope = /for the Tenant/i.test(raw) ? "la organización" : "el buzón";
+    return `Microsoft 365 tiene la autenticación SMTP deshabilitada para ${scope}: la contraseña es irrelevante hasta que un administrador de Exchange la habilite. (${raw})`;
+  }
+  if (/basic authentication is disabled/i.test(raw)) {
+    return `Microsoft 365 bloqueó la autenticación básica de esta cuenta: hace falta habilitarla o usar una contraseña de aplicación. (${raw})`;
+  }
   if (code === "EAUTH" || responseCode === 535) {
     return `Usuario o contraseña incorrectos: el servidor rechazó la autenticación. (${raw})`;
   }
@@ -48,6 +59,12 @@ export function describeSmtpError(error: unknown): string {
   }
   if (code === "ETIMEDOUT" || code === "ECONNECTION" || code === "ESOCKET") {
     return `No se pudo conectar al servidor: revisa el host, el puerto y que el hosting permita salida SMTP. (${raw})`;
+  }
+  // The wall right after authentication on Microsoft 365: the mailbox connected
+  // fine, but the "De" is a different address and Exchange refuses to let it
+  // speak for one it was not granted.
+  if (/does not have permissions? to send as this sender/i.test(raw)) {
+    return `El buzón no tiene permiso para enviar con esa dirección "De": usa la del propio buzón, o pide a un administrador el permiso "Enviar como". (${raw})`;
   }
   if (responseCode === 550 || responseCode === 553) {
     return `El servidor rechazó el remitente o el destinatario: la dirección "De" debe ser un buzón real de tu dominio. (${raw})`;
