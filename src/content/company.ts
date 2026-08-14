@@ -36,13 +36,26 @@ export const company: Company = {
   email: "contacto@plasticospimsa.com",
   hours: "Lunes a Viernes · 8:00 – 18:00",
   social: [
-    // TODO(marketing): confirm official profile URLs before launch.
-    { name: "Facebook", url: "https://www.facebook.com/plasticospimsa" },
-    { name: "LinkedIn", url: "https://www.linkedin.com/company/plasticospimsa" },
-    { name: "Instagram", url: "https://www.instagram.com/plasticospimsa" },
-    { name: "TikTok", url: "https://www.tiktok.com/@plasticospimsa" },
+    // TODO(marketing): confirm official profile URLs before launch. Flipping a
+    // profile to `confirmed: false` removes it from the footer icon row AND
+    // from the JSON-LD `sameAs` at once — see `confirmedSocial` below.
+    { name: "Facebook", url: "https://www.facebook.com/plasticospimsa", confirmed: true },
+    { name: "LinkedIn", url: "https://www.linkedin.com/company/plasticospimsa", confirmed: true },
+    { name: "Instagram", url: "https://www.instagram.com/plasticospimsa", confirmed: true },
+    { name: "TikTok", url: "https://www.tiktok.com/@plasticospimsa", confirmed: true },
   ] satisfies SocialLink[],
 };
+
+/**
+ * The profiles the site vouches for publicly. Single source for the footer's
+ * icon row and for `sameAs` in lib/structured-data.ts, so what a visitor can
+ * click and what Google is told can never drift apart. A `sameAs` pointing at
+ * a profile that does not resolve — or worse, at another company's account
+ * under a similar handle — can mis-merge the Knowledge Graph entity, so the
+ * same discipline used for salaries and geo applies here: emit only what is
+ * confirmed. The footer renders correctly with 0, 2 or 4 entries.
+ */
+export const confirmedSocial: SocialLink[] = company.social.filter((s) => s.confirmed);
 
 /** Industries served — shown as a mono strip on home (DESIGN.md §7). */
 export const industries = ["Automotriz", "Línea blanca", "Eléctrico y electrónico"] as const;
@@ -89,9 +102,9 @@ export const mainNav: NavItem[] = [
       { label: "Contenedores colapsables", href: "/services/contenedores" },
     ],
   },
-  { label: "Stock", href: "/stock" },
+  { label: "Stock", longLabel: "Stock disponible", href: "/stock" },
   { label: "Bolsa de trabajo", href: "/jobs" },
-  { label: "FAQ", href: "/faq" },
+  { label: "FAQ", longLabel: "Preguntas frecuentes", href: "/faq" },
   { label: "Contacto", href: "/contact" },
 ];
 

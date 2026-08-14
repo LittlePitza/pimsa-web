@@ -20,6 +20,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl("/about"), changeFrequency: "monthly", priority: 0.7 },
     { url: absoluteUrl("/contact"), changeFrequency: "yearly", priority: 0.8 },
     { url: absoluteUrl("/faq"), changeFrequency: "monthly", priority: 0.6 },
+    // Linked from the footer, so it is indexable either way — listing it keeps
+    // the sitemap and the crawlable link graph consistent.
+    { url: absoluteUrl("/privacy"), changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const serviceRoutes: MetadataRoute.Sitemap = services.map((service) => ({

@@ -1,4 +1,4 @@
-import { certifications, company } from "@/content/company";
+import { certifications, company, confirmedSocial } from "@/content/company";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
 import {
   SALARY_CURRENCY,
@@ -54,7 +54,7 @@ export function organizationSchema(): JsonLdObject {
       areaServed: "MX",
       availableLanguage: ["es"],
     },
-    sameAs: company.social.map((s) => s.url),
+    sameAs: confirmedSocial.map((s) => s.url),
   };
 }
 
@@ -245,7 +245,7 @@ export function aboutPageSchema(images: string[]): JsonLdObject {
         credentialCategory: cert.name,
         name: cert.code,
       })),
-      sameAs: company.social.map((s) => s.url),
+      sameAs: confirmedSocial.map((s) => s.url),
     },
   };
 }

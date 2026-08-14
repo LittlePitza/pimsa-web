@@ -2,6 +2,12 @@
 
 export interface NavItem {
   label: string;
+  /**
+   * Descriptive alternative for the footer sitemap ("Stock" → "Stock
+   * disponible"). The header stays terse; the footer is the only site-wide
+   * server-rendered link list, so its anchor text is what crawlers read.
+   */
+  longLabel?: string;
   href: string;
   children?: NavItem[];
 }
@@ -9,6 +15,14 @@ export interface NavItem {
 export interface SocialLink {
   name: "Facebook" | "LinkedIn" | "Instagram" | "TikTok";
   url: string;
+  /**
+   * Marketing has verified the profile exists and belongs to PIMSA.
+   * Unconfirmed profiles are filtered out of BOTH the footer and the
+   * `sameAs` array, so the two can never disagree — a `sameAs` pointing at
+   * a stranger's profile can mis-merge the Knowledge Graph entity, which is
+   * worse than emitting nothing.
+   */
+  confirmed: boolean;
 }
 
 export interface Company {

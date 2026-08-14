@@ -32,6 +32,18 @@
   [data-band="dark"] :focus-visible {
     outline-color: var(--color-green-300);
   }
+
+  /* The WhatsApp FAB is fixed above the footer's bottom-right corner. Without
+   * this, tabbing to the last footer links can park a focused element
+   * completely behind it (WCAG 2.2 SC 2.4.11). Mirrors the FAB's own offsets,
+   * including the taller one it takes when a sticky CTA is present. */
+  html {
+    scroll-padding-bottom: 5.5rem;
+  }
+
+  html:has(.sticky-cta) {
+    scroll-padding-bottom: 8rem;
+  }
 }
 
 @layer components {
