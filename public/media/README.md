@@ -13,7 +13,7 @@ node scripts/optimize-media.mjs           # escribir
 The rule the layout depends on: **one photograph, one slot.** Before adding an
 entry, check it is not already published under another name — the site
 previously reused five frames across fifteen slots and read as one page
-repeated. See [docs/fotografia-plan.md](../../docs/fotografia-plan.md).
+repeated. See [docs/photography-plan.md](../../docs/photography-plan.md).
 
 "Another name" includes **another frame of the same scene**: `scrap-recuperado`
 lasted exactly one commit because it was, two shots apart, the same photograph
@@ -25,7 +25,7 @@ to establish that a thing exists. That serves an inventory, not a page. A
 benchtop scale on a cluttered desk shipped here as "control de calidad" and had
 to be pulled. If a frame does not decide where to stand and what to show, leave
 the slot on the old image until the good one exists; the shot list is in
-[docs/guion-fotografia-video.md](../../docs/guion-fotografia-video.md).
+[docs/photo-video-script.md](../../docs/photo-video-script.md).
 
 ## Hero
 
@@ -76,7 +76,7 @@ el fondo — para:
   `operador-molino.jpg` muestra a un operador visto por detrás.
   Para publicar retratos hace falta la carta de consentimiento de uso de
   imagen firmada — ver el bloque A de
-  [guion-fotografia-video.md](../../docs/guion-fotografia-video.md).
+  [photo-video-script.md](../../docs/photo-video-script.md).
 - **Placas de vehículos** y rótulos de clientes. Toda la serie de camiones de
   la librería tiene la placa legible; por eso el sitio no publica ninguna hoy.
 - **Orientación.** Si `sharp(f).metadata()` reporta `orientation` distinto de
